@@ -1,4 +1,4 @@
-const CACHE_NAME = 'english-champion-v1';
+const CACHE_NAME = 'english-champion-v2';
 
 const ASSETS_TO_CACHE = [
     './',
