@@ -1,0 +1,2896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Let's Be An English Champion! - TZ EDU KIDS</title>
+
+<meta name="theme-color" content="#4A628A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EnglishChamp">
+
+<link rel="manifest" href="./manifest.json">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+body {
+    font-family: 'Fredoka', sans-serif;
+    background-color: #F3F8FF;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.custom-shadow {
+    box-shadow: 0 8px 0px 0px rgba(0,0,0,0.10);
+}
+
+.btn-bounce:active {
+    transform: scale(0.96);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.quiz-input {
+    letter-spacing: 2px;
+}
+
+@media print {
+    body {
+        background-color: #ffffff !important;
+        font-size: 12pt;
+    }
+
+    header,
+    footer,
+    main > section:not(#view-certificate),
+    .print\:hidden {
+        display: none !important;
+    }
+
+    #view-certificate {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #certificate-card {
+        box-shadow: none !important;
+        border-color: #4A628A !important;
+        min-height: 90vh;
+    }
+}
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+<header class="bg-[#4A628A] text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+
+        <div class="flex items-center gap-2 cursor-pointer"
+             onclick="router.go('home')">
+
+            <span class="text-2xl">🏆</span>
+
+            <div>
+                <h1 class="font-bold text-lg leading-tight tracking-wide">
+                    TZ EDU KIDS
+                </h1>
+
+                <p class="text-xs text-yellow-300 font-semibold tracking-wider uppercase">
+                    English Champion
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+
+            <button
+                id="pwa-install-btn"
+                class="hidden bg-yellow-400 text-slate-900 px-3 py-1.5 rounded-full text-xs font-bold items-center gap-1.5 shadow">
+                <i class="fa-solid fa-download"></i>
+                Install App
+            </button>
+
+            <button
+                onclick="soundManager.toggle()"
+                id="audio-toggle"
+                class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+
+                <i class="fa-solid fa-volume-high text-white text-base"></i>
+            </button>
+
+            <div
+                onclick="router.go('score')"
+                class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full flex items-center gap-2 cursor-pointer">
+
+                <span class="text-yellow-400">⭐</span>
+                <span id="header-stars" class="font-bold text-sm">0</span>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+
+<main class="max-w-4xl w-full mx-auto p-4 flex-grow flex flex-col justify-center items-center">
+
+
+<!-- ================= HOME ================= -->
+
+<section id="view-home" class="w-full text-center py-6 px-4">
+
+    <div class="mb-6 inline-block bg-white p-6 rounded-full shadow-lg border-4 border-yellow-300">
+        <span class="text-7xl block">🏆</span>
+    </div>
+
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-[#4A628A] mb-2 tracking-wide uppercase">
+        Let's Be An English Champion!
+    </h2>
+
+    <p class="text-xl font-bold text-emerald-600 mb-8 tracking-wide">
+        🔤 WORD COMPLETION
+    </p>
+
+    <div class="max-w-md mx-auto flex flex-col gap-4">
+
+        <button
+            onclick="gameState.initiateGameFlow()"
+            class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-2xl py-5 px-8 rounded-3xl custom-shadow border-b-8 border-emerald-700">
+
+            🚀 LET'S PLAY!
+        </button>
+
+        <button
+            onclick="router.go('score')"
+            class="btn-bounce bg-amber-400 hover:bg-amber-500 text-slate-800 font-bold text-lg py-4 px-8 rounded-2xl custom-shadow border-b-6 border-amber-600">
+
+            🏆 MY SCORE
+        </button>
+
+    </div>
+</section>
+
+
+<!-- ================= NAME ================= -->
+
+<section
+    id="view-name"
+    class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl border-4 border-sky-100 hidden text-center">
+
+    <div class="text-5xl mb-4">👋</div>
+
+    <h3 class="text-2xl font-bold text-slate-800 mb-2">
+        Welcome, English Champion! 👑
+    </h3>
+
+    <p class="text-slate-500 mb-6 font-medium">
+        What's your name?
+    </p>
+
+    <input
+        type="text"
+        id="player-name-input"
+        maxlength="20"
+        placeholder="Type name here..."
+        class="w-full px-5 py-4 text-xl font-semibold border-2 border-slate-200 rounded-2xl focus:border-[#4A628A] focus:outline-none text-center bg-slate-50 mb-6">
+
+    <button
+        onclick="gameState.savePlayerName()"
+        class="btn-bounce w-full bg-[#4A628A] text-white font-bold text-xl py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+        CONTINUE 🚀
+    </button>
+
+</section>
+
+
+<!-- ================= TOPICS ================= -->
+
+<section id="view-topics" class="w-full hidden">
+
+    <div class="text-center mb-6">
+
+        <h3 class="text-2xl sm:text-3xl font-bold text-[#4A628A]">
+            Hello,
+            <span id="topics-username" class="text-amber-500">
+                Champion
+            </span>!
+        </h3>
+
+        <p class="text-slate-500 font-medium">
+            Choose an English learning topic:
+        </p>
+
+    </div>
+
+    <div
+        id="topics-grid"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">
+    </div>
+
+</section>
+
+
+<!-- ================= QUIZ ================= -->
+
+<section
+    id="view-quiz"
+    class="w-full max-w-2xl bg-white p-6 sm:p-8 rounded-3xl shadow-xl border-4 border-slate-100 hidden flex flex-col relative overflow-hidden">
+
+    <div
+        id="feedback-overlay"
+        class="absolute inset-0 bg-white/95 flex flex-col items-center justify-center hidden z-30 px-6 text-center">
+
+        <span
+            id="feedback-icon"
+            class="text-7xl mb-4">
+        </span>
+
+        <h4
+            id="feedback-title"
+            class="text-3xl font-bold">
+        </h4>
+
+        <p
+            id="feedback-answer"
+            class="mt-3 text-lg font-bold text-slate-600">
+        </p>
+
+    </div>
+
+
+    <div class="flex justify-between items-center border-b-2 border-slate-100 pb-4 mb-6">
+
+        <div>
+
+            <span
+                id="quiz-question-number"
+                class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider">
+
+                QUESTION 1 / 10
+
+            </span>
+
+            <span
+                id="quiz-topic-title"
+                class="ml-2 font-bold text-sm text-[#4A628A] uppercase">
+
+                PEOPLE
+
+            </span>
+
+        </div>
+
+
+        <div class="flex items-center gap-2 sm:gap-4">
+
+            <div class="text-[#4A628A] font-bold flex items-center gap-1.5">
+                <span class="text-xl">🏆</span>
+                <span id="quiz-current-points" class="text-sm sm:text-lg">
+                    0 POINTS
+                </span>
+            </div>
+
+            <div
+                id="quiz-timer-container"
+                class="bg-rose-50 text-rose-600 px-3 sm:px-4 py-1.5 rounded-full font-bold text-lg border border-rose-100 flex items-center gap-1.5">
+
+                <i class="fa-regular fa-clock"></i>
+                <span id="quiz-timer-value">60</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="text-center my-4 flex-grow flex flex-col items-center justify-center min-h-[160px]">
+
+        <div
+            id="quiz-graphic"
+            class="text-7xl mb-4">
+        </div>
+
+        <p
+            id="quiz-hint-description"
+            class="text-slate-600 text-base sm:text-lg font-medium max-w-lg px-4">
+        </p>
+
+    </div>
+
+
+    <div class="mb-5 flex justify-center items-center">
+
+        <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl px-5 py-3">
+
+            <span class="text-amber-600 font-bold">
+                💡 First letter:
+            </span>
+
+            <span
+                id="hint-letter-placeholder"
+                class="ml-2 text-2xl font-extrabold text-amber-700">
+
+                ?
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="quiz-word-completion-area"
+        class="flex flex-wrap justify-center gap-2 mb-5">
+    </div>
+
+
+    <div class="w-full">
+
+        <p class="text-center text-sm font-bold text-slate-500 mb-2">
+            Type the missing word:
+        </p>
+
+        <input
+            id="quiz-answer-input"
+            type="text"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            placeholder="TYPE YOUR ANSWER"
+            class="quiz-input w-full px-5 py-4 text-xl font-bold text-center uppercase border-2 border-slate-200 rounded-2xl focus:border-[#4A628A] focus:outline-none bg-slate-50 mb-3">
+
+        <p
+            id="answer-message"
+            class="text-center text-sm font-semibold text-rose-500 min-h-[22px] mb-2">
+        </p>
+
+        <button
+            id="check-answer-btn"
+            onclick="gameState.submitTypedAnswer()"
+            class="btn-bounce w-full bg-[#4A628A] hover:bg-[#3b4f70] text-white font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+            CHECK ANSWER ✓
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= RESULT ================= -->
+
+<section
+    id="view-result"
+    class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl border-4 border-emerald-100 hidden text-center">
+
+    <div class="text-6xl mb-4">
+        🎉
+    </div>
+
+    <h3 class="text-3xl font-extrabold text-[#4A628A] mb-2">
+        CONGRATULATIONS!
+    </h3>
+
+    <p class="text-slate-500 font-medium mb-6">
+        Well done,
+        <span id="result-player-name" class="font-bold text-[#4A628A]">
+            Champion
+        </span>!
+    </p>
+
+
+    <div class="grid grid-cols-3 gap-2 mb-5">
+
+        <div class="bg-sky-50 rounded-2xl p-3">
+            <div class="text-xs text-slate-500">Points</div>
+            <div
+                id="result-score"
+                class="font-bold text-lg text-[#4A628A]">
+                0 / 100
+            </div>
+        </div>
+
+        <div class="bg-emerald-50 rounded-2xl p-3">
+            <div class="text-xs text-slate-500">Correct</div>
+            <div
+                id="result-correct-count"
+                class="font-bold text-lg text-emerald-600">
+                0 / 10
+            </div>
+        </div>
+
+        <div class="bg-amber-50 rounded-2xl p-3">
+            <div class="text-xs text-slate-500">Accuracy</div>
+            <div
+                id="result-percentage"
+                class="font-bold text-lg text-amber-600">
+                0%
+            </div>
+        </div>
+
+    </div>
+
+
+    <div
+        id="result-badge-title"
+        class="bg-slate-100 rounded-2xl px-4 py-3 font-bold text-xl text-[#4A628A] mb-3">
+
+        Rising Star
+
+    </div>
+
+
+    <div
+        id="result-stars-box"
+        class="text-4xl min-h-[50px] mb-6">
+    </div>
+
+
+    <div class="flex flex-col gap-3">
+
+        <button
+            id="btn-retry-wrong"
+            onclick="gameState.retryWrongQuestions()"
+            class="hidden btn-bounce bg-orange-400 text-white font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-orange-600">
+
+            🔁 TRY WRONG QUESTIONS AGAIN
+
+        </button>
+
+        <button
+            onclick="gameState.retryCurrentTopic()"
+            class="btn-bounce bg-emerald-500 text-white font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-emerald-700">
+
+            🔄 PLAY AGAIN
+
+        </button>
+
+        <button
+            onclick="router.go('topics')"
+            class="btn-bounce bg-amber-400 text-slate-800 font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-amber-600">
+
+            📚 CHOOSE ANOTHER TOPIC
+
+        </button>
+
+        <button
+            id="btn-view-certificate"
+            onclick="gameState.openCertificateView()"
+            class="btn-bounce bg-[#4A628A] text-white font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+            📜 VIEW CERTIFICATE
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= MY SCORE ================= -->
+
+<section
+    id="view-score"
+    class="w-full max-w-2xl hidden">
+
+    <div class="text-center mb-6">
+
+        <div class="text-5xl mb-3">
+            🏆
+        </div>
+
+        <h3 class="text-3xl font-extrabold text-[#4A628A]">
+            MY ACHIEVEMENTS
+        </h3>
+
+        <p class="text-slate-500 font-medium">
+            Track your English learning scores!
+        </p>
+
+    </div>
+
+
+    <div class="grid grid-cols-3 gap-3 mb-6">
+
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
+
+            <div class="text-2xl">⭐</div>
+
+            <div
+                id="achieve-total-stars"
+                class="text-2xl font-bold text-amber-500">
+                0
+            </div>
+
+            <div class="text-xs text-slate-400 font-semibold">
+                TOTAL STARS
+            </div>
+
+        </div>
+
+
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
+
+            <div class="text-2xl">🏆</div>
+
+            <div
+                id="achieve-total-points"
+                class="text-2xl font-bold text-[#4A628A]">
+                0
+            </div>
+
+            <div class="text-xs text-slate-400 font-semibold">
+                TOTAL POINTS
+            </div>
+
+        </div>
+
+
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
+
+            <div class="text-2xl">📚</div>
+
+            <div
+                id="achieve-total-topics"
+                class="text-2xl font-bold text-emerald-600">
+                0 / 11
+            </div>
+
+            <div class="text-xs text-slate-400 font-semibold">
+                TOPICS
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+
+        <h4 class="text-xl font-bold text-[#4A628A] mb-4">
+            Topic Completion Progress
+        </h4>
+
+        <div
+            id="achievements-topic-list"
+            class="flex flex-col gap-3">
+        </div>
+
+    </div>
+
+
+    <button
+        onclick="router.go('home')"
+        class="mt-5 w-full bg-[#4A628A] text-white font-bold py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+        🏠 BACK HOME
+
+    </button>
+
+</section>
+
+
+<!-- ================= CERTIFICATE ================= -->
+
+<section
+    id="view-certificate"
+    class="w-full max-w-2xl hidden">
+
+    <div
+        id="certificate-card"
+        class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border-8 border-[#4A628A] text-center">
+
+        <div class="text-4xl mb-2">
+            🏆
+        </div>
+
+        <div class="text-2xl font-extrabold text-[#4A628A] tracking-wider">
+            TZ EDU KIDS
+        </div>
+
+        <div class="text-xs text-slate-400 tracking-widest uppercase mb-8">
+            English Champion
+        </div>
+
+
+        <div class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2">
+            Achievement Certificate
+        </div>
+
+        <p class="text-emerald-600 font-bold text-lg mb-8">
+            WORD COMPLETION GAME
+        </p>
+
+
+        <p class="text-slate-500">
+            This certificate is proudly presented to
+        </p>
+
+        <h3
+            id="cert-recipient-name"
+            class="text-3xl sm:text-4xl font-extrabold text-[#4A628A] my-4 uppercase">
+            CHAMPION
+        </h3>
+
+
+        <p class="text-slate-500">
+            for successfully completing the topic
+        </p>
+
+        <div
+            id="cert-selected-topic"
+            class="inline-block bg-amber-100 text-amber-700 font-extrabold text-2xl px-6 py-3 rounded-2xl my-4">
+            PEOPLE
+        </div>
+
+
+        <p class="text-slate-500 max-w-lg mx-auto mb-8">
+            Keep learning, keep practising and keep becoming an English Champion!
+        </p>
+
+
+        <div class="grid grid-cols-3 gap-3 mb-8">
+
+            <div class="bg-sky-50 rounded-2xl p-4">
+
+                <div class="text-xs text-slate-500">
+                    SCORE
+                </div>
+
+                <div
+                    id="cert-points"
+                    class="font-extrabold text-xl text-[#4A628A]">
+                    100 / 100
+                </div>
+
+            </div>
+
+
+            <div class="bg-emerald-50 rounded-2xl p-4">
+
+                <div class="text-xs text-slate-500">
+                    ACCURACY
+                </div>
+
+                <div
+                    id="cert-accuracy"
+                    class="font-extrabold text-xl text-emerald-600">
+                    100%
+                </div>
+
+            </div>
+
+
+            <div class="bg-amber-50 rounded-2xl p-4">
+
+                <div class="text-xs text-slate-500">
+                    STARS
+                </div>
+
+                <div
+                    id="cert-stars"
+                    class="font-extrabold text-xl">
+                    ⭐⭐⭐
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="cert-issue-date"
+            class="font-bold text-slate-600 mb-8">
+            DATE: 21-09-2026
+        </div>
+
+
+        <div class="border-t-2 border-slate-200 pt-6 mb-6">
+
+            <div class="text-sm text-slate-500">
+                Verification Stamp
+            </div>
+
+            <div class="font-bold text-[#4A628A]">
+                TZ EDU KIDS Team
+            </div>
+
+            <div class="text-xs text-slate-400">
+                Authorized Issuer
+            </div>
+
+        </div>
+
+
+        <div class="print:hidden flex flex-col sm:flex-row gap-3">
+
+            <button
+                onclick="router.go('result')"
+                class="flex-1 bg-slate-200 text-slate-700 font-bold py-4 rounded-2xl">
+
+                ← BACK
+
+            </button>
+
+            <button
+                onclick="window.print()"
+                class="flex-1 bg-[#4A628A] text-white font-bold py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+                🖨️ PRINT CERTIFICATE
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer class="text-center py-4 text-xs text-slate-400">
+    © 2026 TZ EDU KIDS. Let's Be An English Champion!
+    KSSR Year 1-4.
+</footer>
+
+
+<script>
+
+/* =========================================================
+   SOUND MANAGER
+   Background music + answer sounds
+========================================================= */
+
+const soundManager = {
+
+    muted: false,
+    ctx: null,
+    musicInterval: null,
+    musicStep: 0,
+
+    musicNotes: [
+        261.63,
+        329.63,
+        392.00,
+        329.63,
+        293.66,
+        349.23,
+        440.00,
+        349.23
+    ],
+
+    init() {
+
+        if (!this.ctx) {
+
+            this.ctx = new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+        }
+
+    },
+
+    resume() {
+
+        this.init();
+
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+
+    },
+
+    startMusic() {
+
+        if (this.muted) return;
+
+        try {
+
+            this.resume();
+
+            if (this.musicInterval) return;
+
+            this.playMusicNote();
+
+            this.musicInterval =
+                setInterval(() => {
+                    this.playMusicNote();
+                }, 900);
+
+        } catch (e) {
+            console.log('Background audio unavailable');
+        }
+
+    },
+
+    stopMusic() {
+
+        if (this.musicInterval) {
+
+            clearInterval(this.musicInterval);
+            this.musicInterval = null;
+
+        }
+
+    },
+
+    playMusicNote() {
+
+        if (this.muted || !this.ctx) return;
+
+        try {
+
+            const freq =
+                this.musicNotes[
+                    this.musicStep %
+                    this.musicNotes.length
+                ];
+
+            this.musicStep++;
+
+            const osc =
+                this.ctx.createOscillator();
+
+            const gain =
+                this.ctx.createGain();
+
+            osc.type = 'sine';
+
+            osc.frequency.setValueAtTime(
+                freq,
+                this.ctx.currentTime
+            );
+
+            gain.gain.setValueAtTime(
+                0.025,
+                this.ctx.currentTime
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                this.ctx.currentTime + 0.7
+            );
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start();
+
+            osc.stop(
+                this.ctx.currentTime + 0.7
+            );
+
+        } catch (e) {}
+
+    },
+
+    toggle() {
+
+        this.muted = !this.muted;
+
+        const icon =
+            document.querySelector('#audio-toggle i');
+
+        if (this.muted) {
+
+            this.stopMusic();
+
+            icon.className =
+                'fa-solid fa-volume-xmark text-rose-300';
+
+        } else {
+
+            icon.className =
+                'fa-solid fa-volume-high text-white';
+
+            this.startMusic();
+
+        }
+
+    },
+
+    playTone(freq, type, duration) {
+
+        if (this.muted) return;
+
+        try {
+
+            this.resume();
+
+            const osc =
+                this.ctx.createOscillator();
+
+            const gain =
+                this.ctx.createGain();
+
+            osc.type = type;
+
+            osc.frequency.setValueAtTime(
+                freq,
+                this.ctx.currentTime
+            );
+
+            gain.gain.setValueAtTime(
+                0.15,
+                this.ctx.currentTime
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                this.ctx.currentTime + duration
+            );
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start();
+
+            osc.stop(
+                this.ctx.currentTime + duration
+            );
+
+        } catch (e) {}
+
+    },
+
+    correct() {
+
+        this.playTone(
+            587.33,
+            'sine',
+            0.1
+        );
+
+        setTimeout(() => {
+
+            this.playTone(
+                880,
+                'sine',
+                0.25
+            );
+
+        }, 100);
+
+    },
+
+    wrong() {
+
+        this.playTone(
+            220,
+            'triangle',
+            0.15
+        );
+
+        setTimeout(() => {
+
+            this.playTone(
+                146.83,
+                'triangle',
+                0.3
+            );
+
+        }, 120);
+
+    },
+
+    timeout() {
+
+        this.playTone(
+            180,
+            'sawtooth',
+            0.4
+        );
+
+    }
+
+};
+
+
+/* =========================================================
+   QUESTION BANK
+   11 TOPICS × 10 QUESTIONS = 110 QUESTIONS
+========================================================= */
+
+const q = (graphic, hint, answer) => ({
+    graphic,
+    hint,
+    answer
+});
+
+
+const QUESTION_BANK = {
+
+    PEOPLE: [
+
+        q("👨‍👩‍👧", "The people who are your mother and father.", "PARENTS"),
+        q("👨", "Your mother's or father's brother.", "UNCLE"),
+        q("👩", "Your mother's or father's sister.", "AUNT"),
+        q("🧒", "A child of your aunt or uncle.", "COUSIN"),
+        q("🏘️", "A person who lives near your home.", "NEIGHBOUR"),
+        q("👨‍🌾", "A person who grows crops or looks after farm animals.", "FARMER"),
+        q("📷", "A person who takes photos.", "PHOTOGRAPHER"),
+        q("👨‍🚒", "A person who puts out fires and helps people in danger.", "FIREFIGHTER"),
+        q("🛟", "A person who watches swimmers and keeps them safe.", "LIFEGUARD"),
+        q("🦷", "A person who checks and takes care of your teeth.", "DENTIST")
+
+    ],
+
+
+    SCHOOL: [
+
+        q("🎒", "A child who learns at school.", "PUPIL"),
+        q("📖", "Work a teacher asks you to do at home.", "HOMEWORK"),
+        q("🍽️", "A place at school where pupils buy and eat food.", "CANTEEN"),
+        q("🧑‍🏫", "A person who teaches pupils.", "TEACHER"),
+        q("📓", "A book with blank or lined pages for writing.", "NOTEBOOK"),
+        q("📚", "An area you learn at school, such as English or Maths.", "SUBJECT"),
+        q("🗓️", "A plan that shows your school lessons and times.", "TIMETABLE"),
+        q("📏", "A tool used to measure length and draw straight lines.", "RULER"),
+        q("🧽", "An object used to erase pencil marks.", "RUBBER"),
+        q("✏️", "A tool used to make a pencil point sharp.", "SHARPENER")
+
+    ],
+
+
+    HOME: [
+
+        q("🏠", "A building where people live.", "HOUSE"),
+        q("🛏️", "A room where you sleep.", "BEDROOM"),
+        q("🛁", "A room where you wash or take a bath.", "BATHROOM"),
+        q("🍳", "A room where food is prepared and cooked.", "KITCHEN"),
+        q("🛋️", "A room where family members sit and relax.", "LIVINGROOM"),
+        q("⬆️", "The word used for moving to a floor above.", "UPSTAIR"),
+        q("🪵", "The surface you walk on inside a room.", "FLOOR"),
+        q("🧊", "An appliance that keeps food and drinks cold.", "FRIDGE"),
+        q("🚪", "A passage or entrance area inside a house.", "HALL"),
+        q("🛋️", "A soft item placed on a sofa or chair for comfort.", "CUSHION")
+
+    ],
+
+
+    FOOD: [
+
+        q("🍳", "The meal you eat in the morning.", "BREAKFAST"),
+        q("🍱", "The meal you usually eat in the middle of the day.", "LUNCH"),
+        q("🍽️", "The main meal you usually eat in the evening.", "DINNER"),
+        q("🍞", "A baked food often eaten with butter or used in sandwiches.", "BREAD"),
+        q("🥤", "When you need or want a drink.", "THIRSTY"),
+        q("🥬", "A green leafy vegetable often used in salads.", "LETTUCE"),
+        q("🍪", "Small baked snacks that are often crisp and sweet.", "BISCUITS"),
+        q("🍰", "A sweet food usually eaten after a meal.", "DESSERT"),
+        q("🌾", "A powder used to make bread, cakes and other foods.", "FLOUR"),
+        q("🍳", "A dish made by cooking beaten eggs.", "OMELETTE")
+
+    ],
+
+
+    CLOTHES: [
+
+        q("🧦", "Clothes worn on your feet, usually inside shoes.", "SOCKS"),
+        q("🎩", "A piece of clothing worn on the head.", "HAT"),
+        q("👟", "Footwear worn to protect your feet.", "SHOES"),
+        q("👗", "Clothing worn around the waist that hangs down over the legs.", "SKIRT"),
+        q("🧥", "A warm knitted top worn when it is cold.", "SWEATER"),
+        q("👕", "A piece of clothing worn on the upper body.", "SHIRT"),
+        q("👗", "A one-piece item of clothing.", "DRESS"),
+        q("🧢", "A soft hat with a front peak.", "CAP"),
+        q("👖", "Clothing that covers both legs.", "TROUSERS"),
+        q("🧥", "A short coat worn over other clothes.", "JACKET")
+
+    ],
+
+
+    ANIMALS: [
+
+        q("🦁", "This word describes animals that live in nature, not as pets.", "WILD"),
+        q("🐯", "A large wild cat with black stripes.", "TIGER"),
+        q("🐘", "A very large animal with a trunk.", "ELEPHANT"),
+        q("🐴", "A large animal that people can ride.", "HORSE"),
+        q("🐭", "A small animal with a long tail.", "MOUSE"),
+        q("🐐", "A farm animal that can climb and gives milk.", "GOAT"),
+        q("🐬", "A smart sea animal that swims and jumps.", "DOLPHIN"),
+        q("🦈", "A large sea animal with sharp teeth.", "SHARK"),
+        q("🐋", "A huge animal that lives in the ocean.", "WHALE"),
+        q("🐺", "A wild animal that looks like a large dog.", "WOLF")
+
+    ],
+
+
+    NATURE: [
+
+        q("☁️", "Having many clouds in the sky.", "CLOUDY"),
+        q("🏞️", "A long natural stream of water that flows across land.", "RIVER"),
+        q("🏔️", "A very high area of land with steep sides.", "MOUNTAIN"),
+        q("🏖️", "A sandy or pebbly place beside the sea.", "BEACH"),
+        q("🌲", "A large area filled with many trees.", "FOREST"),
+        q("🏝️", "A piece of land surrounded by water.", "ISLAND"),
+        q("🪐", "A large round object that moves around a star.", "PLANET"),
+        q("🍂", "The season when many leaves change colour and fall.", "AUTUMN"),
+        q("❄️", "The coldest season of the year.", "WINTER"),
+        q("🌸", "The season when many plants begin to grow and flowers appear.", "SPRING")
+
+    ],
+
+
+    PLACES: [
+
+        q("🛝", "A public place where people can walk, play or relax.", "PARK"),
+        q("📚", "A place where people can read or borrow books.", "LIBRARY"),
+        q("🎬", "A place where people watch films on a big screen.", "CINEMA"),
+        q("🛍️", "A place where people buy things.", "SHOP"),
+        q("🏛️", "A place where people see interesting objects and learn about history or art.", "MUSEUM"),
+        q("🏊", "A place with a pool where people swim.", "SWIMMING POOL"),
+        q("🍽️", "A place where people go to eat meals.", "RESTAURANT"),
+        q("🕌", "A place where Muslims go to pray.", "MOSQUE"),
+        q("📮", "A place where people send letters and parcels.", "POST OFFICE"),
+        q("🎪", "A place or show with performers and exciting acts.", "CIRCUS")
+
+    ],
+
+
+    TRANSPORT: [
+
+        q("🚌", "A large vehicle that carries many passengers.", "BUS"),
+        q("🚆", "A vehicle that travels on railway tracks.", "TRAIN"),
+        q("🚤", "A vehicle that travels on water.", "BOAT"),
+        q("🚚", "A large road vehicle used to carry goods.", "LORRY"),
+        q("🚲", "A two-wheeled vehicle moved by pedals.", "BICYCLE"),
+        q("🏍️", "A two-wheeled motor vehicle.", "MOTORCYCLE"),
+        q("✈️", "A vehicle that flies in the sky.", "AEROPLANE"),
+        q("🛴", "A small two-wheeled vehicle you can ride standing up.", "SCOOTER"),
+        q("🛹", "A board with wheels that you ride while standing on it.", "SKATEBOARD"),
+        q("🚁", "An aircraft with blades that can fly up and down.", "HELICOPTER")
+
+    ],
+
+
+    VERBS: [
+
+        q("📖", "Look at words and understand what they say.", "READ"),
+        q("🧼", "Clean something with water and often soap.", "WASH"),
+        q("🏊", "Move through water using your arms and legs.", "SWIM"),
+        q("😴", "Rest your body with your eyes closed.", "SLEEP"),
+        q("✍️", "Make letters or words with a pen or pencil.", "WRITE"),
+        q("👂", "Pay attention to a sound or what someone says.", "LISTEN"),
+        q("🗣️", "Use your voice to say words.", "SPEAK"),
+        q("🧹", "Make something free from dirt.", "CLEAN"),
+        q("🛠️", "Create or produce something.", "MAKE"),
+        q("📚", "Spend time learning about a subject.", "STUDY")
+
+    ],
+
+
+    ADJECTIVES: [
+
+        q("🟤", "Not clean.", "DIRTY"),
+        q("😱", "Making you feel afraid.", "SCARY"),
+        q("😠", "Feeling mad because something is wrong or unfair.", "ANGRY"),
+        q("😴", "Needing rest after doing something.", "TIRED"),
+        q("🤤", "Wanting or needing food.", "HUNGRY"),
+        q("👶", "Not old.", "YOUNG"),
+        q("😑", "Not interesting or exciting.", "BORING"),
+        q("📢", "Making a lot of sound.", "NOISY"),
+        q("😋", "Tasting very good.", "DELICIOUS"),
+        q("😂", "Making you laugh or smile.", "FUNNY")
+
+    ]
+
+};
+
+
+/* =========================================================
+   ROUTER
+========================================================= */
+
+const router = {
+
+    currentView: 'home',
+
+    go(viewId) {
+
+        clearInterval(gameState.timerInterval);
+
+        document
+            .querySelectorAll('main > section')
+            .forEach(section => {
+                section.classList.add('hidden');
+            });
+
+        const view =
+            document.getElementById(`view-${viewId}`);
+
+        if (!view) return;
+
+        view.classList.remove('hidden');
+
+        this.currentView = viewId;
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        this.onViewChange(viewId);
+
+    },
+
+    onViewChange(viewId) {
+
+        if (viewId === 'topics') {
+            gameState.renderTopicsGrid();
+        }
+
+        else if (viewId === 'score') {
+            gameState.renderAchievementsView();
+        }
+
+        gameState.syncGlobalHeaderState();
+
+    }
+
+};
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+const gameState = {
+
+    playerName: '',
+    currentTopic: '',
+    currentQuestionIndex: 0,
+
+    currentScore: 0,
+    correctCount: 0,
+
+    wrongQuestionIndices: [],
+
+    retryMode: false,
+    retryQuestionIndices: [],
+    retryPosition: 0,
+
+    timerInterval: null,
+    timeLeft: 60,
+
+    isDebouncing: false,
+
+    storageKey:
+        'tz_edu_kids_english_champion_data_v2',
+
+
+    loadProfile() {
+
+        const raw =
+            localStorage.getItem(this.storageKey);
+
+        if (raw) {
+
+            try {
+                return JSON.parse(raw);
+            }
+
+            catch (e) {}
+
+        }
+
+        return {
+            playerName: '',
+            totalAccumulatedPoints: 0,
+            totalStars: 0,
+            topicsData: {}
+        };
+
+    },
+
+
+    saveProfile(data) {
+
+        localStorage.setItem(
+            this.storageKey,
+            JSON.stringify(data)
+        );
+
+        this.syncGlobalHeaderState();
+
+    },
+
+
+    syncGlobalHeaderState() {
+
+        const profile =
+            this.loadProfile();
+
+        const headerStars =
+            document.getElementById('header-stars');
+
+        if (headerStars) {
+            headerStars.innerText =
+                profile.totalStars || 0;
+        }
+
+        const nameLabel =
+            document.getElementById('topics-username');
+
+        if (nameLabel) {
+            nameLabel.innerText =
+                profile.playerName || 'Champion';
+        }
+
+    },
+
+
+    initiateGameFlow() {
+
+        soundManager.startMusic();
+
+        const profile =
+            this.loadProfile();
+
+        if (
+            profile.playerName &&
+            profile.playerName.trim().length > 0
+        ) {
+
+            this.playerName =
+                profile.playerName;
+
+            router.go('topics');
+
+        }
+
+        else {
+
+            router.go('name');
+
+        }
+
+    },
+
+
+    savePlayerName() {
+
+        const input =
+            document.getElementById(
+                'player-name-input'
+            );
+
+        const name =
+            input.value.trim();
+
+        if (!name) {
+
+            alert(
+                "Please enter a name to join the game!"
+            );
+
+            return;
+        }
+
+        soundManager.startMusic();
+
+        const profile =
+            this.loadProfile();
+
+        profile.playerName = name;
+
+        this.playerName = name;
+
+        this.saveProfile(profile);
+
+        router.go('topics');
+
+    },
+
+
+    renderTopicsGrid() {
+
+        const grid =
+            document.getElementById(
+                'topics-grid'
+            );
+
+        grid.innerHTML = '';
+
+        const profile =
+            this.loadProfile();
+
+
+        const topicStyles = {
+
+            PEOPLE: [
+                "bg-gradient-to-br from-pink-400 to-rose-500 border-pink-300",
+                "👨‍👩‍👧‍👦"
+            ],
+
+            SCHOOL: [
+                "bg-gradient-to-br from-violet-400 to-purple-500 border-violet-300",
+                "🏫"
+            ],
+
+            HOME: [
+                "bg-gradient-to-br from-amber-400 to-orange-500 border-amber-300",
+                "🏠"
+            ],
+
+            FOOD: [
+                "bg-gradient-to-br from-emerald-400 to-green-500 border-emerald-300",
+                "🍎"
+            ],
+
+            CLOTHES: [
+                "bg-gradient-to-br from-teal-400 to-cyan-500 border-teal-300",
+                "👕"
+            ],
+
+            ANIMALS: [
+                "bg-gradient-to-br from-yellow-400 to-amber-500 border-yellow-300",
+                "🐶"
+            ],
+
+            NATURE: [
+                "bg-gradient-to-br from-sky-400 to-blue-500 border-sky-300",
+                "🌿"
+            ],
+
+            PLACES: [
+                "bg-gradient-to-br from-purple-400 to-fuchsia-500 border-purple-300",
+                "📍"
+            ],
+
+            TRANSPORT: [
+                "bg-gradient-to-br from-cyan-400 to-blue-500 border-cyan-300",
+                "🚌"
+            ],
+
+            VERBS: [
+                "bg-gradient-to-br from-orange-400 to-red-500 border-orange-300",
+                "🏃"
+            ],
+
+            ADJECTIVES: [
+                "bg-gradient-to-br from-lime-400 to-green-500 border-lime-300",
+                "🎨"
+            ]
+
+        };
+
+
+        Object.keys(QUESTION_BANK).forEach(topic => {
+
+            const topicData =
+                profile.topicsData[topic] || {
+                    bestScore: 0,
+                    stars: 0,
+                    completed: false,
+                    bestPercentage: 0
+                };
+
+
+            const styles =
+                topicStyles[topic];
+
+
+            const starStr =
+                topicData.completed
+                    ? ('⭐'.repeat(topicData.stars) || 'No Stars')
+                    : 'Not Played';
+
+
+            const card =
+                document.createElement('button');
+
+
+            card.className =
+                `btn-bounce ${styles[0]}
+                 text-white p-5 rounded-3xl
+                 text-center custom-shadow
+                 border-b-8
+                 flex flex-col justify-between
+                 items-center min-h-[140px]
+                 transition-transform
+                 hover:-translate-y-1`;
+
+
+            card.onclick = () =>
+                this.startQuizTopic(topic);
+
+
+            card.innerHTML = `
+
+                <span class="text-4xl mb-1">
+                    ${styles[1]}
+                </span>
+
+                <span class="font-bold text-sm tracking-wider block uppercase">
+                    ${topic}
+                </span>
+
+                <div class="mt-2 bg-black/10 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                    ${starStr}
+                </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        });
+
+    },
+
+
+    startQuizTopic(topic) {
+
+        clearInterval(this.timerInterval);
+
+        soundManager.startMusic();
+
+        this.currentTopic = topic;
+
+        this.currentQuestionIndex = 0;
+
+        this.currentScore = 0;
+
+        this.correctCount = 0;
+
+        this.wrongQuestionIndices = [];
+
+        this.retryMode = false;
+
+        this.retryQuestionIndices = [];
+
+        this.retryPosition = 0;
+
+        this.isDebouncing = false;
+
+        router.go('quiz');
+
+        this.loadQuestion();
+
+    },
+
+
+    loadQuestion() {
+
+        clearInterval(this.timerInterval);
+
+        this.isDebouncing = false;
+
+        const questions =
+            QUESTION_BANK[this.currentTopic];
+
+
+        let questionIndex;
+
+        let displayNumber;
+
+
+        if (this.retryMode) {
+
+            questionIndex =
+                this.retryQuestionIndices[
+                    this.retryPosition
+                ];
+
+            displayNumber =
+                `RETRY ${this.retryPosition + 1} / ${this.retryQuestionIndices.length}`;
+
+        }
+
+        else {
+
+            questionIndex =
+                this.currentQuestionIndex;
+
+            displayNumber =
+                `QUESTION ${this.currentQuestionIndex + 1} / 10`;
+
+        }
+
+
+        const currentQuestion =
+            questions[questionIndex];
+
+
+        document.getElementById(
+            'quiz-question-number'
+        ).innerText =
+            displayNumber;
+
+
+        document.getElementById(
+            'quiz-topic-title'
+        ).innerText =
+            this.currentTopic;
+
+
+        document.getElementById(
+            'quiz-current-points'
+        ).innerText =
+            this.retryMode
+                ? `${this.currentScore} POINTS`
+                : `${this.currentScore} POINTS`;
+
+
+        document.getElementById(
+            'quiz-graphic'
+        ).innerText =
+            currentQuestion.graphic;
+
+
+        document.getElementById(
+            'quiz-hint-description'
+        ).innerText =
+            currentQuestion.hint;
+
+
+        const firstLetter =
+            currentQuestion.answer
+                .charAt(0)
+                .toUpperCase();
+
+
+        document.getElementById(
+            'hint-letter-placeholder'
+        ).innerText =
+            firstLetter;
+
+
+        const wordArea =
+            document.getElementById(
+                'quiz-word-completion-area'
+            );
+
+        wordArea.innerHTML = '';
+
+
+        for (
+            let i = 0;
+            i < currentQuestion.answer.length;
+            i++
+        ) {
+
+            const span =
+                document.createElement('span');
+
+
+            if (currentQuestion.answer[i] === ' ') {
+
+                span.className =
+                    "w-4 h-12 flex items-center justify-center";
+
+                span.innerText = " ";
+
+            }
+
+            else if (i === 0) {
+
+                span.className =
+                    "w-9 h-11 sm:w-10 sm:h-12 text-xl sm:text-2xl " +
+                    "font-extrabold bg-amber-100 text-amber-800 " +
+                    "border-2 border-amber-300 rounded-xl flex " +
+                    "items-center justify-center uppercase shadow-sm";
+
+                span.innerText =
+                    firstLetter;
+
+            }
+
+            else {
+
+                span.className =
+                    "w-9 h-11 sm:w-10 sm:h-12 text-xl sm:text-2xl " +
+                    "font-bold bg-slate-100 text-slate-800 " +
+                    "border-2 border-slate-200 rounded-xl flex " +
+                    "items-center justify-center uppercase shadow-sm";
+
+                span.innerText = "_";
+
+                span.id =
+                    `blank-letter-${i}`;
+
+            }
+
+
+            wordArea.appendChild(span);
+
+        }
+
+
+        const input =
+            document.getElementById(
+                'quiz-answer-input'
+            );
+
+        input.value = '';
+
+        input.disabled = false;
+
+        input.classList.remove(
+            'border-emerald-400',
+            'border-rose-400'
+        );
+
+        input.classList.add(
+            'border-slate-200'
+        );
+
+
+        document.getElementById(
+            'answer-message'
+        ).innerText = '';
+
+
+        const checkBtn =
+            document.getElementById(
+                'check-answer-btn'
+            );
+
+        checkBtn.disabled = false;
+
+        checkBtn.innerText =
+            this.retryMode
+                ? 'TRY AGAIN ✓'
+                : 'CHECK ANSWER ✓';
+
+
+        this.timeLeft = 60;
+
+        document.getElementById(
+            'quiz-timer-value'
+        ).innerText =
+            this.timeLeft;
+
+
+        document.getElementById(
+            'quiz-timer-container'
+        ).className =
+            "bg-rose-50 text-rose-600 px-4 py-1.5 " +
+            "rounded-full font-bold text-lg " +
+            "border border-rose-100 flex items-center gap-1.5";
+
+
+        setTimeout(() => {
+            input.focus();
+        }, 100);
+
+
+        this.timerInterval =
+            setInterval(() => {
+
+                this.timeLeft--;
+
+
+                if (this.timeLeft <= 0) {
+
+                    this.timeLeft = 0;
+
+                    document.getElementById(
+                        'quiz-timer-value'
+                    ).innerText = 0;
+
+                    clearInterval(
+                        this.timerInterval
+                    );
+
+                    this.handleQuestionTimeout();
+
+                }
+
+                else {
+
+                    document.getElementById(
+                        'quiz-timer-value'
+                    ).innerText =
+                        this.timeLeft;
+
+
+                    if (this.timeLeft <= 10) {
+
+                        document.getElementById(
+                            'quiz-timer-container'
+                        ).className =
+                            "bg-rose-500 text-white px-4 py-1.5 " +
+                            "rounded-full font-bold text-lg " +
+                            "flex items-center gap-1.5 animate-pulse";
+
+                    }
+
+                }
+
+            }, 1000);
+
+    },
+
+
+    normalizeAnswer(value) {
+
+        return value
+            .trim()
+            .replace(/\s+/g, ' ')
+            .toUpperCase();
+
+    },
+
+
+    submitTypedAnswer() {
+
+        if (this.isDebouncing) return;
+
+        const input =
+            document.getElementById(
+                'quiz-answer-input'
+            );
+
+        const userAnswer =
+            this.normalizeAnswer(
+                input.value
+            );
+
+
+        if (!userAnswer) {
+
+            document.getElementById(
+                'answer-message'
+            ).innerText =
+                'Please type an answer first!';
+
+            input.focus();
+
+            return;
+
+        }
+
+
+        this.isDebouncing = true;
+
+        clearInterval(
+            this.timerInterval
+        );
+
+
+        const questions =
+            QUESTION_BANK[this.currentTopic];
+
+
+        const questionIndex =
+            this.retryMode
+                ? this.retryQuestionIndices[
+                    this.retryPosition
+                  ]
+                : this.currentQuestionIndex;
+
+
+        const currentQuestion =
+            questions[questionIndex];
+
+
+        const correctAnswer =
+            this.normalizeAnswer(
+                currentQuestion.answer
+            );
+
+
+        const isCorrect =
+            userAnswer === correctAnswer;
+
+
+        input.disabled = true;
+
+        document.getElementById(
+            'check-answer-btn'
+        ).disabled = true;
+
+
+        this.revealAnswer(
+            currentQuestion.answer,
+            isCorrect
+        );
+
+
+        const overlay =
+            document.getElementById(
+                'feedback-overlay'
+            );
+
+        const fIcon =
+            document.getElementById(
+                'feedback-icon'
+            );
+
+        const fTitle =
+            document.getElementById(
+                'feedback-title'
+            );
+
+        const fAnswer =
+            document.getElementById(
+                'feedback-answer'
+            );
+
+
+        if (isCorrect) {
+
+            soundManager.correct();
+
+
+            if (!this.retryMode) {
+
+                this.currentScore += 10;
+
+                this.correctCount++;
+
+            }
+
+
+            fIcon.innerText = "🎉";
+
+            fTitle.innerText =
+                this.retryMode
+                    ? "Correct Again!"
+                    : "Wow, Correct!";
+
+            fTitle.className =
+                "text-3xl font-bold text-emerald-600";
+
+
+            fAnswer.innerText =
+                currentQuestion.answer;
+
+        }
+
+        else {
+
+            soundManager.wrong();
+
+
+            if (!this.retryMode) {
+
+                if (
+                    !this.wrongQuestionIndices.includes(
+                        questionIndex
+                    )
+                ) {
+
+                    this.wrongQuestionIndices.push(
+                        questionIndex
+                    );
+
+                }
+
+            }
+
+
+            fIcon.innerText =
+                this.retryMode
+                    ? "💪"
+                    : "💡";
+
+            fTitle.innerText =
+                this.retryMode
+                    ? "Keep Practising!"
+                    : "Not quite!";
+
+            fTitle.className =
+                "text-3xl font-bold text-rose-500";
+
+
+            fAnswer.innerText =
+                `Answer: ${currentQuestion.answer}`;
+
+        }
+
+
+        document.getElementById(
+            'quiz-current-points'
+        ).innerText =
+            `${this.currentScore} POINTS`;
+
+
+        overlay.classList.remove('hidden');
+
+
+        setTimeout(() => {
+
+            overlay.classList.add('hidden');
+
+            this.advanceQuizFlowProgressState();
+
+        }, 1600);
+
+    },
+
+
+    revealAnswer(answer, isCorrect) {
+
+        for (
+            let i = 1;
+            i < answer.length;
+            i++
+        ) {
+
+            if (answer[i] === ' ') continue;
+
+            const el =
+                document.getElementById(
+                    `blank-letter-${i}`
+                );
+
+
+            if (el) {
+
+                el.innerText =
+                    answer.charAt(i);
+
+                el.className =
+                    isCorrect
+
+                        ? "w-9 h-11 sm:w-10 sm:h-12 text-xl sm:text-2xl " +
+                          "font-extrabold bg-emerald-100 text-emerald-800 " +
+                          "border-2 border-emerald-300 rounded-xl " +
+                          "flex items-center justify-center uppercase"
+
+                        : "w-9 h-11 sm:w-10 sm:h-12 text-xl sm:text-2xl " +
+                          "font-extrabold bg-rose-100 text-rose-800 " +
+                          "border-2 border-rose-300 rounded-xl " +
+                          "flex items-center justify-center uppercase";
+
+            }
+
+        }
+
+    },
+
+
+    handleQuestionTimeout() {
+
+        if (this.isDebouncing) return;
+
+        this.isDebouncing = true;
+
+        soundManager.timeout();
+
+
+        const questions =
+            QUESTION_BANK[this.currentTopic];
+
+
+        const questionIndex =
+            this.retryMode
+                ? this.retryQuestionIndices[
+                    this.retryPosition
+                  ]
+                : this.currentQuestionIndex;
+
+
+        const currentQuestion =
+            questions[questionIndex];
+
+
+        if (!this.retryMode) {
+
+            if (
+                !this.wrongQuestionIndices.includes(
+                    questionIndex
+                )
+            ) {
+
+                this.wrongQuestionIndices.push(
+                    questionIndex
+                );
+
+            }
+
+        }
+
+
+        this.revealAnswer(
+            currentQuestion.answer,
+            false
+        );
+
+
+        const overlay =
+            document.getElementById(
+                'feedback-overlay'
+            );
+
+
+        const fIcon =
+            document.getElementById(
+                'feedback-icon'
+            );
+
+
+        const fTitle =
+            document.getElementById(
+                'feedback-title'
+            );
+
+
+        const fAnswer =
+            document.getElementById(
+                'feedback-answer'
+            );
+
+
+        fIcon.innerText = "⏰";
+
+        fTitle.innerText =
+            "Oops, time's up!";
+
+        fTitle.className =
+            "text-3xl font-bold text-amber-600";
+
+        fAnswer.innerText =
+            `Answer: ${currentQuestion.answer}`;
+
+
+        overlay.classList.remove('hidden');
+
+
+        setTimeout(() => {
+
+            overlay.classList.add('hidden');
+
+            this.advanceQuizFlowProgressState();
+
+        }, 1600);
+
+    },
+
+
+    advanceQuizFlowProgressState() {
+
+        if (this.retryMode) {
+
+            this.retryPosition++;
+
+
+            if (
+                this.retryPosition <
+                this.retryQuestionIndices.length
+            ) {
+
+                this.loadQuestion();
+
+            }
+
+            else {
+
+                this.finishRetryMode();
+
+            }
+
+            return;
+
+        }
+
+
+        this.currentQuestionIndex++;
+
+
+        if (
+            this.currentQuestionIndex < 10
+        ) {
+
+            this.loadQuestion();
+
+        }
+
+        else {
+
+            this.terminateAndEvaluateQuizSession();
+
+        }
+
+    },
+
+
+    finishRetryMode() {
+
+        clearInterval(
+            this.timerInterval
+        );
+
+        this.retryMode = false;
+
+        this.retryPosition = 0;
+
+        const overlay =
+            document.getElementById(
+                'feedback-overlay'
+            );
+
+        const fIcon =
+            document.getElementById(
+                'feedback-icon'
+            );
+
+        const fTitle =
+            document.getElementById(
+                'feedback-title'
+            );
+
+        const fAnswer =
+            document.getElementById(
+                'feedback-answer'
+            );
+
+
+        fIcon.innerText = "🎉";
+
+        fTitle.innerText =
+            "Great Practice!";
+
+        fTitle.className =
+            "text-3xl font-bold text-emerald-600";
+
+        fAnswer.innerText =
+            "You have practised your tricky words again!";
+
+
+        overlay.classList.remove('hidden');
+
+
+        setTimeout(() => {
+
+            overlay.classList.add('hidden');
+
+            router.go('result');
+
+        }, 1800);
+
+    },
+
+
+    terminateAndEvaluateQuizSession() {
+
+        clearInterval(
+            this.timerInterval
+        );
+
+
+        const finalPercentage =
+            Math.round(
+                (this.currentScore / 100) * 100
+            );
+
+
+        let starsEarned = 0;
+
+        let badgeTitle =
+            "Rising Star";
+
+
+        if (finalPercentage >= 90) {
+
+            starsEarned = 3;
+
+            badgeTitle =
+                "🏆 ENGLISH CHAMPION";
+
+        }
+
+        else if (finalPercentage >= 70) {
+
+            starsEarned = 2;
+
+            badgeTitle =
+                "🏅 ENGLISH EXPERT";
+
+        }
+
+        else if (finalPercentage >= 50) {
+
+            starsEarned = 1;
+
+            badgeTitle =
+                "⭐ WORD SCOUT";
+
+        }
+
+
+        const profile =
+            this.loadProfile();
+
+
+        const historicalRecord =
+            profile.topicsData[
+                this.currentTopic
+            ] || {
+                bestScore: 0,
+                stars: 0,
+                completed: false,
+                bestPercentage: 0
+            };
+
+
+        /*
+          Only replace if the new score is better.
+          If score is equal, keep the higher star record.
+        */
+
+        if (
+            this.currentScore >
+            historicalRecord.bestScore
+            ||
+            (
+                this.currentScore ===
+                historicalRecord.bestScore
+                &&
+                starsEarned >
+                historicalRecord.stars
+            )
+        ) {
+
+            historicalRecord.bestScore =
+                this.currentScore;
+
+            historicalRecord.stars =
+                starsEarned;
+
+            historicalRecord.completed =
+                true;
+
+            historicalRecord.bestPercentage =
+                finalPercentage;
+
+
+            profile.topicsData[
+                this.currentTopic
+            ] =
+                historicalRecord;
+
+        }
+        else {
+
+            historicalRecord.completed = true;
+
+            profile.topicsData[
+                this.currentTopic
+            ] =
+                historicalRecord;
+
+        }
+
+
+        let totalPointsAggregator = 0;
+
+        let totalStarsAggregator = 0;
+
+
+        Object.keys(QUESTION_BANK)
+            .forEach(topic => {
+
+                if (
+                    profile.topicsData[topic] &&
+                    profile.topicsData[topic].completed
+                ) {
+
+                    totalPointsAggregator +=
+                        profile.topicsData[topic]
+                            .bestScore;
+
+                    totalStarsAggregator +=
+                        profile.topicsData[topic]
+                            .stars;
+
+                }
+
+            });
+
+
+        profile.totalAccumulatedPoints =
+            totalPointsAggregator;
+
+
+        profile.totalStars =
+            totalStarsAggregator;
+
+
+        this.saveProfile(profile);
+
+
+        document.getElementById(
+            'result-player-name'
+        ).innerText =
+            this.playerName ||
+            profile.playerName;
+
+
+        document.getElementById(
+            'result-score'
+        ).innerText =
+            `${this.currentScore} / 100`;
+
+
+        document.getElementById(
+            'result-correct-count'
+        ).innerText =
+            `${this.correctCount} / 10`;
+
+
+        document.getElementById(
+            'result-percentage'
+        ).innerText =
+            `${finalPercentage}%`;
+
+
+        document.getElementById(
+            'result-badge-title'
+        ).innerText =
+            badgeTitle;
+
+
+        const starsBox =
+            document.getElementById(
+                'result-stars-box'
+            );
+
+
+        starsBox.innerHTML = '';
+
+
+        for (
+            let s = 0;
+            s < starsEarned;
+            s++
+        ) {
+
+            starsBox.innerHTML += '⭐';
+
+        }
+
+
+        const retryBtn =
+            document.getElementById(
+                'btn-retry-wrong'
+            );
+
+
+        if (
+            this.wrongQuestionIndices.length > 0
+        ) {
+
+            retryBtn.classList.remove('hidden');
+
+            retryBtn.innerText =
+                `🔁 TRY WRONG QUESTIONS AGAIN (${this.wrongQuestionIndices.length})`;
+
+        }
+
+        else {
+
+            retryBtn.classList.add('hidden');
+
+        }
+
+
+        const certBtn =
+            document.getElementById(
+                'btn-view-certificate'
+            );
+
+
+        if (this.currentScore > 0) {
+
+            certBtn.classList.remove(
+                'opacity-50',
+                'pointer-events-none'
+            );
+
+        }
+
+        else {
+
+            certBtn.classList.add(
+                'opacity-50',
+                'pointer-events-none'
+            );
+
+        }
+
+
+        router.go('result');
+
+    },
+
+
+    retryWrongQuestions() {
+
+        if (
+            !this.wrongQuestionIndices.length
+        ) {
+            return;
+        }
+
+
+        this.retryMode = true;
+
+        this.retryQuestionIndices =
+            [...this.wrongQuestionIndices];
+
+        this.retryPosition = 0;
+
+        this.isDebouncing = false;
+
+        soundManager.startMusic();
+
+        router.go('quiz');
+
+        this.loadQuestion();
+
+    },
+
+
+    retryCurrentTopic() {
+
+        this.startQuizTopic(
+            this.currentTopic
+        );
+
+    },
+
+
+    openCertificateView() {
+
+        const profile =
+            this.loadProfile();
+
+
+        const finalPercentage =
+            Math.round(
+                (this.currentScore / 100) * 100
+            );
+
+
+        let starsStr =
+            'No Stars';
+
+
+        if (finalPercentage >= 90) {
+
+            starsStr = "⭐⭐⭐";
+
+        }
+
+        else if (finalPercentage >= 70) {
+
+            starsStr = "⭐⭐";
+
+        }
+
+        else if (finalPercentage >= 50) {
+
+            starsStr = "⭐";
+
+        }
+
+
+        document.getElementById(
+            'cert-recipient-name'
+        ).innerText =
+            this.playerName ||
+            profile.playerName ||
+            "ENGLISH CHAMPION";
+
+
+        document.getElementById(
+            'cert-selected-topic'
+        ).innerText =
+            this.currentTopic;
+
+
+        document.getElementById(
+            'cert-points'
+        ).innerText =
+            `${this.currentScore} / 100`;
+
+
+        document.getElementById(
+            'cert-accuracy'
+        ).innerText =
+            `${finalPercentage}%`;
+
+
+        document.getElementById(
+            'cert-stars'
+        ).innerText =
+            starsStr;
+
+
+        const today =
+            new Date();
+
+
+        document.getElementById(
+            'cert-issue-date'
+        ).innerText =
+            `DATE: ${
+                String(today.getDate())
+                    .padStart(2, '0')
+            }-${
+                String(today.getMonth() + 1)
+                    .padStart(2, '0')
+            }-${
+                today.getFullYear()
+            }`;
+
+
+        router.go('certificate');
+
+    },
+
+
+    renderAchievementsView() {
+
+        const profile =
+            this.loadProfile();
+
+
+        let completedCount = 0;
+
+
+        Object.keys(QUESTION_BANK)
+            .forEach(topic => {
+
+                if (
+                    profile.topicsData[topic] &&
+                    profile.topicsData[topic].completed
+                ) {
+
+                    completedCount++;
+
+                }
+
+            });
+
+
+        document.getElementById(
+            'achieve-total-stars'
+        ).innerText =
+            profile.totalStars || 0;
+
+
+        document.getElementById(
+            'achieve-total-points'
+        ).innerText =
+            profile.totalAccumulatedPoints || 0;
+
+
+        document.getElementById(
+            'achieve-total-topics'
+        ).innerText =
+            `${completedCount} / 11`;
+
+
+        const listContainer =
+            document.getElementById(
+                'achievements-topic-list'
+            );
+
+
+        listContainer.innerHTML = '';
+
+
+        Object.keys(QUESTION_BANK)
+            .forEach(topic => {
+
+                const data =
+                    profile.topicsData[topic] || {
+                        bestScore: 0,
+                        stars: 0,
+                        completed: false,
+                        bestPercentage: 0
+                    };
+
+
+                const starsDisplay =
+                    data.completed
+                        ? (
+                            '⭐'.repeat(data.stars) ||
+                            'Passed'
+                        )
+                        : 'Locked';
+
+
+                const statusBadge =
+                    data.completed
+                        ? 'Finished'
+                        : 'Unplayed';
+
+
+                const row =
+                    document.createElement('div');
+
+
+                row.className =
+                    "bg-white p-4 rounded-xl " +
+                    "border border-slate-100 " +
+                    "flex justify-between " +
+                    "items-center shadow-sm";
+
+
+                row.innerHTML = `
+
+                    <div>
+
+                        <h5 class="font-bold text-slate-800 text-sm tracking-wide uppercase">
+                            ${topic}
+                        </h5>
+
+                        <p class="text-xs text-slate-400">
+                            Best Score:
+                            <span class="text-slate-700 font-semibold">
+                                ${data.bestScore}/100
+                            </span>
+                            (${data.bestPercentage}%)
+                        </p>
+
+                    </div>
+
+                    <div class="text-right">
+
+                        <div class="text-sm text-amber-500 font-bold">
+                            ${starsDisplay}
+                        </div>
+
+                        <div class="text-xs text-slate-400 font-semibold">
+                            ${statusBadge}
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                listContainer.appendChild(row);
+
+            });
+
+    }
+
+};
+
+
+/* =========================================================
+   ENTER KEY = CHECK ANSWER
+========================================================= */
+
+document.addEventListener(
+    'keydown',
+    event => {
+
+        if (
+            event.key === 'Enter' &&
+            router.currentView === 'quiz'
+        ) {
+
+            gameState.submitTypedAnswer();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PWA INSTALL
+========================================================= */
+
+window.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        gameState.syncGlobalHeaderState();
+
+
+        const installBtn =
+            document.getElementById(
+                'pwa-install-btn'
+            );
+
+
+        let promptRef = null;
+
+
+        window.addEventListener(
+            'beforeinstallprompt',
+            event => {
+
+                event.preventDefault();
+
+                promptRef = event;
+
+                installBtn.classList.remove(
+                    'hidden'
+                );
+
+                installBtn.classList.add(
+                    'flex'
+                );
+
+            }
+        );
+
+
+        installBtn.addEventListener(
+            'click',
+            async () => {
+
+                if (!promptRef) return;
+
+                promptRef.prompt();
+
+                await promptRef.userChoice;
+
+                promptRef = null;
+
+                installBtn.classList.add(
+                    'hidden'
+                );
+
+                installBtn.classList.remove(
+                    'flex'
+                );
+
+            }
+        );
+
+
+        if (
+            'serviceWorker' in navigator
+        ) {
+
+            navigator.serviceWorker
+                .register('./sw.js')
+                .then(registration => {
+
+                    console.log(
+                        'PWA Service Worker berjaya didaftarkan!',
+                        registration.scope
+                    );
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        'Pendaftaran Service Worker gagal:',
+                        error
+                    );
+
+                });
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
