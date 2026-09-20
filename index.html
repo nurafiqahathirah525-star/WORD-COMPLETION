@@ -1,0 +1,2623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Let's Be An English Champion! - TZ EDU KIDS</title>
+
+<meta name="theme-color" content="#4A628A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EnglishChamp">
+
+<link rel="manifest" href="./manifest.json">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+body {
+    font-family: 'Fredoka', sans-serif;
+    background-color: #F3F8FF;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.custom-shadow {
+    box-shadow: 0 8px 0px 0px rgba(0,0,0,0.10);
+}
+
+.btn-bounce:active {
+    transform: scale(0.96);
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media print {
+    body {
+        background-color: #ffffff !important;
+        font-size: 12pt;
+    }
+
+    header,
+    footer,
+    main > section:not(#view-certificate),
+    .print\:hidden {
+        display: none !important;
+    }
+
+    #view-certificate {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #certificate-card {
+        box-shadow: none !important;
+        border-color: #4A628A !important;
+        min-height: 90vh;
+    }
+}
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+<header class="bg-[#4A628A] text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+
+        <div class="flex items-center gap-2 cursor-pointer"
+             onclick="router.go('home')">
+
+            <span class="text-2xl">🏆</span>
+
+            <div>
+                <h1 class="font-bold text-lg leading-tight tracking-wide">
+                    TZ EDU KIDS
+                </h1>
+
+                <p class="text-xs text-yellow-300 font-semibold tracking-wider uppercase">
+                    English Champion
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+
+            <button
+                id="pwa-install-btn"
+                class="hidden bg-yellow-400 text-slate-900 px-3 py-1.5 rounded-full text-xs font-bold items-center gap-1.5 shadow">
+                <i class="fa-solid fa-download"></i>
+                Install App
+            </button>
+
+            <button
+                onclick="soundManager.toggle()"
+                id="audio-toggle"
+                class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+
+                <i class="fa-solid fa-volume-high text-white text-base"></i>
+            </button>
+
+            <div
+                onclick="router.go('score')"
+                class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full flex items-center gap-2 cursor-pointer">
+
+                <span class="text-yellow-400">⭐</span>
+                <span id="header-stars" class="font-bold text-sm">0</span>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+
+<main class="max-w-4xl w-full mx-auto p-4 flex-grow flex flex-col justify-center items-center">
+
+
+<!-- ================= HOME ================= -->
+
+<section id="view-home" class="w-full text-center py-6 px-4">
+
+    <div class="mb-6 inline-block bg-white p-6 rounded-full shadow-lg border-4 border-yellow-300">
+        <span class="text-7xl block">🏆</span>
+    </div>
+
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-[#4A628A] mb-2 tracking-wide uppercase">
+        Let's Be An English Champion!
+    </h2>
+
+    <p class="text-xl font-bold text-emerald-600 mb-8 tracking-wide">
+        🔤 WORD COMPLETION
+    </p>
+
+    <div class="max-w-md mx-auto flex flex-col gap-4">
+
+        <button
+            onclick="gameState.initiateGameFlow()"
+            class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-2xl py-5 px-8 rounded-3xl custom-shadow border-b-8 border-emerald-700">
+
+            🚀 LET'S PLAY!
+        </button>
+
+        <button
+            onclick="router.go('score')"
+            class="btn-bounce bg-amber-400 hover:bg-amber-500 text-slate-800 font-bold text-lg py-4 px-8 rounded-2xl custom-shadow border-b-6 border-amber-600">
+
+            🏆 MY SCORE
+        </button>
+
+    </div>
+</section>
+
+
+<!-- ================= NAME ================= -->
+
+<section
+    id="view-name"
+    class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl border-4 border-sky-100 hidden text-center">
+
+    <div class="text-5xl mb-4">👋</div>
+
+    <h3 class="text-2xl font-bold text-slate-800 mb-2">
+        Welcome, English Champion! 👑
+    </h3>
+
+    <p class="text-slate-500 mb-6 font-medium">
+        What's your name?
+    </p>
+
+    <input
+        type="text"
+        id="player-name-input"
+        maxlength="20"
+        placeholder="Type name here..."
+        class="w-full px-5 py-4 text-xl font-semibold border-2 border-slate-200 rounded-2xl focus:border-[#4A628A] focus:outline-none text-center bg-slate-50 mb-6">
+
+    <button
+        onclick="gameState.savePlayerName()"
+        class="btn-bounce w-full bg-[#4A628A] text-white font-bold text-xl py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+        CONTINUE 🚀
+    </button>
+
+</section>
+
+
+<!-- ================= TOPICS ================= -->
+
+<section id="view-topics" class="w-full hidden">
+
+    <div class="text-center mb-6">
+
+        <h3 class="text-2xl sm:text-3xl font-bold text-[#4A628A]">
+            Hello,
+            <span id="topics-username" class="text-amber-500">
+                Champion
+            </span>!
+        </h3>
+
+        <p class="text-slate-500 font-medium">
+            Choose an English learning topic:
+        </p>
+
+    </div>
+
+    <div
+        id="topics-grid"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">
+    </div>
+
+</section>
+
+
+<!-- ================= QUIZ ================= -->
+
+<section
+    id="view-quiz"
+    class="w-full max-w-2xl bg-white p-6 sm:p-8 rounded-3xl shadow-xl border-4 border-slate-100 hidden flex flex-col relative overflow-hidden">
+
+    <!-- Feedback -->
+    <div
+        id="feedback-overlay"
+        class="absolute inset-0 bg-white/95 flex flex-col items-center justify-center hidden z-30">
+
+        <span
+            id="feedback-icon"
+            class="text-7xl mb-4">
+        </span>
+
+        <h4
+            id="feedback-title"
+            class="text-3xl font-bold">
+        </h4>
+
+    </div>
+
+
+    <!-- Quiz Header -->
+    <div class="flex justify-between items-center border-b-2 border-slate-100 pb-4 mb-6">
+
+        <div>
+
+            <span
+                id="quiz-question-number"
+                class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider">
+
+                QUESTION 1 / 5
+
+            </span>
+
+            <span
+                id="quiz-topic-title"
+                class="ml-2 font-bold text-sm text-[#4A628A] uppercase">
+
+                FAMILY
+
+            </span>
+
+        </div>
+
+
+        <div class="flex items-center gap-2 sm:gap-4">
+
+            <div class="text-[#4A628A] font-bold flex items-center gap-1.5">
+                <span class="text-xl">🏆</span>
+                <span id="quiz-current-points" class="text-sm sm:text-lg">
+                    0 POINTS
+                </span>
+            </div>
+
+            <div
+                id="quiz-timer-container"
+                class="bg-rose-50 text-rose-600 px-3 sm:px-4 py-1.5 rounded-full font-bold text-lg border border-rose-100 flex items-center gap-1.5">
+
+                <i class="fa-regular fa-clock"></i>
+                <span id="quiz-timer-value">60</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Graphic + Description -->
+    <div class="text-center my-4 flex-grow flex flex-col items-center justify-center min-h-[160px]">
+
+        <div
+            id="quiz-graphic"
+            class="text-7xl mb-4">
+        </div>
+
+        <p
+            id="quiz-hint-description"
+            class="text-slate-600 text-base sm:text-lg font-medium max-w-lg px-4">
+        </p>
+
+    </div>
+
+
+    <!-- FIRST-LETTER HINT SYSTEM -->
+    <div class="mb-5 flex justify-center items-center">
+
+        <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl px-5 py-3">
+
+            <span class="text-amber-600 font-bold">
+                💡 Hint:
+            </span>
+
+            <span
+                id="hint-letter-placeholder"
+                class="ml-2 text-2xl font-extrabold text-amber-700">
+
+                ?
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- Word Completion -->
+    <div
+        id="quiz-word-completion-area"
+        class="flex flex-wrap justify-center gap-2 mb-6">
+    </div>
+
+
+    <!-- Multiple Choice -->
+    <div
+        id="quiz-options-container"
+        class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+    </div>
+
+</section>
+
+
+<!-- ================= RESULT ================= -->
+
+<section
+    id="view-result"
+    class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl border-4 border-emerald-100 hidden text-center">
+
+    <div class="text-6xl mb-4">
+        🎉
+    </div>
+
+    <h3 class="text-3xl font-extrabold text-[#4A628A] mb-2">
+        CONGRATULATIONS!
+    </h3>
+
+    <p class="text-slate-500 font-medium mb-6">
+        Well done,
+        <span id="result-player-name" class="font-bold text-[#4A628A]">
+            Champion
+        </span>!
+    </p>
+
+
+    <div class="grid grid-cols-3 gap-2 mb-5">
+
+        <div class="bg-sky-50 rounded-2xl p-3">
+            <div class="text-xs text-slate-500">Points</div>
+            <div
+                id="result-score"
+                class="font-bold text-lg text-[#4A628A]">
+                0 / 50
+            </div>
+        </div>
+
+        <div class="bg-emerald-50 rounded-2xl p-3">
+            <div class="text-xs text-slate-500">Correct</div>
+            <div
+                id="result-correct-count"
+                class="font-bold text-lg text-emerald-600">
+                0 / 5
+            </div>
+        </div>
+
+        <div class="bg-amber-50 rounded-2xl p-3">
+            <div class="text-xs text-slate-500">Accuracy</div>
+            <div
+                id="result-percentage"
+                class="font-bold text-lg text-amber-600">
+                0%
+            </div>
+        </div>
+
+    </div>
+
+
+    <div
+        id="result-badge-title"
+        class="bg-slate-100 rounded-2xl px-4 py-3 font-bold text-xl text-[#4A628A] mb-3">
+
+        Rising Star
+
+    </div>
+
+
+    <div
+        id="result-stars-box"
+        class="text-4xl min-h-[50px] mb-6">
+    </div>
+
+
+    <div class="flex flex-col gap-3">
+
+        <button
+            onclick="gameState.retryCurrentTopic()"
+            class="btn-bounce bg-emerald-500 text-white font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-emerald-700">
+
+            🔄 PLAY AGAIN
+
+        </button>
+
+        <button
+            onclick="router.go('topics')"
+            class="btn-bounce bg-amber-400 text-slate-800 font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-amber-600">
+
+            📚 CHOOSE ANOTHER TOPIC
+
+        </button>
+
+        <button
+            id="btn-view-certificate"
+            onclick="gameState.openCertificateView()"
+            class="btn-bounce bg-[#4A628A] text-white font-bold text-lg py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+            📜 VIEW CERTIFICATE
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= MY SCORE ================= -->
+
+<section
+    id="view-score"
+    class="w-full max-w-2xl hidden">
+
+    <div class="text-center mb-6">
+
+        <div class="text-5xl mb-3">
+            🏆
+        </div>
+
+        <h3 class="text-3xl font-extrabold text-[#4A628A]">
+            MY ACHIEVEMENTS
+        </h3>
+
+        <p class="text-slate-500 font-medium">
+            Track your English learning scores!
+        </p>
+
+    </div>
+
+
+    <div class="grid grid-cols-3 gap-3 mb-6">
+
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
+
+            <div class="text-2xl">⭐</div>
+
+            <div
+                id="achieve-total-stars"
+                class="text-2xl font-bold text-amber-500">
+                0
+            </div>
+
+            <div class="text-xs text-slate-400 font-semibold">
+                TOTAL STARS
+            </div>
+
+        </div>
+
+
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
+
+            <div class="text-2xl">🏆</div>
+
+            <div
+                id="achieve-total-points"
+                class="text-2xl font-bold text-[#4A628A]">
+                0
+            </div>
+
+            <div class="text-xs text-slate-400 font-semibold">
+                TOTAL POINTS
+            </div>
+
+        </div>
+
+
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
+
+            <div class="text-2xl">📚</div>
+
+            <div
+                id="achieve-total-topics"
+                class="text-2xl font-bold text-emerald-600">
+                0 / 11
+            </div>
+
+            <div class="text-xs text-slate-400 font-semibold">
+                TOPICS
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+
+        <h4 class="text-xl font-bold text-[#4A628A] mb-4">
+            Topic Completion Progress
+        </h4>
+
+        <div
+            id="achievements-topic-list"
+            class="flex flex-col gap-3">
+        </div>
+
+    </div>
+
+
+    <button
+        onclick="router.go('home')"
+        class="mt-5 w-full bg-[#4A628A] text-white font-bold py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+        🏠 BACK HOME
+
+    </button>
+
+</section>
+
+
+<!-- ================= CERTIFICATE ================= -->
+
+<section
+    id="view-certificate"
+    class="w-full max-w-2xl hidden">
+
+    <div
+        id="certificate-card"
+        class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border-8 border-[#4A628A] text-center">
+
+        <div class="text-4xl mb-2">
+            🏆
+        </div>
+
+        <div class="text-2xl font-extrabold text-[#4A628A] tracking-wider">
+            TZ EDU KIDS
+        </div>
+
+        <div class="text-xs text-slate-400 tracking-widest uppercase mb-8">
+            English Champion
+        </div>
+
+
+        <div class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2">
+            Achievement Certificate
+        </div>
+
+        <p class="text-emerald-600 font-bold text-lg mb-8">
+            WORD COMPLETION GAME
+        </p>
+
+
+        <p class="text-slate-500">
+            This certificate is proudly presented to
+        </p>
+
+        <h3
+            id="cert-recipient-name"
+            class="text-3xl sm:text-4xl font-extrabold text-[#4A628A] my-4 uppercase">
+            CHAMPION
+        </h3>
+
+
+        <p class="text-slate-500">
+            for successfully completing the topic
+        </p>
+
+        <div
+            id="cert-selected-topic"
+            class="inline-block bg-amber-100 text-amber-700 font-extrabold text-2xl px-6 py-3 rounded-2xl my-4">
+            FAMILY
+        </div>
+
+
+        <p class="text-slate-500 max-w-lg mx-auto mb-8">
+            Keep learning, keep practising and keep becoming an English Champion!
+        </p>
+
+
+        <div class="grid grid-cols-3 gap-3 mb-8">
+
+            <div class="bg-sky-50 rounded-2xl p-4">
+
+                <div class="text-xs text-slate-500">
+                    SCORE
+                </div>
+
+                <div
+                    id="cert-points"
+                    class="font-extrabold text-xl text-[#4A628A]">
+                    50 / 50
+                </div>
+
+            </div>
+
+
+            <div class="bg-emerald-50 rounded-2xl p-4">
+
+                <div class="text-xs text-slate-500">
+                    ACCURACY
+                </div>
+
+                <div
+                    id="cert-accuracy"
+                    class="font-extrabold text-xl text-emerald-600">
+                    100%
+                </div>
+
+            </div>
+
+
+            <div class="bg-amber-50 rounded-2xl p-4">
+
+                <div class="text-xs text-slate-500">
+                    STARS
+                </div>
+
+                <div
+                    id="cert-stars"
+                    class="font-extrabold text-xl">
+                    ⭐⭐⭐
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="cert-issue-date"
+            class="font-bold text-slate-600 mb-8">
+            DATE: 20-09-2026
+        </div>
+
+
+        <div class="border-t-2 border-slate-200 pt-6 mb-6">
+
+            <div class="text-sm text-slate-500">
+                Verification Stamp
+            </div>
+
+            <div class="font-bold text-[#4A628A]">
+                TZ EDU KIDS Team
+            </div>
+
+            <div class="text-xs text-slate-400">
+                Authorized Issuer
+            </div>
+
+        </div>
+
+
+        <div class="print:hidden flex flex-col sm:flex-row gap-3">
+
+            <button
+                onclick="router.go('result')"
+                class="flex-1 bg-slate-200 text-slate-700 font-bold py-4 rounded-2xl">
+
+                ← BACK
+
+            </button>
+
+            <button
+                onclick="window.print()"
+                class="flex-1 bg-[#4A628A] text-white font-bold py-4 rounded-2xl custom-shadow border-b-6 border-[#2d3b54]">
+
+                🖨️ PRINT CERTIFICATE
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer class="text-center py-4 text-xs text-slate-400">
+    © 2026 TZ EDU KIDS. Let's Be An English Champion!
+    KSSR Year 1-4.
+</footer>
+
+
+<script>
+
+/* =========================================================
+   SOUND MANAGER
+========================================================= */
+
+const soundManager = {
+
+    muted: false,
+    ctx: null,
+
+    init() {
+
+        if (!this.ctx) {
+            this.ctx = new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+        }
+
+    },
+
+    toggle() {
+
+        this.muted = !this.muted;
+
+        const icon =
+            document.querySelector('#audio-toggle i');
+
+        if (this.muted) {
+
+            icon.className =
+                'fa-solid fa-volume-xmark text-rose-300';
+
+        } else {
+
+            icon.className =
+                'fa-solid fa-volume-high text-white';
+
+        }
+
+    },
+
+    playTone(freq, type, duration) {
+
+        if (this.muted) return;
+
+        try {
+
+            this.init();
+
+            if (this.ctx.state === 'suspended') {
+                this.ctx.resume();
+            }
+
+            const osc =
+                this.ctx.createOscillator();
+
+            const gain =
+                this.ctx.createGain();
+
+            osc.type = type;
+
+            osc.frequency.setValueAtTime(
+                freq,
+                this.ctx.currentTime
+            );
+
+            gain.gain.setValueAtTime(
+                0.15,
+                this.ctx.currentTime
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                this.ctx.currentTime + duration
+            );
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start();
+            osc.stop(
+                this.ctx.currentTime + duration
+            );
+
+        } catch (e) {
+
+            console.log('Audio bypass');
+
+        }
+
+    },
+
+    correct() {
+
+        this.playTone(
+            587.33,
+            'sine',
+            0.1
+        );
+
+        setTimeout(() => {
+
+            this.playTone(
+                880,
+                'sine',
+                0.25
+            );
+
+        }, 100);
+
+    },
+
+    wrong() {
+
+        this.playTone(
+            220,
+            'triangle',
+            0.15
+        );
+
+        setTimeout(() => {
+
+            this.playTone(
+                146.83,
+                'triangle',
+                0.3
+            );
+
+        }, 120);
+
+    },
+
+    timeout() {
+
+        this.playTone(
+            180,
+            'sawtooth',
+            0.4
+        );
+
+    }
+
+};
+
+
+/* =========================================================
+   QUESTION BANK
+   11 TOPICS × 5 QUESTIONS = 55 QUESTIONS
+========================================================= */
+
+const QUESTION_BANK = {
+
+    FAMILY: [
+        {
+            graphic: "👨",
+            hint: "Father of a child",
+            answer: "FATHER"
+        },
+        {
+            graphic: "👩",
+            hint: "Mother of a child",
+            answer: "MOTHER"
+        },
+        {
+            graphic: "👶",
+            hint: "A very young child or newborn",
+            answer: "BABY"
+        },
+        {
+            graphic: "👧",
+            hint: "A female child or sibling",
+            answer: "SISTER"
+        },
+        {
+            graphic: "👦",
+            hint: "A male child or sibling",
+            answer: "BROTHER"
+        }
+    ],
+
+    SCHOOL: [
+        {
+            graphic: "✏️",
+            hint: "Used for writing or drawing lines",
+            answer: "PENCIL"
+        },
+        {
+            graphic: "📚",
+            hint: "You read pages inside this item",
+            answer: "BOOK"
+        },
+        {
+            graphic: "🎒",
+            hint: "Used to carry your things to class",
+            answer: "BAG"
+        },
+        {
+            graphic: "📐",
+            hint: "A tool used to measure straight lengths",
+            answer: "RULER"
+        },
+        {
+            graphic: "🧑‍🏫",
+            hint: "The person who helps you learn lessons",
+            answer: "TEACHER"
+        }
+    ],
+
+    HOME: [
+        {
+            graphic: "🛏️",
+            hint: "Furniture piece used for sleeping safely",
+            answer: "BED"
+        },
+        {
+            graphic: "🪑",
+            hint: "An object with legs built to sit on",
+            answer: "CHAIR"
+        },
+        {
+            graphic: "🚪",
+            hint: "You open this panel to walk into a room",
+            answer: "DOOR"
+        },
+        {
+            graphic: "🏠",
+            hint: "The building where your family lives together",
+            answer: "HOUSE"
+        },
+        {
+            graphic: "📺",
+            hint: "Electronic screen used to watch cartoon shows",
+            answer: "TELEVISION"
+        }
+    ],
+
+    FOOD: [
+        {
+            graphic: "🍎",
+            hint: "A sweet crispy round red or green fruit",
+            answer: "APPLE"
+        },
+        {
+            graphic: "🍞",
+            hint: "Baked sliced food used to make sandwiches",
+            answer: "BREAD"
+        },
+        {
+            graphic: "🥛",
+            hint: "White healthy liquid drink from cows",
+            answer: "MILK"
+        },
+        {
+            graphic: "🍚",
+            hint: "White grain food popular in Malaysia meals",
+            answer: "RICE"
+        },
+        {
+            graphic: "🐟",
+            hint: "Sea creature food rich in healthy protein",
+            answer: "FISH"
+        }
+    ],
+
+    CLOTHES: [
+        {
+            graphic: "👕",
+            hint: "Casual top garment with short sleeves",
+            answer: "SHIRT"
+        },
+        {
+            graphic: "👗",
+            hint: "One-piece outfit clothing worn by girls",
+            answer: "DRESS"
+        },
+        {
+            graphic: "🧦",
+            hint: "Worn over feet before putting shoes on",
+            answer: "SOCKS"
+        },
+        {
+            graphic: "👟",
+            hint: "Footwear worn when walking or running",
+            answer: "SHOES"
+        },
+        {
+            graphic: "🧢",
+            hint: "Headwear that helps protect you from the sun",
+            answer: "CAP"
+        }
+    ],
+
+    ANIMALS: [
+        {
+            graphic: "🐶",
+            hint: "Friendly domestic pet that barks",
+            answer: "DOG"
+        },
+        {
+            graphic: "🐱",
+            hint: "Small furry animal that says meow",
+            answer: "CAT"
+        },
+        {
+            graphic: "🦁",
+            hint: "Large wild animal known as the King",
+            answer: "LION"
+        },
+        {
+            graphic: "🦆",
+            hint: "Water bird that makes a quack sound",
+            answer: "DUCK"
+        },
+        {
+            graphic: "🐸",
+            hint: "Green amphibian that jumps near ponds",
+            answer: "FROG"
+        }
+    ],
+
+    WEATHER: [
+        {
+            graphic: "☀️",
+            hint: "Bright weather with lots of sunshine",
+            answer: "SUNNY"
+        },
+        {
+            graphic: "🌧️",
+            hint: "Water droplets falling from clouds",
+            answer: "RAINY"
+        },
+        {
+            graphic: "☁️",
+            hint: "The sky has many white or grey clouds",
+            answer: "CLOUDY"
+        },
+        {
+            graphic: "💨",
+            hint: "Air moving strongly and blowing leaves",
+            answer: "WINDY"
+        },
+        {
+            graphic: "⛈️",
+            hint: "Weather with heavy rain, thunder and lightning",
+            answer: "STORM"
+        }
+    ],
+
+    PLACES: [
+        {
+            graphic: "🏞️",
+            hint: "Outdoor play area with grass and slides",
+            answer: "PARK"
+        },
+        {
+            graphic: "🏖️",
+            hint: "Sandy place beside the sea",
+            answer: "BEACH"
+        },
+        {
+            graphic: "🛒",
+            hint: "Place where we buy things",
+            answer: "SHOP"
+        },
+        {
+            graphic: "🏥",
+            hint: "Place where sick people get medical care",
+            answer: "HOSPITAL"
+        },
+        {
+            graphic: "🏦",
+            hint: "Place where people keep and save money",
+            answer: "BANK"
+        }
+    ],
+
+    TRANSPORT: [
+        {
+            graphic: "🚗",
+            hint: "Four-wheeled motor vehicle",
+            answer: "CAR"
+        },
+        {
+            graphic: "🚌",
+            hint: "Large public vehicle for many passengers",
+            answer: "BUS"
+        },
+        {
+            graphic: "🚲",
+            hint: "Two-wheeled vehicle moved with pedals",
+            answer: "BICYCLE"
+        },
+        {
+            graphic: "✈️",
+            hint: "Vehicle that flies high in the sky",
+            answer: "AEROPLANE"
+        },
+        {
+            graphic: "🚢",
+            hint: "Large vessel that travels across oceans",
+            answer: "SHIP"
+        }
+    ],
+
+    VERBS: [
+        {
+            graphic: "🏃",
+            hint: "Move quickly using your legs",
+            answer: "RUN"
+        },
+        {
+            graphic: "🏊",
+            hint: "Move your body through water",
+            answer: "SWIM"
+        },
+        {
+            graphic: "📖",
+            hint: "Look at and understand words in a book",
+            answer: "READ"
+        },
+        {
+            graphic: "✍️",
+            hint: "Make letters and words using a pen or pencil",
+            answer: "WRITE"
+        },
+        {
+            graphic: "🍽️",
+            hint: "Put food into your mouth and chew it",
+            answer: "EAT"
+        }
+    ],
+
+    ADJECTIVES: [
+        {
+            graphic: "🔴",
+            hint: "The colour of a cherry",
+            answer: "RED"
+        },
+        {
+            graphic: "🐘",
+            hint: "Describing a large size",
+            answer: "BIG"
+        },
+        {
+            graphic: "🐭",
+            hint: "Describing a tiny size",
+            answer: "SMALL"
+        },
+        {
+            graphic: "😀",
+            hint: "Feeling joyful and cheerful",
+            answer: "HAPPY"
+        },
+        {
+            graphic: "🥶",
+            hint: "Having a very low temperature",
+            answer: "COLD"
+        }
+    ]
+
+};
+
+
+/* =========================================================
+   ROUTER
+========================================================= */
+
+const router = {
+
+    currentView: 'home',
+
+    go(viewId) {
+
+        clearInterval(gameState.timerInterval);
+
+        document
+            .querySelectorAll('main > section')
+            .forEach(section => {
+                section.classList.add('hidden');
+            });
+
+        const view =
+            document.getElementById(`view-${viewId}`);
+
+        if (!view) return;
+
+        view.classList.remove('hidden');
+
+        this.currentView = viewId;
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        this.onViewChange(viewId);
+
+    },
+
+    onViewChange(viewId) {
+
+        if (viewId === 'topics') {
+            gameState.renderTopicsGrid();
+        }
+
+        else if (viewId === 'score') {
+            gameState.renderAchievementsView();
+        }
+
+        gameState.syncGlobalHeaderState();
+
+    }
+
+};
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+const gameState = {
+
+    playerName: '',
+    currentTopic: '',
+    currentQuestionIndex: 0,
+    currentScore: 0,
+    correctCount: 0,
+
+    timerInterval: null,
+    timeLeft: 60,
+
+    isDebouncing: false,
+
+    storageKey:
+        'tz_edu_kids_english_champion_data_v2',
+
+
+    loadProfile() {
+
+        const raw =
+            localStorage.getItem(this.storageKey);
+
+        if (raw) {
+
+            try {
+                return JSON.parse(raw);
+            }
+
+            catch (e) {}
+
+        }
+
+        return {
+            playerName: '',
+            totalAccumulatedPoints: 0,
+            totalStars: 0,
+            topicsData: {}
+        };
+
+    },
+
+
+    saveProfile(data) {
+
+        localStorage.setItem(
+            this.storageKey,
+            JSON.stringify(data)
+        );
+
+        this.syncGlobalHeaderState();
+
+    },
+
+
+    syncGlobalHeaderState() {
+
+        const profile = this.loadProfile();
+
+        const headerStars =
+            document.getElementById('header-stars');
+
+        if (headerStars) {
+            headerStars.innerText =
+                profile.totalStars || 0;
+        }
+
+        const nameLabel =
+            document.getElementById('topics-username');
+
+        if (nameLabel) {
+            nameLabel.innerText =
+                profile.playerName || 'Champion';
+        }
+
+    },
+
+
+    initiateGameFlow() {
+
+        const profile =
+            this.loadProfile();
+
+        if (
+            profile.playerName &&
+            profile.playerName.trim().length > 0
+        ) {
+
+            this.playerName =
+                profile.playerName;
+
+            router.go('topics');
+
+        }
+
+        else {
+
+            router.go('name');
+
+        }
+
+    },
+
+
+    savePlayerName() {
+
+        const input =
+            document.getElementById(
+                'player-name-input'
+            );
+
+        const name =
+            input.value.trim();
+
+        if (!name) {
+
+            alert(
+                "Please enter a name to join the game!"
+            );
+
+            return;
+        }
+
+        const profile =
+            this.loadProfile();
+
+        profile.playerName = name;
+
+        this.playerName = name;
+
+        this.saveProfile(profile);
+
+        router.go('topics');
+
+    },
+
+
+    renderTopicsGrid() {
+
+        const grid =
+            document.getElementById(
+                'topics-grid'
+            );
+
+        grid.innerHTML = '';
+
+        const profile =
+            this.loadProfile();
+
+
+        const topicStyles = {
+
+            FAMILY: [
+                "bg-gradient-to-br from-pink-400 to-rose-500 border-pink-300",
+                "👨‍👩‍👧‍👦"
+            ],
+
+            SCHOOL: [
+                "bg-gradient-to-br from-violet-400 to-purple-500 border-violet-300",
+                "🏫"
+            ],
+
+            HOME: [
+                "bg-gradient-to-br from-amber-400 to-orange-500 border-amber-300",
+                "🏠"
+            ],
+
+            FOOD: [
+                "bg-gradient-to-br from-emerald-400 to-green-500 border-emerald-300",
+                "🍎"
+            ],
+
+            CLOTHES: [
+                "bg-gradient-to-br from-teal-400 to-cyan-500 border-teal-300",
+                "👕"
+            ],
+
+            ANIMALS: [
+                "bg-gradient-to-br from-yellow-400 to-amber-500 border-yellow-300",
+                "🐶"
+            ],
+
+            WEATHER: [
+                "bg-gradient-to-br from-sky-400 to-blue-500 border-sky-300",
+                "☀️"
+            ],
+
+            PLACES: [
+                "bg-gradient-to-br from-purple-400 to-fuchsia-500 border-purple-300",
+                "📍"
+            ],
+
+            TRANSPORT: [
+                "bg-gradient-to-br from-cyan-400 to-blue-500 border-cyan-300",
+                "🚌"
+            ],
+
+            VERBS: [
+                "bg-gradient-to-br from-orange-400 to-red-500 border-orange-300",
+                "🏃"
+            ],
+
+            ADJECTIVES: [
+                "bg-gradient-to-br from-lime-400 to-green-500 border-lime-300",
+                "🎨"
+            ]
+
+        };
+
+
+        Object.keys(QUESTION_BANK).forEach(topic => {
+
+            const topicData =
+                profile.topicsData[topic] || {
+                    bestScore: 0,
+                    stars: 0,
+                    completed: false,
+                    bestPercentage: 0
+                };
+
+
+            const styles =
+                topicStyles[topic] ||
+                [
+                    "bg-gradient-to-br from-sky-400 to-blue-500 border-sky-300",
+                    "📝"
+                ];
+
+
+            const starStr =
+                topicData.completed
+                    ? ('⭐'.repeat(topicData.stars) || 'No Stars')
+                    : 'Not Played';
+
+
+            const card =
+                document.createElement('button');
+
+
+            card.className =
+                `btn-bounce ${styles[0]}
+                 text-white p-5 rounded-3xl
+                 text-center custom-shadow
+                 border-b-8
+                 flex flex-col justify-between
+                 items-center min-h-[140px]
+                 transition-transform
+                 hover:-translate-y-1`;
+
+
+            card.onclick = () =>
+                this.startQuizTopic(topic);
+
+
+            card.innerHTML = `
+
+                <span class="text-4xl mb-1">
+                    ${styles[1]}
+                </span>
+
+                <span class="font-bold text-sm tracking-wider block uppercase">
+                    ${topic}
+                </span>
+
+                <div class="mt-2 bg-black/10 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                    ${starStr}
+                </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        });
+
+    },
+
+
+    startQuizTopic(topic) {
+
+        clearInterval(this.timerInterval);
+
+        this.currentTopic = topic;
+        this.currentQuestionIndex = 0;
+        this.currentScore = 0;
+        this.correctCount = 0;
+        this.isDebouncing = false;
+
+        router.go('quiz');
+
+        this.loadQuestion();
+
+    },
+
+
+    loadQuestion() {
+
+        clearInterval(this.timerInterval);
+
+        this.isDebouncing = false;
+
+        const questions =
+            QUESTION_BANK[this.currentTopic];
+
+        const currentQuestion =
+            questions[this.currentQuestionIndex];
+
+
+        document.getElementById(
+            'quiz-question-number'
+        ).innerText =
+            `QUESTION ${this.currentQuestionIndex + 1} / 5`;
+
+
+        document.getElementById(
+            'quiz-topic-title'
+        ).innerText =
+            this.currentTopic;
+
+
+        document.getElementById(
+            'quiz-current-points'
+        ).innerText =
+            `${this.currentScore} POINTS`;
+
+
+        document.getElementById(
+            'quiz-graphic'
+        ).innerText =
+            currentQuestion.graphic;
+
+
+        document.getElementById(
+            'quiz-hint-description'
+        ).innerText =
+            currentQuestion.hint;
+
+
+        /* FIRST LETTER ONLY */
+
+        const firstLetter =
+            currentQuestion.answer
+                .charAt(0)
+                .toUpperCase();
+
+
+        document.getElementById(
+            'hint-letter-placeholder'
+        ).innerText =
+            firstLetter;
+
+
+        /* WORD COMPLETION */
+
+        const wordArea =
+            document.getElementById(
+                'quiz-word-completion-area'
+            );
+
+        wordArea.innerHTML = '';
+
+
+        for (
+            let i = 0;
+            i < currentQuestion.answer.length;
+            i++
+        ) {
+
+            const span =
+                document.createElement('span');
+
+
+            if (i === 0) {
+
+                span.className =
+                    "w-10 h-12 text-2xl font-extrabold " +
+                    "bg-amber-100 text-amber-800 " +
+                    "border-2 border-amber-300 " +
+                    "rounded-xl flex items-center " +
+                    "justify-center uppercase shadow-sm";
+
+                span.innerText =
+                    firstLetter;
+
+            }
+
+            else {
+
+                span.className =
+                    "w-10 h-12 text-2xl font-bold " +
+                    "bg-slate-100 text-slate-800 " +
+                    "border-2 border-slate-200 " +
+                    "rounded-xl flex items-center " +
+                    "justify-center uppercase shadow-sm";
+
+                span.innerText = "_";
+
+                span.id =
+                    `blank-letter-${i}`;
+
+            }
+
+
+            wordArea.appendChild(span);
+
+        }
+
+
+        this.renderMultipleChoiceOptions(
+            currentQuestion.answer
+        );
+
+
+        /* TIMER */
+
+        this.timeLeft = 60;
+
+        document.getElementById(
+            'quiz-timer-value'
+        ).innerText = this.timeLeft;
+
+
+        document.getElementById(
+            'quiz-timer-container'
+        ).className =
+            "bg-rose-50 text-rose-600 px-4 py-1.5 " +
+            "rounded-full font-bold text-lg " +
+            "border border-rose-100 flex items-center gap-1.5";
+
+
+        this.timerInterval =
+            setInterval(() => {
+
+                this.timeLeft--;
+
+
+                if (this.timeLeft <= 0) {
+
+                    this.timeLeft = 0;
+
+                    document.getElementById(
+                        'quiz-timer-value'
+                    ).innerText = 0;
+
+                    clearInterval(
+                        this.timerInterval
+                    );
+
+                    this.handleQuestionTimeout();
+
+                }
+
+                else {
+
+                    document.getElementById(
+                        'quiz-timer-value'
+                    ).innerText =
+                        this.timeLeft;
+
+
+                    if (this.timeLeft <= 10) {
+
+                        document.getElementById(
+                            'quiz-timer-container'
+                        ).className =
+                            "bg-rose-500 text-white px-4 py-1.5 " +
+                            "rounded-full font-bold text-lg " +
+                            "flex items-center gap-1.5 animate-pulse";
+
+                    }
+
+                }
+
+            }, 1000);
+
+    },
+
+
+    renderMultipleChoiceOptions(correctAnswer) {
+
+        const container =
+            document.getElementById(
+                'quiz-options-container'
+            );
+
+        container.innerHTML = '';
+
+
+        const distractors =
+            new Set();
+
+
+        const siblingPool =
+            QUESTION_BANK[this.currentTopic];
+
+
+        siblingPool.forEach(item => {
+
+            if (item.answer !== correctAnswer) {
+
+                distractors.add(
+                    item.answer
+                );
+
+            }
+
+        });
+
+
+        if (distractors.size < 3) {
+
+            distractors.add("APPLE");
+            distractors.add("HAPPY");
+            distractors.add("BICYCLE");
+
+        }
+
+
+        const optionsList =
+            Array.from(distractors)
+                .slice(0, 3);
+
+
+        optionsList.push(correctAnswer);
+
+
+        /* Shuffle */
+
+        for (
+            let i = optionsList.length - 1;
+            i > 0;
+            i--
+        ) {
+
+            const j =
+                Math.floor(
+                    Math.random() * (i + 1)
+                );
+
+            [
+                optionsList[i],
+                optionsList[j]
+            ] = [
+                optionsList[j],
+                optionsList[i]
+            ];
+
+        }
+
+
+        optionsList.forEach(option => {
+
+            const btn =
+                document.createElement('button');
+
+
+            btn.className =
+                "btn-bounce bg-slate-50 " +
+                "hover:bg-slate-100 text-slate-800 " +
+                "text-xl font-bold py-4 px-6 " +
+                "rounded-2xl border-2 border-slate-200 " +
+                "custom-shadow border-b-6 " +
+                "transition-all uppercase text-center";
+
+
+            btn.onclick = () =>
+                this.evaluatePlayerAnswerSelection(
+                    option,
+                    btn
+                );
+
+
+            btn.innerText =
+                option;
+
+
+            container.appendChild(btn);
+
+        });
+
+    },
+
+
+    evaluatePlayerAnswerSelection(
+        selectedAnswer,
+        chosenButtonElement
+    ) {
+
+        if (this.isDebouncing) return;
+
+        this.isDebouncing = true;
+
+        clearInterval(
+            this.timerInterval
+        );
+
+
+        const questions =
+            QUESTION_BANK[this.currentTopic];
+
+
+        const currentQuestion =
+            questions[this.currentQuestionIndex];
+
+
+        const isCorrect =
+            selectedAnswer ===
+            currentQuestion.answer;
+
+
+        /* Reveal answer after selection */
+
+        for (
+            let i = 1;
+            i < currentQuestion.answer.length;
+            i++
+        ) {
+
+            const el =
+                document.getElementById(
+                    `blank-letter-${i}`
+                );
+
+
+            if (el) {
+
+                el.innerText =
+                    currentQuestion.answer
+                        .charAt(i);
+
+
+                el.className =
+                    isCorrect
+
+                        ? "w-10 h-12 text-2xl font-extrabold " +
+                          "bg-emerald-100 text-emerald-800 " +
+                          "border-2 border-emerald-300 rounded-xl " +
+                          "flex items-center justify-center uppercase"
+
+                        : "w-10 h-12 text-2xl font-extrabold " +
+                          "bg-rose-100 text-rose-800 " +
+                          "border-2 border-rose-300 rounded-xl " +
+                          "flex items-center justify-center uppercase";
+
+            }
+
+        }
+
+
+        const overlay =
+            document.getElementById(
+                'feedback-overlay'
+            );
+
+
+        const fIcon =
+            document.getElementById(
+                'feedback-icon'
+            );
+
+
+        const fTitle =
+            document.getElementById(
+                'feedback-title'
+            );
+
+
+        if (isCorrect) {
+
+            soundManager.correct();
+
+            this.currentScore += 10;
+
+            this.correctCount++;
+
+
+            chosenButtonElement.className =
+                "btn-bounce bg-emerald-500 " +
+                "text-white text-xl font-bold py-4 px-6 " +
+                "rounded-2xl border-2 border-emerald-400 " +
+                "custom-shadow border-b-6 text-center";
+
+
+            fIcon.innerText = "🎉";
+
+            fTitle.innerText =
+                "Wow, Correct!";
+
+            fTitle.className =
+                "text-3xl font-bold text-emerald-600";
+
+        }
+
+        else {
+
+            soundManager.wrong();
+
+
+            chosenButtonElement.className =
+                "btn-bounce bg-rose-500 text-white " +
+                "text-xl font-bold py-4 px-6 rounded-2xl " +
+                "border-2 border-rose-400 " +
+                "custom-shadow border-b-6 text-center";
+
+
+            fIcon.innerText = "💪";
+
+            fTitle.innerText =
+                "It's okay, try again!";
+
+            fTitle.className =
+                "text-3xl font-bold text-rose-500";
+
+        }
+
+
+        overlay.classList.remove('hidden');
+
+
+        setTimeout(() => {
+
+            overlay.classList.add('hidden');
+
+            this.advanceQuizFlowProgressState();
+
+        }, 1600);
+
+    },
+
+
+    handleQuestionTimeout() {
+
+        if (this.isDebouncing) return;
+
+        this.isDebouncing = true;
+
+        soundManager.timeout();
+
+
+        const questions =
+            QUESTION_BANK[this.currentTopic];
+
+
+        const currentQuestion =
+            questions[this.currentQuestionIndex];
+
+
+        /* Reveal answer */
+
+        for (
+            let i = 1;
+            i < currentQuestion.answer.length;
+            i++
+        ) {
+
+            const el =
+                document.getElementById(
+                    `blank-letter-${i}`
+                );
+
+
+            if (el) {
+
+                el.innerText =
+                    currentQuestion.answer
+                        .charAt(i);
+
+
+                el.className =
+                    "w-10 h-12 text-2xl font-bold " +
+                    "bg-amber-100 text-amber-800 " +
+                    "border-2 border-amber-200 rounded-xl " +
+                    "flex items-center justify-center uppercase";
+
+            }
+
+        }
+
+
+        const overlay =
+            document.getElementById(
+                'feedback-overlay'
+            );
+
+
+        const fIcon =
+            document.getElementById(
+                'feedback-icon'
+            );
+
+
+        const fTitle =
+            document.getElementById(
+                'feedback-title'
+            );
+
+
+        fIcon.innerText = "⏰";
+
+        fTitle.innerText =
+            "Oops, time's up!";
+
+        fTitle.className =
+            "text-3xl font-bold text-amber-600";
+
+
+        overlay.classList.remove('hidden');
+
+
+        setTimeout(() => {
+
+            overlay.classList.add('hidden');
+
+            this.advanceQuizFlowProgressState();
+
+        }, 1600);
+
+    },
+
+
+    advanceQuizFlowProgressState() {
+
+        this.currentQuestionIndex++;
+
+
+        if (
+            this.currentQuestionIndex < 5
+        ) {
+
+            this.loadQuestion();
+
+        }
+
+        else {
+
+            this.terminateAndEvaluateQuizSession();
+
+        }
+
+    },
+
+
+    terminateAndEvaluateQuizSession() {
+
+        clearInterval(
+            this.timerInterval
+        );
+
+
+        const finalPercentage =
+            Math.round(
+                (this.currentScore / 50) * 100
+            );
+
+
+        let starsEarned = 0;
+
+        let badgeTitle =
+            "Rising Star";
+
+
+        if (finalPercentage >= 90) {
+
+            starsEarned = 3;
+
+            badgeTitle =
+                "🏆 ENGLISH CHAMPION";
+
+        }
+
+        else if (finalPercentage >= 70) {
+
+            starsEarned = 2;
+
+            badgeTitle =
+                "🏅 EXPERT RIDER";
+
+        }
+
+        else if (finalPercentage >= 50) {
+
+            starsEarned = 1;
+
+            badgeTitle =
+                "⭐ WORD SCOUT";
+
+        }
+
+
+        const profile =
+            this.loadProfile();
+
+
+        const historicalRecord =
+            profile.topicsData[
+                this.currentTopic
+            ] || {
+                bestScore: 0,
+                stars: 0,
+                completed: false,
+                bestPercentage: 0
+            };
+
+
+        /* Only replace best score */
+
+        if (
+            this.currentScore >=
+            historicalRecord.bestScore
+        ) {
+
+            historicalRecord.bestScore =
+                this.currentScore;
+
+            historicalRecord.stars =
+                starsEarned;
+
+            historicalRecord.completed =
+                true;
+
+            historicalRecord.bestPercentage =
+                finalPercentage;
+
+
+            profile.topicsData[
+                this.currentTopic
+            ] =
+                historicalRecord;
+
+        }
+
+
+        /* Recalculate totals */
+
+        let totalPointsAggregator = 0;
+
+        let totalStarsAggregator = 0;
+
+
+        Object.keys(QUESTION_BANK)
+            .forEach(topic => {
+
+                if (
+                    profile.topicsData[topic] &&
+                    profile.topicsData[topic].completed
+                ) {
+
+                    totalPointsAggregator +=
+                        profile.topicsData[topic]
+                            .bestScore;
+
+                    totalStarsAggregator +=
+                        profile.topicsData[topic]
+                            .stars;
+
+                }
+
+            });
+
+
+        profile.totalAccumulatedPoints =
+            totalPointsAggregator;
+
+
+        profile.totalStars =
+            totalStarsAggregator;
+
+
+        this.saveProfile(profile);
+
+
+        /* Result screen */
+
+        document.getElementById(
+            'result-player-name'
+        ).innerText =
+            this.playerName ||
+            profile.playerName;
+
+
+        document.getElementById(
+            'result-score'
+        ).innerText =
+            `${this.currentScore} / 50`;
+
+
+        document.getElementById(
+            'result-correct-count'
+        ).innerText =
+            `${this.correctCount} / 5`;
+
+
+        document.getElementById(
+            'result-percentage'
+        ).innerText =
+            `${finalPercentage}%`;
+
+
+        document.getElementById(
+            'result-badge-title'
+        ).innerText =
+            badgeTitle;
+
+
+        const starsBox =
+            document.getElementById(
+                'result-stars-box'
+            );
+
+
+        starsBox.innerHTML = '';
+
+
+        for (
+            let s = 0;
+            s < starsEarned;
+            s++
+        ) {
+
+            starsBox.innerHTML += '⭐';
+
+        }
+
+
+        const certBtn =
+            document.getElementById(
+                'btn-view-certificate'
+            );
+
+
+        if (this.currentScore > 0) {
+
+            certBtn.classList.remove(
+                'opacity-50',
+                'pointer-events-none'
+            );
+
+        }
+
+        else {
+
+            certBtn.classList.add(
+                'opacity-50',
+                'pointer-events-none'
+            );
+
+        }
+
+
+        router.go('result');
+
+    },
+
+
+    retryCurrentTopic() {
+
+        this.startQuizTopic(
+            this.currentTopic
+        );
+
+    },
+
+
+    openCertificateView() {
+
+        const profile =
+            this.loadProfile();
+
+
+        const finalPercentage =
+            Math.round(
+                (this.currentScore / 50) * 100
+            );
+
+
+        let starsStr =
+            'No Stars';
+
+
+        if (finalPercentage >= 90) {
+
+            starsStr = "⭐⭐⭐";
+
+        }
+
+        else if (finalPercentage >= 70) {
+
+            starsStr = "⭐⭐";
+
+        }
+
+        else if (finalPercentage >= 50) {
+
+            starsStr = "⭐";
+
+        }
+
+
+        document.getElementById(
+            'cert-recipient-name'
+        ).innerText =
+            this.playerName ||
+            profile.playerName ||
+            "ENGLISH CHAMPION";
+
+
+        document.getElementById(
+            'cert-selected-topic'
+        ).innerText =
+            this.currentTopic;
+
+
+        document.getElementById(
+            'cert-points'
+        ).innerText =
+            `${this.currentScore} / 50`;
+
+
+        document.getElementById(
+            'cert-accuracy'
+        ).innerText =
+            `${finalPercentage}%`;
+
+
+        document.getElementById(
+            'cert-stars'
+        ).innerText =
+            starsStr;
+
+
+        /* DD-MM-YYYY */
+
+        const today =
+            new Date();
+
+
+        document.getElementById(
+            'cert-issue-date'
+        ).innerText =
+            `DATE: ${
+                String(today.getDate())
+                    .padStart(2, '0')
+            }-${
+                String(today.getMonth() + 1)
+                    .padStart(2, '0')
+            }-${
+                today.getFullYear()
+            }`;
+
+
+        router.go('certificate');
+
+    },
+
+
+    renderAchievementsView() {
+
+        const profile =
+            this.loadProfile();
+
+
+        let completedCount = 0;
+
+
+        Object.keys(QUESTION_BANK)
+            .forEach(topic => {
+
+                if (
+                    profile.topicsData[topic] &&
+                    profile.topicsData[topic].completed
+                ) {
+
+                    completedCount++;
+
+                }
+
+            });
+
+
+        document.getElementById(
+            'achieve-total-stars'
+        ).innerText =
+            profile.totalStars || 0;
+
+
+        document.getElementById(
+            'achieve-total-points'
+        ).innerText =
+            profile.totalAccumulatedPoints || 0;
+
+
+        document.getElementById(
+            'achieve-total-topics'
+        ).innerText =
+            `${completedCount} / 11`;
+
+
+        const listContainer =
+            document.getElementById(
+                'achievements-topic-list'
+            );
+
+
+        listContainer.innerHTML = '';
+
+
+        Object.keys(QUESTION_BANK)
+            .forEach(topic => {
+
+                const data =
+                    profile.topicsData[topic] || {
+                        bestScore: 0,
+                        stars: 0,
+                        completed: false,
+                        bestPercentage: 0
+                    };
+
+
+                const starsDisplay =
+                    data.completed
+                        ? (
+                            '⭐'.repeat(data.stars) ||
+                            'Passed'
+                        )
+                        : 'Locked';
+
+
+                const statusBadge =
+                    data.completed
+                        ? 'Finished'
+                        : 'Unplayed';
+
+
+                const row =
+                    document.createElement('div');
+
+
+                row.className =
+                    "bg-white p-4 rounded-xl " +
+                    "border border-slate-100 " +
+                    "flex justify-between " +
+                    "items-center shadow-sm";
+
+
+                row.innerHTML = `
+
+                    <div>
+
+                        <h5 class="font-bold text-slate-800 text-sm tracking-wide uppercase">
+                            ${topic}
+                        </h5>
+
+                        <p class="text-xs text-slate-400">
+                            Best Score:
+                            <span class="text-slate-700 font-semibold">
+                                ${data.bestScore}/50
+                            </span>
+                            (${data.bestPercentage}%)
+                        </p>
+
+                    </div>
+
+                    <div class="text-right">
+
+                        <div class="text-sm text-amber-500 font-bold">
+                            ${starsDisplay}
+                        </div>
+
+                        <div class="text-xs text-slate-400 font-semibold">
+                            ${statusBadge}
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                listContainer.appendChild(row);
+
+            });
+
+    }
+
+};
+
+
+/* =========================================================
+   PWA INSTALL
+========================================================= */
+
+window.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        gameState.syncGlobalHeaderState();
+
+
+        const installBtn =
+            document.getElementById(
+                'pwa-install-btn'
+            );
+
+
+        let promptRef = null;
+
+
+        window.addEventListener(
+            'beforeinstallprompt',
+            event => {
+
+                event.preventDefault();
+
+                promptRef = event;
+
+                installBtn.classList.remove(
+                    'hidden'
+                );
+
+                installBtn.classList.add(
+                    'flex'
+                );
+
+            }
+        );
+
+
+        installBtn.addEventListener(
+            'click',
+            async () => {
+
+                if (!promptRef) return;
+
+                promptRef.prompt();
+
+                await promptRef.userChoice;
+
+                promptRef = null;
+
+                installBtn.classList.add(
+                    'hidden'
+                );
+
+                installBtn.classList.remove(
+                    'flex'
+                );
+
+            }
+        );
+
+
+        /* Service Worker */
+
+        if (
+            'serviceWorker' in navigator
+        ) {
+
+            navigator.serviceWorker
+                .register('./sw.js')
+                .then(registration => {
+
+                    console.log(
+                        'PWA Service Worker berjaya didaftarkan!',
+                        registration.scope
+                    );
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        'Pendaftaran Service Worker gagal:',
+                        error
+                    );
+
+                });
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
