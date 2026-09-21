@@ -1,0 +1,4241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4A628A" />
+  <meta name="description" content="Let's Be An English Champion! - TZ EDU KIDS" />
+
+  <title>Let's Be An English Champion! - TZ EDU KIDS</title>
+
+  <link rel="manifest" href="./manifest.json" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      background: #fff8e7;
+      color: #334155;
+    }
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .neo {
+      border: 3px solid #334155;
+      box-shadow: 5px 5px 0 #334155;
+    }
+
+    .neo-sm {
+      border: 2px solid #334155;
+      box-shadow: 3px 3px 0 #334155;
+    }
+
+    .topic-card {
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .topic-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 #334155;
+    }
+
+    .topic-card:active {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0 #334155;
+    }
+
+    .letter-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #334155;
+      border-radius: 10px;
+      background: white;
+      font-weight: 700;
+      flex-shrink: 0;
+      text-align: center;
+      outline: none;
+      text-transform: uppercase;
+      transition: all 0.12s ease;
+    }
+
+    .letter-box:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px #fef3c7;
+      transform: translateY(-2px);
+    }
+
+    .letter-box.hint-letter {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #b45309;
+      cursor: default;
+    }
+
+    .letter-box.revealed-letter {
+      background: #f1f5f9;
+      color: #334155;
+      cursor: default;
+    }
+
+    .answer-area {
+      min-height: 75px;
+    }
+
+    .correct-flash {
+      animation: correctFlash 0.5s ease;
+    }
+
+    .wrong-flash {
+      animation: wrongFlash 0.5s ease;
+    }
+
+    @keyframes correctFlash {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes wrongFlash {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-7px); }
+      50% { transform: translateX(7px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    .progress-fill {
+      transition: width 0.3s ease;
+    }
+
+    .certificate {
+      background: #fffdf5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .certificate::before,
+    .certificate::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      opacity: 0.12;
+    }
+
+    .certificate::before {
+      background: #ffcc33;
+      top: -50px;
+      left: -50px;
+    }
+
+    .certificate::after {
+      background: #7c83fd;
+      bottom: -50px;
+      right: -50px;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #certificate-screen,
+      #certificate-screen * {
+        visibility: visible;
+      }
+
+      #certificate-screen {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-b-2 border-slate-700">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+
+      <button onclick="router.go('home')" class="font-bold text-slate-700">
+        🏆 ENGLISH CHAMPION
+      </button>
+
+      <div class="flex items-center gap-2">
+
+        <span id="header-player-name"
+              class="hidden sm:inline text-sm font-semibold text-slate-500">
+        </span>
+
+        <button
+          id="sound-toggle"
+          onclick="soundManager.toggleMute()"
+          class="neo-sm bg-yellow-300 w-10 h-10 rounded-xl text-lg"
+          aria-label="Toggle sound">
+          🔊
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+
+  <!-- HOME -->
+  <section id="home-screen" class="screen active min-h-screen pt-24 pb-10 px-4 items-center justify-center">
+
+    <div class="w-full max-w-3xl text-center">
+
+      <div class="text-7xl mb-5">🏆</div>
+
+      <h1 class="text-4xl sm:text-6xl font-bold text-slate-800 leading-tight">
+        LET'S BE AN<br>
+        <span class="text-indigo-600">ENGLISH CHAMPION!</span>
+      </h1>
+
+      <p class="mt-5 text-lg sm:text-xl text-slate-600">
+        Learn English. Complete the words. Become a Champion! 🚀
+      </p>
+
+      <div class="mt-10 max-w-md mx-auto space-y-5">
+
+        <button
+          onclick="gameState.startGame()"
+          class="neo w-full bg-yellow-300 hover:bg-yellow-400 rounded-2xl px-6 py-5 text-2xl font-bold">
+          🚀 LET'S PLAY!
+        </button>
+
+        <button
+          onclick="router.go('achievements')"
+          class="neo w-full bg-white hover:bg-slate-50 rounded-2xl px-6 py-4 text-xl font-bold">
+          🏆 MY SCORE
+        </button>
+
+      </div>
+
+      <p class="mt-8 text-sm text-slate-400">
+        TZ EDU KIDS
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- NAME SCREEN -->
+  <section id="name-screen" class="screen min-h-screen pt-24 pb-10 px-4 items-center justify-center">
+
+    <div class="w-full max-w-lg text-center">
+
+      <div class="text-6xl mb-5">👋</div>
+
+      <div class="neo bg-white rounded-3xl p-7 sm:p-10">
+
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-800">
+          Welcome, English Champion! 👑
+        </h2>
+
+        <p class="mt-4 text-lg text-slate-500">
+          What's your name?
+        </p>
+
+        <input
+          id="player-name-input"
+          type="text"
+          maxlength="30"
+          placeholder="NAME"
+          class="mt-7 w-full border-3 border-slate-700 rounded-2xl px-5 py-4 text-xl text-center font-bold outline-none focus:ring-4 focus:ring-yellow-200"
+          onkeydown="if(event.key==='Enter') gameState.saveName()"
+        />
+
+        <button
+          onclick="gameState.saveName()"
+          class="neo w-full mt-5 bg-yellow-300 hover:bg-yellow-400 rounded-2xl px-5 py-4 text-xl font-bold">
+          CONTINUE 🚀
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- TOPICS -->
+  <section id="topics-screen" class="screen min-h-screen pt-24 pb-10 px-4">
+
+    <div class="w-full max-w-5xl mx-auto">
+
+      <div class="text-center mb-8">
+
+        <p class="text-indigo-500 font-bold">
+          HELLO, <span id="topics-player-name"></span>! 👋
+        </p>
+
+        <h2 class="text-4xl sm:text-5xl font-bold text-slate-800 mt-2">
+          CHOOSE A TOPIC
+        </h2>
+
+        <p class="text-slate-500 mt-3">
+          10 questions in every topic • 100 points
+        </p>
+
+      </div>
+
+      <div
+        id="topic-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      </div>
+
+      <div class="text-center mt-8">
+
+        <button
+          onclick="router.go('home')"
+          class="neo-sm bg-white rounded-xl px-6 py-3 font-bold">
+          ← BACK HOME
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- QUIZ -->
+  <section id="quiz-screen" class="screen min-h-screen pt-24 pb-10 px-4">
+
+    <div class="w-full max-w-3xl mx-auto">
+
+      <!-- Quiz header -->
+      <div class="flex items-center justify-between gap-3 mb-4">
+
+        <button
+          onclick="gameState.confirmQuitQuiz()"
+          class="neo-sm bg-white rounded-xl px-4 py-2 font-bold text-sm">
+          ← EXIT
+        </button>
+
+        <div class="text-center flex-1">
+
+          <p id="quiz-topic-label"
+             class="font-bold text-indigo-600">
+          </p>
+
+          <p id="quiz-question-counter"
+             class="text-sm text-slate-500 font-semibold">
+            QUESTION 1 / 10
+          </p>
+
+        </div>
+
+        <div
+          id="quiz-score"
+          class="neo-sm bg-yellow-300 rounded-xl px-4 py-2 font-bold whitespace-nowrap">
+          0 POINTS
+        </div>
+
+      </div>
+
+
+      <!-- Progress -->
+      <div class="w-full h-4 bg-white border-2 border-slate-700 rounded-full overflow-hidden mb-6">
+
+        <div
+          id="quiz-progress"
+          class="progress-fill h-full bg-indigo-400"
+          style="width: 10%;">
+        </div>
+
+      </div>
+
+
+      <!-- Timer -->
+      <div class="flex justify-center mb-5">
+
+        <div
+          id="quiz-timer"
+          class="neo-sm bg-white rounded-full px-5 py-2 text-xl font-bold">
+          ⏱️ 60
+        </div>
+
+      </div>
+
+
+      <!-- Question Card -->
+      <div
+        id="quiz-card"
+        class="neo bg-white rounded-3xl p-5 sm:p-8">
+
+        <div class="text-center">
+
+          <div
+            id="quiz-visual"
+            class="text-6xl sm:text-7xl mb-5">
+            🔤
+          </div>
+
+          <p
+            id="quiz-description"
+            class="text-lg sm:text-xl text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto">
+          </p>
+
+
+          <!-- WORD / LETTER BOXES -->
+          <div
+            id="quiz-word"
+            class="mt-7 min-h-[70px] flex flex-wrap justify-center items-center gap-2">
+          </div>
+
+
+          <!-- HINT -->
+          <div
+            id="quiz-hint"
+            class="mt-5 inline-block bg-yellow-100 border-2 border-yellow-300 rounded-xl px-4 py-2 font-bold text-yellow-800">
+          </div>
+
+        </div>
+
+
+        <!-- TYPE LETTERS -->
+        <div
+          id="quiz-answer-area"
+          class="w-full mt-7 answer-area">
+
+          <p class="text-center text-slate-500 font-semibold mb-4">
+            Type the missing letters:
+          </p>
+
+          <div
+            id="letter-input-message"
+            class="text-center text-sm text-rose-500 font-semibold mb-2 min-h-[20px]">
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- FEEDBACK OVERLAY -->
+  <div
+    id="feedback-overlay"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 px-5">
+
+    <div
+      id="feedback-card"
+      class="neo bg-white rounded-3xl p-8 text-center max-w-sm w-full">
+
+      <div
+        id="feedback-icon"
+        class="text-6xl mb-4">
+        🎉
+      </div>
+
+      <h2
+        id="feedback-title"
+        class="text-3xl font-bold text-slate-800">
+        Correct!
+      </h2>
+
+      <p
+        id="feedback-answer"
+        class="mt-3 text-lg text-slate-500">
+      </p>
+
+    </div>
+  </div>
+
+
+  <!-- RESULT -->
+  <section id="result-screen" class="screen min-h-screen pt-24 pb-10 px-4 items-center justify-center">
+
+    <div class="w-full max-w-lg text-center">
+
+      <div class="text-6xl mb-3">🎉</div>
+
+      <h2 class="text-4xl sm:text-5xl font-bold text-slate-800">
+        GREAT JOB!
+      </h2>
+
+      <p class="mt-2 text-slate-500">
+        <span id="result-player-name"></span> completed the topic!
+      </p>
+
+
+      <div class="neo bg-white rounded-3xl p-7 mt-7">
+
+        <div
+          id="result-topic"
+          class="text-xl font-bold text-indigo-600">
+        </div>
+
+        <div
+          id="result-stars"
+          class="text-5xl mt-4">
+        </div>
+
+
+        <div class="mt-6 grid grid-cols-2 gap-4">
+
+          <div class="neo-sm bg-yellow-100 rounded-2xl p-4">
+
+            <div
+              id="result-score"
+              class="text-4xl font-bold text-slate-800">
+              0
+            </div>
+
+            <div class="text-sm font-bold text-slate-500">
+              / 100 POINTS
+            </div>
+
+          </div>
+
+
+          <div class="neo-sm bg-indigo-100 rounded-2xl p-4">
+
+            <div
+              id="result-correct"
+              class="text-4xl font-bold text-slate-800">
+              0
+            </div>
+
+            <div class="text-sm font-bold text-slate-500">
+              / 10 CORRECT
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="result-percentage"
+          class="mt-5 text-2xl font-bold text-slate-700">
+          0%
+        </div>
+
+      </div>
+
+
+      <div class="mt-6 space-y-3">
+
+        <button
+          id="btn-retry-wrong"
+          onclick="gameState.retryWrongQuestions()"
+          class="hidden neo w-full bg-orange-300 hover:bg-orange-400 rounded-2xl px-5 py-4 font-bold text-lg">
+          🔁 TRY WRONG QUESTIONS AGAIN
+        </button>
+
+        <button
+          onclick="gameState.retryCurrentTopic()"
+          class="neo w-full bg-yellow-300 hover:bg-yellow-400 rounded-2xl px-5 py-4 font-bold text-lg">
+          🔄 PLAY AGAIN
+        </button>
+
+        <button
+          onclick="router.go('topics')"
+          class="neo w-full bg-white rounded-2xl px-5 py-4 font-bold text-lg">
+          📚 CHOOSE ANOTHER TOPIC
+        </button>
+
+        <button
+          id="btn-certificate"
+          onclick="gameState.openCertificateView()"
+          class="neo w-full bg-indigo-300 hover:bg-indigo-400 rounded-2xl px-5 py-4 font-bold text-lg">
+          📜 VIEW CERTIFICATE
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- MY SCORE -->
+  <section id="achievements-screen" class="screen min-h-screen pt-24 pb-10 px-4">
+
+    <div class="w-full max-w-4xl mx-auto">
+
+      <div class="text-center mb-8">
+
+        <div class="text-6xl">🏆</div>
+
+        <h2 class="text-4xl sm:text-5xl font-bold text-slate-800 mt-3">
+          MY SCORE
+        </h2>
+
+        <p
+          id="achievement-player-name"
+          class="text-slate-500 mt-2">
+        </p>
+
+      </div>
+
+
+      <div
+        id="achievement-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      </div>
+
+
+      <div class="text-center mt-8">
+
+        <button
+          onclick="router.go('topics')"
+          class="neo bg-yellow-300 rounded-2xl px-7 py-4 font-bold text-lg">
+          🚀 PLAY NOW
+        </button>
+
+        <button
+          onclick="router.go('home')"
+          class="neo-sm bg-white rounded-xl px-6 py-3 font-bold ml-2">
+          HOME
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- CERTIFICATE -->
+  <section id="certificate-screen" class="screen min-h-screen pt-24 pb-10 px-4 items-center justify-center">
+
+    <div class="w-full max-w-4xl">
+
+      <div
+        class="certificate neo rounded-3xl p-7 sm:p-12 text-center">
+
+        <div class="relative z-10">
+
+          <div class="text-6xl mb-4">🏆</div>
+
+          <p class="text-indigo-500 font-bold tracking-widest">
+            TZ EDU KIDS PRESENTS
+          </p>
+
+          <h1 class="text-4xl sm:text-6xl font-bold text-slate-800 mt-4">
+            ENGLISH CHAMPION
+          </h1>
+
+          <p class="text-xl text-slate-500 mt-6">
+            This certificate is proudly presented to
+          </p>
+
+          <div
+            id="certificate-name"
+            class="text-4xl sm:text-5xl font-bold text-indigo-600 mt-4">
+          </div>
+
+          <p class="text-xl text-slate-500 mt-7">
+            for completing
+          </p>
+
+          <div class="text-2xl sm:text-3xl font-bold text-slate-800 mt-3">
+            WORD COMPLETION
+          </div>
+
+          <div
+            id="certificate-score"
+            class="text-3xl font-bold text-yellow-600 mt-6">
+          </div>
+
+          <div
+            id="certificate-topic"
+            class="text-lg text-slate-500 mt-2">
+          </div>
+
+          <div class="flex justify-center gap-2 text-3xl mt-7">
+            ⭐ ⭐ ⭐
+          </div>
+
+          <p class="mt-7 text-slate-400">
+            Keep learning. Keep practising. Keep becoming an English Champion! 💪
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="no-print flex flex-col sm:flex-row gap-3 justify-center mt-6">
+
+        <button
+          onclick="window.print()"
+          class="neo bg-yellow-300 rounded-2xl px-7 py-4 font-bold">
+          🖨️ PRINT CERTIFICATE
+        </button>
+
+        <button
+          onclick="router.go('result')"
+          class="neo-sm bg-white rounded-xl px-6 py-4 font-bold">
+          ← BACK TO RESULT
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+
+<script>
+
+/* =========================================================
+   SOUND MANAGER
+========================================================= */
+
+const soundManager = {
+
+  muted: false,
+  audioContext: null,
+  musicTimer: null,
+  musicStep: 0,
+
+  init() {
+
+    const savedMute =
+      localStorage.getItem('englishChampionMuted');
+
+    if (savedMute === 'true') {
+      this.muted = true;
+    }
+
+    this.updateButton();
+  },
+
+
+  ensureAudio() {
+
+    if (this.muted) return;
+
+    if (!this.audioContext) {
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if (!AudioContext) return;
+
+      this.audioContext =
+        new AudioContext();
+    }
+
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
+
+    this.startMusic();
+  },
+
+
+  playTone(
+    frequency,
+    duration = 0.15,
+    type = 'sine',
+    volume = 0.05
+  ) {
+
+    if (this.muted) return;
+
+    if (!this.audioContext) return;
+
+    const ctx =
+      this.audioContext;
+
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(
+      volume,
+      ctx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      ctx.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+      ctx.currentTime + duration
+    );
+  },
+
+
+  correct() {
+
+    if (this.muted) return;
+
+    this.playTone(
+      523.25,
+      0.10,
+      'triangle',
+      0.06
+    );
+
+    setTimeout(() => {
+
+      this.playTone(
+        659.25,
+        0.10,
+        'triangle',
+        0.06
+      );
+
+    }, 90);
+
+
+    setTimeout(() => {
+
+      this.playTone(
+        783.99,
+        0.18,
+        'triangle',
+        0.065
+      );
+
+    }, 180);
+  },
+
+
+  wrong() {
+
+    if (this.muted) return;
+
+    this.playTone(
+      330,
+      0.12,
+      'triangle',
+      0.035
+    );
+
+    setTimeout(() => {
+
+      this.playTone(
+        277.18,
+        0.18,
+        'triangle',
+        0.03
+      );
+
+    }, 100);
+  },
+
+
+  timeout() {
+
+    if (this.muted) return;
+
+    this.playTone(
+      392,
+      0.15,
+      'triangle',
+      0.04
+    );
+
+    setTimeout(() => {
+
+      this.playTone(
+        329.63,
+        0.20,
+        'triangle',
+        0.035
+      );
+
+    }, 130);
+  },
+
+
+  click() {
+
+    if (this.muted) return;
+
+    this.playTone(
+      587.33,
+      0.06,
+      'triangle',
+      0.025
+    );
+  },
+
+
+  startMusic() {
+
+    if (this.muted || this.musicTimer) return;
+
+    if (!this.audioContext) return;
+
+
+    const melody = [
+
+      523.25,
+      659.25,
+      783.99,
+      659.25,
+
+      587.33,
+      698.46,
+      880.00,
+      698.46,
+
+      523.25,
+      659.25,
+      783.99,
+      987.77,
+
+      880.00,
+      783.99,
+      659.25,
+      587.33
+
+    ];
+
+
+    const bass = [
+
+      261.63,
+      261.63,
+      293.66,
+      293.66,
+
+      329.63,
+      329.63,
+      392.00,
+      392.00
+
+    ];
+
+
+    this.musicTimer =
+      setInterval(() => {
+
+        if (
+          this.muted ||
+          !this.audioContext
+        ) return;
+
+
+        const ctx =
+          this.audioContext;
+
+
+        const melodyFrequency =
+          melody[
+            this.musicStep %
+            melody.length
+          ];
+
+
+        const bassFrequency =
+          bass[
+            this.musicStep %
+            bass.length
+          ];
+
+
+        const melodyOsc =
+          ctx.createOscillator();
+
+        const melodyGain =
+          ctx.createGain();
+
+
+        melodyOsc.type =
+          'triangle';
+
+        melodyOsc.frequency.value =
+          melodyFrequency;
+
+
+        melodyGain.gain.setValueAtTime(
+          0.018,
+          ctx.currentTime
+        );
+
+
+        melodyGain.gain.exponentialRampToValueAtTime(
+          0.001,
+          ctx.currentTime + 0.30
+        );
+
+
+        melodyOsc.connect(
+          melodyGain
+        );
+
+        melodyGain.connect(
+          ctx.destination
+        );
+
+
+        melodyOsc.start();
+
+        melodyOsc.stop(
+          ctx.currentTime + 0.30
+        );
+
+
+        const bassOsc =
+          ctx.createOscillator();
+
+        const bassGain =
+          ctx.createGain();
+
+
+        bassOsc.type =
+          'sine';
+
+        bassOsc.frequency.value =
+          bassFrequency;
+
+
+        bassGain.gain.setValueAtTime(
+          0.010,
+          ctx.currentTime
+        );
+
+
+        bassGain.gain.exponentialRampToValueAtTime(
+          0.001,
+          ctx.currentTime + 0.32
+        );
+
+
+        bassOsc.connect(
+          bassGain
+        );
+
+        bassGain.connect(
+          ctx.destination
+        );
+
+
+        bassOsc.start();
+
+        bassOsc.stop(
+          ctx.currentTime + 0.32
+        );
+
+
+        this.musicStep++;
+
+      }, 360);
+  },
+
+
+  stopMusic() {
+
+    if (this.musicTimer) {
+
+      clearInterval(
+        this.musicTimer
+      );
+
+      this.musicTimer = null;
+    }
+  },
+
+
+  toggleMute() {
+
+    this.muted = !this.muted;
+
+    localStorage.setItem(
+      'englishChampionMuted',
+      this.muted
+        ? 'true'
+        : 'false'
+    );
+
+
+    if (this.muted) {
+
+      this.stopMusic();
+
+    } else {
+
+      this.ensureAudio();
+
+    }
+
+
+    this.updateButton();
+  },
+
+
+  updateButton() {
+
+    const button =
+      document.getElementById(
+        'sound-toggle'
+      );
+
+    if (!button) return;
+
+    button.textContent =
+      this.muted
+        ? '🔇'
+        : '🔊';
+  }
+
+};
+
+
+/* =========================================================
+   QUESTION BANK
+========================================================= */
+
+const QUESTION_BANK = {
+
+  PEOPLE: {
+    emoji: "👨‍👩‍👧‍👦",
+    color: "bg-pink-100",
+
+    questions: [
+
+      {
+        answer: "PARENTS",
+        visual: "👨‍👩‍👧",
+        description: "The people who are your mother and father."
+      },
+
+      {
+        answer: "UNCLE",
+        visual: "👨",
+        description: "Your mother's or father's brother."
+      },
+
+      {
+        answer: "AUNT",
+        visual: "👩",
+        description: "Your mother's or father's sister."
+      },
+
+      {
+        answer: "COUSIN",
+        visual: "🧒",
+        description: "A child of your aunt or uncle."
+      },
+
+      {
+        answer: "NEIGHBOUR",
+        visual: "🏘️",
+        description: "A person who lives near your home."
+      },
+
+      {
+        answer: "FARMER",
+        visual: "👨‍🌾",
+        description: "A person who grows crops or looks after farm animals."
+      },
+
+      {
+        answer: "PHOTOGRAPHER",
+        visual: "📷",
+        description: "A person who takes photos."
+      },
+
+      {
+        answer: "FIREFIGHTER",
+        visual: "👨‍🚒",
+        description: "A person who puts out fires and helps people in danger."
+      },
+
+      {
+        answer: "LIFEGUARD",
+        visual: "🛟",
+        description: "A person who watches swimmers and keeps them safe."
+      },
+
+      {
+        answer: "DENTIST",
+        visual: "🦷",
+        description: "A person who checks and takes care of your teeth."
+      }
+
+    ]
+  },
+
+
+  SCHOOL: {
+    emoji: "🏫",
+    color: "bg-blue-100",
+
+    questions: [
+
+      {
+        answer: "PUPIL",
+        visual: "🎒",
+        description: "A child who learns at school."
+      },
+
+      {
+        answer: "HOMEWORK",
+        visual: "📖",
+        description: "Work a teacher asks you to do at home."
+      },
+
+      {
+        answer: "CANTEEN",
+        visual: "🍽️",
+        description: "A place at school where pupils buy and eat food."
+      },
+
+      {
+        answer: "TEACHER",
+        visual: "🧑‍🏫",
+        description: "A person who teaches pupils."
+      },
+
+      {
+        answer: "NOTEBOOK",
+        visual: "📓",
+        description: "A book with blank or lined pages for writing."
+      },
+
+      {
+        answer: "SUBJECT",
+        visual: "📚",
+        description: "An area you learn at school, such as English or Maths."
+      },
+
+      {
+        answer: "TIMETABLE",
+        visual: "🗓️",
+        description: "A plan that shows your school lessons and times."
+      },
+
+      {
+        answer: "RULER",
+        visual: "📏",
+        description: "A tool used to measure length and draw straight lines."
+      },
+
+      {
+        answer: "RUBBER",
+        visual: "🧽",
+        description: "An object used to erase pencil marks."
+      },
+
+      {
+        answer: "SHARPENER",
+        visual: "✏️",
+        description: "A tool used to make a pencil point sharp."
+      }
+
+    ]
+  },
+
+
+  HOME: {
+    emoji: "🏠",
+    color: "bg-green-100",
+
+    questions: [
+
+      {
+        answer: "HOUSE",
+        visual: "🏠",
+        description: "A building where people live."
+      },
+
+      {
+        answer: "BEDROOM",
+        visual: "🛏️",
+        description: "A room where you sleep."
+      },
+
+      {
+        answer: "BATHROOM",
+        visual: "🛁",
+        description: "A room where you wash or take a bath."
+      },
+
+      {
+        answer: "KITCHEN",
+        visual: "🍳",
+        description: "A room where food is prepared and cooked."
+      },
+
+      {
+        answer: "LIVINGROOM",
+        visual: "🛋️",
+        description: "A room where family members sit and relax."
+      },
+
+      {
+        answer: "UPSTAIR",
+        visual: "⬆️",
+        description: "The word used for moving to a floor above."
+      },
+
+      {
+        answer: "FLOOR",
+        visual: "🪵",
+        description: "The surface you walk on inside a room."
+      },
+
+      {
+        answer: "FRIDGE",
+        visual: "🧊",
+        description: "An appliance that keeps food and drinks cold."
+      },
+
+      {
+        answer: "HALL",
+        visual: "🚪",
+        description: "A passage or entrance area inside a house."
+      },
+
+      {
+        answer: "CUSHION",
+        visual: "🛋️",
+        description: "A soft item placed on a sofa or chair for comfort."
+      }
+
+    ]
+  },
+
+
+  FOOD: {
+    emoji: "🍎",
+    color: "bg-orange-100",
+
+    questions: [
+
+      {
+        answer: "BREAKFAST",
+        visual: "🍳",
+        description: "The meal you eat in the morning."
+      },
+
+      {
+        answer: "LUNCH",
+        visual: "🍱",
+        description: "The meal you usually eat in the middle of the day."
+      },
+
+      {
+        answer: "DINNER",
+        visual: "🍽️",
+        description: "The main meal you usually eat in the evening."
+      },
+
+      {
+        answer: "BREAD",
+        visual: "🍞",
+        description: "A baked food often eaten with butter or used in sandwiches."
+      },
+
+      {
+        answer: "THIRSTY",
+        visual: "🥤",
+        description: "When you need or want a drink."
+      },
+
+      {
+        answer: "LETTUCE",
+        visual: "🥬",
+        description: "A green leafy vegetable often used in salads."
+      },
+
+      {
+        answer: "BISCUITS",
+        visual: "🍪",
+        description: "Small baked snacks that are often crisp and sweet."
+      },
+
+      {
+        answer: "DESSERT",
+        visual: "🍰",
+        description: "A sweet food usually eaten after a meal."
+      },
+
+      {
+        answer: "FLOUR",
+        visual: "🌾",
+        description: "A powder used to make bread, cakes and other foods."
+      },
+
+      {
+        answer: "OMELETTE",
+        visual: "🍳",
+        description: "A dish made by cooking beaten eggs."
+      }
+
+    ]
+  },
+
+
+  CLOTHES: {
+    emoji: "👕",
+    color: "bg-purple-100",
+
+    questions: [
+
+      {
+        answer: "SOCKS",
+        visual: "🧦",
+        description: "Clothes worn on your feet, usually inside shoes."
+      },
+
+      {
+        answer: "HAT",
+        visual: "🎩",
+        description: "A piece of clothing worn on the head."
+      },
+
+      {
+        answer: "SHOES",
+        visual: "👟",
+        description: "Footwear worn to protect your feet."
+      },
+
+      {
+        answer: "SKIRT",
+        visual: "👗",
+        description: "Clothing worn around the waist that hangs down over the legs."
+      },
+
+      {
+        answer: "SWEATER",
+        visual: "🧥",
+        description: "A warm knitted top worn when it is cold."
+      },
+
+      {
+        answer: "SHIRT",
+        visual: "👕",
+        description: "A piece of clothing worn on the upper body."
+      },
+
+      {
+        answer: "DRESS",
+        visual: "👗",
+        description: "A one-piece piece of clothing usually worn by girls or women."
+      },
+
+      {
+        answer: "CAP",
+        visual: "🧢",
+        description: "A soft hat with a front peak."
+      },
+
+      {
+        answer: "TROUSERS",
+        visual: "👖",
+        description: "Clothing that covers both legs."
+      },
+
+      {
+        answer: "JACKET",
+        visual: "🧥",
+        description: "A short coat worn over other clothes."
+      }
+
+    ]
+  },
+
+
+  ANIMALS: {
+    emoji: "🐶",
+    color: "bg-yellow-100",
+
+    questions: [
+
+      {
+        answer: "WILD",
+        visual: "🦁",
+        description: "This word describes animals that live in nature, not as pets."
+      },
+
+      {
+        answer: "TIGER",
+        visual: "🐯",
+        description: "A large wild cat with black stripes."
+      },
+
+      {
+        answer: "ELEPHANT",
+        visual: "🐘",
+        description: "A very large animal with a trunk."
+      },
+
+      {
+        answer: "HORSE",
+        visual: "🐴",
+        description: "A large animal that people can ride."
+      },
+
+      {
+        answer: "MOUSE",
+        visual: "🐭",
+        description: "A small animal with a long tail."
+      },
+
+      {
+        answer: "GOAT",
+        visual: "🐐",
+        description: "A farm animal that can climb and gives milk."
+      },
+
+      {
+        answer: "DOLPHIN",
+        visual: "🐬",
+        description: "A smart sea animal that swims and jumps."
+      },
+
+      {
+        answer: "SHARK",
+        visual: "🦈",
+        description: "A large sea animal with sharp teeth."
+      },
+
+      {
+        answer: "WHALE",
+        visual: "🐋",
+        description: "A huge animal that lives in the ocean."
+      },
+
+      {
+        answer: "WOLF",
+        visual: "🐺",
+        description: "A wild animal that looks like a large dog."
+      }
+
+    ]
+  },
+
+
+  NATURE: {
+    emoji: "☀️",
+    color: "bg-cyan-100",
+
+    questions: [
+
+      {
+        answer: "CLOUDY",
+        visual: "☁️",
+        description: "Having many clouds in the sky."
+      },
+
+      {
+        answer: "RIVER",
+        visual: "🏞️",
+        description: "A long natural stream of water that flows across land."
+      },
+
+      {
+        answer: "MOUNTAIN",
+        visual: "🏔️",
+        description: "A very high area of land with steep sides."
+      },
+
+      {
+        answer: "BEACH",
+        visual: "🏖️",
+        description: "A sandy or pebbly place beside the sea."
+      },
+
+      {
+        answer: "FOREST",
+        visual: "🌲",
+        description: "A large area filled with many trees."
+      },
+
+      {
+        answer: "ISLAND",
+        visual: "🏝️",
+        description: "A piece of land surrounded by water."
+      },
+
+      {
+        answer: "PLANET",
+        visual: "🪐",
+        description: "A large round object that moves around a star."
+      },
+
+      {
+        answer: "AUTUMN",
+        visual: "🍂",
+        description: "The season when many leaves change colour and fall."
+      },
+
+      {
+        answer: "WINTER",
+        visual: "❄️",
+        description: "The coldest season of the year."
+      },
+
+      {
+        answer: "SPRING",
+        visual: "🌸",
+        description: "The season when many plants begin to grow and flowers appear."
+      }
+
+    ]
+  },
+
+
+  PLACES: {
+    emoji: "📍",
+    color: "bg-red-100",
+
+    questions: [
+
+      {
+        answer: "PARK",
+        visual: "🛝",
+        description: "A public place where people can walk, play or relax."
+      },
+
+      {
+        answer: "LIBRARY",
+        visual: "📚",
+        description: "A place where people can read or borrow books."
+      },
+
+      {
+        answer: "CINEMA",
+        visual: "🎬",
+        description: "A place where people watch films on a big screen."
+      },
+
+      {
+        answer: "SHOP",
+        visual: "🛍️",
+        description: "A place where people buy things."
+      },
+
+      {
+        answer: "MUSEUM",
+        visual: "🏛️",
+        description: "A place where people see interesting objects and learn about history or art."
+      },
+
+      {
+        answer: "SWIMMING POOL",
+        visual: "🏊",
+        description: "A place with a pool where people swim."
+      },
+
+      {
+        answer: "RESTAURANT",
+        visual: "🍽️",
+        description: "A place where people go to eat meals."
+      },
+
+      {
+        answer: "MOSQUE",
+        visual: "🕌",
+        description: "A place where Muslims go to pray."
+      },
+
+      {
+        answer: "POST OFFICE",
+        visual: "📮",
+        description: "A place where people send letters and parcels."
+      },
+
+      {
+        answer: "CIRCUS",
+        visual: "🎪",
+        description: "A place or show with performers, animals and exciting acts."
+      }
+
+    ]
+  },
+
+
+  TRANSPORT: {
+    emoji: "🚌",
+    color: "bg-teal-100",
+
+    questions: [
+
+      {
+        answer: "BUS",
+        visual: "🚌",
+        description: "A large vehicle that carries many passengers."
+      },
+
+      {
+        answer: "TRAIN",
+        visual: "🚆",
+        description: "A vehicle that travels on railway tracks."
+      },
+
+      {
+        answer: "BOAT",
+        visual: "🚤",
+        description: "A vehicle that travels on water."
+      },
+
+      {
+        answer: "LORRY",
+        visual: "🚚",
+        description: "A large road vehicle used to carry goods."
+      },
+
+      {
+        answer: "BICYCLE",
+        visual: "🚲",
+        description: "A two-wheeled vehicle moved by pedals."
+      },
+
+      {
+        answer: "MOTORCYCLE",
+        visual: "🏍️",
+        description: "A two-wheeled motor vehicle."
+      },
+
+      {
+        answer: "AEROPLANE",
+        visual: "✈️",
+        description: "A vehicle that flies in the sky."
+      },
+
+      {
+        answer: "SCOOTER",
+        visual: "🛴",
+        description: "A small two-wheeled vehicle you can ride standing up."
+      },
+
+      {
+        answer: "SKATEBOARD",
+        visual: "🛹",
+        description: "A board with wheels that you ride while standing on it."
+      },
+
+      {
+        answer: "HELICOPTER",
+        visual: "🚁",
+        description: "An aircraft with blades that can fly up and down."
+      }
+
+    ]
+  },
+
+
+  VERBS: {
+    emoji: "🏃",
+    color: "bg-lime-100",
+
+    questions: [
+
+      {
+        answer: "READ",
+        visual: "📖",
+        description: "Look at words and understand what they say."
+      },
+
+      {
+        answer: "WASH",
+        visual: "🧼",
+        description: "Clean something with water and often soap."
+      },
+
+      {
+        answer: "SWIM",
+        visual: "🏊",
+        description: "Move through water using your arms and legs."
+      },
+
+      {
+        answer: "SLEEP",
+        visual: "😴",
+        description: "Rest your body with your eyes closed."
+      },
+
+      {
+        answer: "WRITE",
+        visual: "✍️",
+        description: "Make letters or words with a pen or pencil."
+      },
+
+      {
+        answer: "LISTEN",
+        visual: "👂",
+        description: "Pay attention to a sound or what someone says."
+      },
+
+      {
+        answer: "SPEAK",
+        visual: "🗣️",
+        description: "Use your voice to say words."
+      },
+
+      {
+        answer: "CLEAN",
+        visual: "🧹",
+        description: "Make something free from dirt."
+      },
+
+      {
+        answer: "MAKE",
+        visual: "🛠️",
+        description: "Create or produce something."
+      },
+
+      {
+        answer: "STUDY",
+        visual: "📚",
+        description: "Spend time learning about a subject."
+      }
+
+    ]
+  },
+
+
+  ADJECTIVES: {
+    emoji: "🎨",
+    color: "bg-fuchsia-100",
+
+    questions: [
+
+      {
+        answer: "DIRTY",
+        visual: "🟤",
+        description: "Not clean."
+      },
+
+      {
+        answer: "SCARY",
+        visual: "😱",
+        description: "Making you feel afraid."
+      },
+
+      {
+        answer: "ANGRY",
+        visual: "😠",
+        description: "Feeling mad because something is wrong or unfair."
+      },
+
+      {
+        answer: "TIRED",
+        visual: "😴",
+        description: "Needing rest after doing something."
+      },
+
+      {
+        answer: "HUNGRY",
+        visual: "🤤",
+        description: "Wanting or needing food."
+      },
+
+      {
+        answer: "YOUNG",
+        visual: "👶",
+        description: "Not old."
+      },
+
+      {
+        answer: "BORING",
+        visual: "😑",
+        description: "Not interesting or exciting."
+      },
+
+      {
+        answer: "NOISY",
+        visual: "📢",
+        description: "Making a lot of sound."
+      },
+
+      {
+        answer: "DELICIOUS",
+        visual: "😋",
+        description: "Tasting very good."
+      },
+
+      {
+        answer: "FUNNY",
+        visual: "😂",
+        description: "Making you laugh or smile."
+      }
+
+    ]
+  }
+
+};
+
+
+/* =========================================================
+   TOPIC INFORMATION
+========================================================= */
+
+const TOPIC_INFO = {
+
+  PEOPLE: {
+    name: "PEOPLE",
+    emoji: "👨‍👩‍👧‍👦",
+    color: "bg-pink-100"
+  },
+
+  SCHOOL: {
+    name: "SCHOOL",
+    emoji: "🏫",
+    color: "bg-blue-100"
+  },
+
+  HOME: {
+    name: "HOME",
+    emoji: "🏠",
+    color: "bg-green-100"
+  },
+
+  FOOD: {
+    name: "FOOD",
+    emoji: "🍎",
+    color: "bg-orange-100"
+  },
+
+  CLOTHES: {
+    name: "CLOTHES",
+    emoji: "👕",
+    color: "bg-purple-100"
+  },
+
+  ANIMALS: {
+    name: "ANIMALS",
+    emoji: "🐶",
+    color: "bg-yellow-100"
+  },
+
+  NATURE: {
+    name: "NATURE",
+    emoji: "☀️",
+    color: "bg-cyan-100"
+  },
+
+  PLACES: {
+    name: "PLACES",
+    emoji: "📍",
+    color: "bg-red-100"
+  },
+
+  TRANSPORT: {
+    name: "TRANSPORT",
+    emoji: "🚌",
+    color: "bg-teal-100"
+  },
+
+  VERBS: {
+    name: "VERBS",
+    emoji: "🏃",
+    color: "bg-lime-100"
+  },
+
+  ADJECTIVES: {
+    name: "ADJECTIVES",
+    emoji: "🎨",
+    color: "bg-fuchsia-100"
+  }
+
+};
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const storageKey =
+  'tz_edu_kids_english_champion_data_v2';
+
+
+function getStoredData() {
+
+  try {
+
+    const raw =
+      localStorage.getItem(storageKey);
+
+    if (!raw) {
+
+      return {
+        playerName: '',
+        completed: false,
+        scores: {}
+      };
+
+    }
+
+
+    const parsed =
+      JSON.parse(raw);
+
+
+    return {
+
+      playerName:
+        parsed.playerName || '',
+
+      completed:
+        !!parsed.completed,
+
+      scores:
+        parsed.scores || {}
+
+    };
+
+  } catch (error) {
+
+    return {
+      playerName: '',
+      completed: false,
+      scores: {}
+    };
+
+  }
+
+}
+
+
+function saveStoredData(data) {
+
+  localStorage.setItem(
+    storageKey,
+    JSON.stringify(data)
+  );
+
+}
+
+
+/* =========================================================
+   ROUTER
+========================================================= */
+
+const router = {
+
+  current: 'home',
+
+
+  go(screenName) {
+
+    soundManager.click();
+
+    soundManager.ensureAudio();
+
+
+    document
+      .querySelectorAll('.screen')
+      .forEach(screen => {
+
+        screen.classList.remove(
+          'active'
+        );
+
+      });
+
+
+    const target =
+      document.getElementById(
+        screenName + '-screen'
+      );
+
+
+    if (target) {
+
+      target.classList.add(
+        'active'
+      );
+
+      this.current =
+        screenName;
+
+    }
+
+
+    if (screenName !== 'quiz') {
+      gameState.clearTimer();
+    }
+
+
+    gameState.syncGlobalHeaderState();
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  }
+
+};
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+const gameState = {
+
+  playerName: '',
+  currentTopic: '',
+  currentQuestionIndex: 0,
+  currentScore: 0,
+  correctCount: 0,
+
+  wrongQuestionIndices: [],
+
+  retryMode: false,
+  retryQuestionIndices: [],
+  retryPosition: 0,
+
+  timer: null,
+  timeLeft: 60,
+
+  isDebouncing: false,
+
+  lastResult: {
+    score: 0,
+    correct: 0,
+    percentage: 0,
+    stars: 0,
+    topic: ''
+  },
+
+
+  init() {
+
+    const data =
+      getStoredData();
+
+
+    this.playerName =
+      data.playerName || '';
+
+
+    this.renderTopics();
+
+    this.renderAchievementsView();
+
+    this.syncGlobalHeaderState();
+
+
+    if (this.playerName) {
+
+      document.getElementById(
+        'player-name-input'
+      ).value =
+        this.playerName;
+
+    }
+
+  },
+
+
+  startGame() {
+
+    soundManager.ensureAudio();
+
+
+    if (this.playerName) {
+
+      router.go('topics');
+
+    } else {
+
+      router.go('name');
+
+
+      setTimeout(() => {
+
+        document.getElementById(
+          'player-name-input'
+        ).focus();
+
+      }, 100);
+
+    }
+
+  },
+
+
+  saveName() {
+
+    soundManager.ensureAudio();
+
+
+    const input =
+      document.getElementById(
+        'player-name-input'
+      );
+
+
+    const name =
+      input.value.trim();
+
+
+    if (!name) {
+
+      input.classList.add(
+        'wrong-flash'
+      );
+
+
+      setTimeout(() => {
+
+        input.classList.remove(
+          'wrong-flash'
+        );
+
+      }, 500);
+
+
+      return;
+
+    }
+
+
+    this.playerName =
+      name;
+
+
+    const data =
+      getStoredData();
+
+
+    data.playerName =
+      name;
+
+
+    saveStoredData(data);
+
+
+    this.syncGlobalHeaderState();
+
+
+    router.go('topics');
+
+  },
+
+
+  syncGlobalHeaderState() {
+
+    const headerName =
+      document.getElementById(
+        'header-player-name'
+      );
+
+
+    if (headerName) {
+
+      if (this.playerName) {
+
+        headerName.textContent =
+          this.playerName;
+
+        headerName.classList.remove(
+          'hidden'
+        );
+
+      } else {
+
+        headerName.classList.add(
+          'hidden'
+        );
+
+      }
+
+    }
+
+
+    const topicsName =
+      document.getElementById(
+        'topics-player-name'
+      );
+
+
+    if (topicsName) {
+
+      topicsName.textContent =
+        this.playerName ||
+        'English Champion';
+
+    }
+
+
+    const achievementName =
+      document.getElementById(
+        'achievement-player-name'
+      );
+
+
+    if (achievementName) {
+
+      achievementName.textContent =
+        this.playerName
+          ? `${this.playerName}'s best scores`
+          : 'Your best scores';
+
+    }
+
+
+    const resultName =
+      document.getElementById(
+        'result-player-name'
+      );
+
+
+    if (resultName) {
+
+      resultName.textContent =
+        this.playerName ||
+        'English Champion';
+
+    }
+
+  },
+
+
+  renderTopics() {
+
+    const grid =
+      document.getElementById(
+        'topic-grid'
+      );
+
+
+    if (!grid) return;
+
+
+    grid.innerHTML = '';
+
+
+    Object.keys(TOPIC_INFO)
+      .forEach(topic => {
+
+        const info =
+          TOPIC_INFO[topic];
+
+
+        const card =
+          document.createElement(
+            'button'
+          );
+
+
+        card.className =
+          `topic-card neo rounded-3xl p-6 text-left ${info.color}`;
+
+
+        card.onclick = () => {
+
+          this.startQuizTopic(
+            topic
+          );
+
+        };
+
+
+        card.innerHTML = `
+
+          <div class="flex items-center gap-4">
+
+            <div class="text-5xl">
+              ${info.emoji}
+            </div>
+
+            <div>
+
+              <div class="text-2xl font-bold text-slate-800">
+                ${info.name}
+              </div>
+
+              <div class="text-sm text-slate-500 font-semibold mt-1">
+                10 QUESTIONS • 100 POINTS
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="mt-5 text-right font-bold text-indigo-600">
+            LET'S PLAY →
+          </div>
+
+        `;
+
+
+        grid.appendChild(card);
+
+      });
+
+  },
+
+
+  startQuizTopic(topic) {
+
+    soundManager.ensureAudio();
+
+
+    this.currentTopic =
+      topic;
+
+    this.currentQuestionIndex =
+      0;
+
+    this.currentScore =
+      0;
+
+    this.correctCount =
+      0;
+
+
+    this.wrongQuestionIndices =
+      [];
+
+
+    this.retryMode =
+      false;
+
+    this.retryQuestionIndices =
+      [];
+
+    this.retryPosition =
+      0;
+
+
+    this.isDebouncing =
+      false;
+
+
+    router.go('quiz');
+
+
+    this.loadQuestion();
+
+  },
+
+
+  normalizeAnswer(answer) {
+
+    return String(answer || '')
+      .trim()
+      .replace(/\s+/g, ' ')
+      .toUpperCase();
+
+  },
+
+
+  getCurrentQuestion() {
+
+    const questions =
+      QUESTION_BANK[
+        this.currentTopic
+      ].questions;
+
+
+    const questionIndex =
+      this.retryMode
+        ? this.retryQuestionIndices[
+            this.retryPosition
+          ]
+        : this.currentQuestionIndex;
+
+
+    return questions[
+      questionIndex
+    ];
+
+  },
+
+
+  getCurrentQuestionIndex() {
+
+    return this.retryMode
+      ? this.retryQuestionIndices[
+          this.retryPosition
+        ]
+      : this.currentQuestionIndex;
+
+  },
+
+
+  /* =======================================================
+     LOAD QUESTION
+  ======================================================= */
+
+  loadQuestion() {
+
+    this.clearTimer();
+
+    this.isDebouncing =
+      false;
+
+
+    const topicData =
+      QUESTION_BANK[
+        this.currentTopic
+      ];
+
+
+    const questions =
+      topicData.questions;
+
+
+    const questionIndex =
+      this.getCurrentQuestionIndex();
+
+
+    const currentQuestion =
+      questions[
+        questionIndex
+      ];
+
+
+    if (!currentQuestion) {
+      return;
+    }
+
+
+    /* HEADER */
+
+    document.getElementById(
+      'quiz-topic-label'
+    ).textContent =
+      `${topicData.emoji} ${this.currentTopic}`;
+
+
+    if (this.retryMode) {
+
+      document.getElementById(
+        'quiz-question-counter'
+      ).textContent =
+        `RETRY ${this.retryPosition + 1} / ${this.retryQuestionIndices.length}`;
+
+    } else {
+
+      document.getElementById(
+        'quiz-question-counter'
+      ).textContent =
+        `QUESTION ${this.currentQuestionIndex + 1} / 10`;
+
+    }
+
+
+    document.getElementById(
+      'quiz-score'
+    ).textContent =
+      `${this.currentScore} POINTS`;
+
+
+    const progress =
+      this.retryMode
+        ? (
+            (
+              this.retryPosition + 1
+            ) /
+            this.retryQuestionIndices.length
+          ) * 100
+        : (
+            (
+              this.currentQuestionIndex + 1
+            ) / 10
+          ) * 100;
+
+
+    document.getElementById(
+      'quiz-progress'
+    ).style.width =
+      `${progress}%`;
+
+
+    /* QUESTION */
+
+    document.getElementById(
+      'quiz-visual'
+    ).textContent =
+      currentQuestion.visual;
+
+
+    document.getElementById(
+      'quiz-description'
+    ).textContent =
+      currentQuestion.description;
+
+
+    /* =====================================================
+       LETTER INPUT BOXES
+    ===================================================== */
+
+    const wordContainer =
+      document.getElementById(
+        'quiz-word'
+      );
+
+
+    wordContainer.innerHTML =
+      '';
+
+
+    const answer =
+      currentQuestion.answer;
+
+
+    const cleanAnswer =
+      answer.replace(/\s/g, '');
+
+
+    const letterCount =
+      cleanAnswer.length;
+
+
+    let boxWidth =
+      'w-10';
+
+    let boxHeight =
+      'h-12';
+
+    let textSize =
+      'text-2xl';
+
+
+    if (letterCount >= 9) {
+
+      boxWidth =
+        'w-8';
+
+      boxHeight =
+        'h-10';
+
+      textSize =
+        'text-xl';
+
+    }
+
+
+    if (letterCount >= 12) {
+
+      boxWidth =
+        'w-7';
+
+      boxHeight =
+        'h-9';
+
+      textSize =
+        'text-lg';
+
+    }
+
+
+    /*
+      Create one input box for every letter.
+
+      The FIRST LETTER is fixed as the hint.
+      All other letters are editable.
+    */
+
+    let editableIndex =
+      0;
+
+
+    for (
+      let i = 0;
+      i < answer.length;
+      i++
+    ) {
+
+      const char =
+        answer[i];
+
+
+      /* SPACE BETWEEN WORDS */
+
+      if (char === ' ') {
+
+        const space =
+          document.createElement(
+            'div'
+          );
+
+        space.className =
+          'w-3 sm:w-5';
+
+        wordContainer.appendChild(
+          space
+        );
+
+        continue;
+
+      }
+
+
+      const box =
+        document.createElement(
+          'input'
+        );
+
+
+      box.type =
+        'text';
+
+      box.maxLength =
+        1;
+
+      box.autocomplete =
+        'off';
+
+      box.autocapitalize =
+        'characters';
+
+      box.spellcheck =
+        false;
+
+
+      box.dataset.index =
+        i;
+
+
+      box.dataset.editableIndex =
+        editableIndex;
+
+
+      box.className =
+        `letter-box ${boxWidth} ${boxHeight} ${textSize}`;
+
+
+      /*
+        FIRST LETTER = HINT
+      */
+
+      if (editableIndex === 0) {
+
+        box.value =
+          char;
+
+        box.disabled =
+          true;
+
+        box.classList.add(
+          'hint-letter'
+        );
+
+
+      } else {
+
+        box.value =
+          '';
+
+
+        /*
+          When child types a letter:
+          1. Keep only A-Z
+          2. Make uppercase
+          3. Move to next box
+          4. Check automatically
+        */
+
+        box.addEventListener(
+          'input',
+          function () {
+
+            this.value =
+              this.value
+                .replace(
+                  /[^a-zA-Z]/g,
+                  ''
+                )
+                .toUpperCase()
+                .charAt(0);
+
+
+            if (this.value) {
+
+              gameState.moveToNextLetter(
+                i
+              );
+
+              gameState.checkLetterAnswer();
+
+            }
+
+          }
+        );
+
+
+        /*
+          Backspace:
+          If current box is empty,
+          move to previous editable box.
+        */
+
+        box.addEventListener(
+          'keydown',
+          function(event) {
+
+            if (
+              event.key ===
+              'Backspace'
+            ) {
+
+              if (!this.value) {
+
+                event.preventDefault();
+
+                gameState.moveToPreviousLetter(
+                  i
+                );
+
+              }
+
+            }
+
+
+            /*
+              Enter can also check
+              if everything is filled.
+            */
+
+            if (
+              event.key ===
+              'Enter'
+            ) {
+
+              event.preventDefault();
+
+              gameState.checkLetterAnswer();
+
+            }
+
+          }
+        );
+
+      }
+
+
+      wordContainer.appendChild(
+        box
+      );
+
+
+      editableIndex++;
+
+    }
+
+
+    /* =====================================================
+       HINT
+    ===================================================== */
+
+    const firstLetter =
+      answer.charAt(0);
+
+
+    document.getElementById(
+      'quiz-hint'
+    ).textContent =
+      `💡 Hint: ${firstLetter}`;
+
+
+    /* MESSAGE */
+
+    document.getElementById(
+      'letter-input-message'
+    ).textContent =
+      '';
+
+
+    /*
+      Focus first editable box.
+    */
+
+    setTimeout(() => {
+
+      const firstEditable =
+        document.querySelector(
+          '#quiz-word .letter-box:not(:disabled)'
+        );
+
+
+      if (firstEditable) {
+
+        firstEditable.focus();
+
+      }
+
+    }, 80);
+
+
+    /* =====================================================
+       TIMER
+    ===================================================== */
+
+    this.timeLeft =
+      60;
+
+
+    this.updateTimerDisplay();
+
+
+    this.timer =
+      setInterval(() => {
+
+        this.timeLeft--;
+
+        this.updateTimerDisplay();
+
+
+        if (
+          this.timeLeft <= 0
+        ) {
+
+          this.handleQuestionTimeout();
+
+        }
+
+      }, 1000);
+
+  },
+
+
+  /* =======================================================
+     MOVE TO NEXT LETTER
+  ======================================================= */
+
+  moveToNextLetter(
+    currentIndex
+  ) {
+
+    const boxes =
+      document.querySelectorAll(
+        '#quiz-word .letter-box'
+      );
+
+
+    for (
+      let i = 0;
+      i < boxes.length;
+      i++
+    ) {
+
+      const box =
+        boxes[i];
+
+
+      const index =
+        Number(
+          box.dataset.index
+        );
+
+
+      if (
+        index > currentIndex &&
+        !box.disabled
+      ) {
+
+        box.focus();
+
+        return;
+
+      }
+
+    }
+
+  },
+
+
+  /* =======================================================
+     MOVE TO PREVIOUS LETTER
+  ======================================================= */
+
+  moveToPreviousLetter(
+    currentIndex
+  ) {
+
+    const boxes =
+      document.querySelectorAll(
+        '#quiz-word .letter-box'
+      );
+
+
+    for (
+      let i =
+        boxes.length - 1;
+      i >= 0;
+      i--
+    ) {
+
+      const box =
+        boxes[i];
+
+
+      const index =
+        Number(
+          box.dataset.index
+        );
+
+
+      if (
+        index < currentIndex &&
+        !box.disabled
+      ) {
+
+        box.focus();
+
+        return;
+
+      }
+
+    }
+
+  },
+
+
+  /* =======================================================
+     CHECK LETTER ANSWER
+  ======================================================= */
+
+  checkLetterAnswer() {
+
+    if (
+      this.isDebouncing
+    ) {
+      return;
+    }
+
+
+    const currentQuestion =
+      this.getCurrentQuestion();
+
+
+    if (!currentQuestion) {
+      return;
+    }
+
+
+    const correctAnswer =
+      currentQuestion.answer;
+
+
+    const boxes =
+      document.querySelectorAll(
+        '#quiz-word .letter-box'
+      );
+
+
+    let typedAnswer =
+      '';
+
+
+    let allFilled =
+      true;
+
+
+    let boxIndex =
+      0;
+
+
+    /*
+      Build typed answer
+      while respecting spaces.
+    */
+
+    for (
+      let i = 0;
+      i < correctAnswer.length;
+      i++
+    ) {
+
+      const char =
+        correctAnswer[i];
+
+
+      if (char === ' ') {
+
+        typedAnswer +=
+          ' ';
+
+        continue;
+
+      }
+
+
+      const box =
+        boxes[boxIndex];
+
+
+      if (
+        !box ||
+        !box.value
+      ) {
+
+        allFilled =
+          false;
+
+        typedAnswer +=
+          '_';
+
+      } else {
+
+        typedAnswer +=
+          box.value.toUpperCase();
+
+      }
+
+
+      boxIndex++;
+
+    }
+
+
+    /*
+      Do nothing until every
+      editable letter is filled.
+    */
+
+    if (!allFilled) {
+      return;
+    }
+
+
+    this.isDebouncing =
+      true;
+
+
+    this.clearTimer();
+
+
+    const isCorrect =
+      this.normalizeAnswer(
+        typedAnswer
+      ) ===
+      this.normalizeAnswer(
+        correctAnswer
+      );
+
+
+    /*
+      Lock all boxes.
+    */
+
+    boxes.forEach(box => {
+
+      box.disabled =
+        true;
+
+    });
+
+
+    /*
+      Show the complete correct
+      answer in the boxes.
+    */
+
+    this.revealAnswer(
+      correctAnswer
+    );
+
+
+    /* =====================================================
+       RETRY MODE
+    ===================================================== */
+
+    if (this.retryMode) {
+
+      if (isCorrect) {
+
+        soundManager.correct();
+
+
+        this.showFeedback(
+          true,
+          'Correct!',
+          'Great practice! 🎉'
+        );
+
+
+      } else {
+
+        soundManager.wrong();
+
+
+        this.showFeedback(
+          false,
+          'Not quite!',
+          `Correct answer: ${correctAnswer}`
+        );
+
+      }
+
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       NORMAL QUIZ
+    ===================================================== */
+
+    if (isCorrect) {
+
+      this.currentScore +=
+        10;
+
+      this.correctCount++;
+
+
+      soundManager.correct();
+
+
+      this.showFeedback(
+        true,
+        'Correct! 🎉',
+        '+10 points'
+      );
+
+
+    } else {
+
+      if (
+        !this.wrongQuestionIndices.includes(
+          this.currentQuestionIndex
+        )
+      ) {
+
+        this.wrongQuestionIndices.push(
+          this.currentQuestionIndex
+        );
+
+      }
+
+
+      soundManager.wrong();
+
+
+      this.showFeedback(
+        false,
+        'Not quite!',
+        `Correct answer: ${correctAnswer}`
+      );
+
+    }
+
+  },
+
+
+  /* =======================================================
+     TIMER DISPLAY
+  ======================================================= */
+
+  updateTimerDisplay() {
+
+    const timerElement =
+      document.getElementById(
+        'quiz-timer'
+      );
+
+
+    timerElement.textContent =
+      `⏱️ ${this.timeLeft}`;
+
+
+    timerElement.classList.remove(
+      'bg-rose-200',
+      'bg-yellow-200'
+    );
+
+
+    if (
+      this.timeLeft <= 10
+    ) {
+
+      timerElement.classList.add(
+        'bg-rose-200'
+      );
+
+
+    } else if (
+      this.timeLeft <= 20
+    ) {
+
+      timerElement.classList.add(
+        'bg-yellow-200'
+      );
+
+    }
+
+  },
+
+
+  /* =======================================================
+     CLEAR TIMER
+  ======================================================= */
+
+  clearTimer() {
+
+    if (this.timer) {
+
+      clearInterval(
+        this.timer
+      );
+
+      this.timer =
+        null;
+
+    }
+
+  },
+
+
+  /* =======================================================
+     REVEAL ANSWER
+  ======================================================= */
+
+  revealAnswer(answer) {
+
+    const boxes =
+      document.querySelectorAll(
+        '#quiz-word .letter-box'
+      );
+
+
+    let boxIndex =
+      0;
+
+
+    for (
+      let i = 0;
+      i < answer.length;
+      i++
+    ) {
+
+      if (
+        answer[i] === ' '
+      ) {
+        continue;
+      }
+
+
+      if (boxes[boxIndex]) {
+
+        boxes[boxIndex].value =
+          answer[i];
+
+
+        boxes[boxIndex].disabled =
+          true;
+
+
+        boxes[boxIndex].classList.add(
+          'revealed-letter'
+        );
+
+      }
+
+
+      boxIndex++;
+
+    }
+
+  },
+
+
+  /* =======================================================
+     QUESTION TIMEOUT
+  ======================================================= */
+
+  handleQuestionTimeout() {
+
+    if (
+      this.isDebouncing
+    ) {
+      return;
+    }
+
+
+    this.isDebouncing =
+      true;
+
+
+    this.clearTimer();
+
+
+    const currentQuestion =
+      this.getCurrentQuestion();
+
+
+    const correctAnswer =
+      currentQuestion.answer;
+
+
+    /*
+      Disable every letter box.
+    */
+
+    document
+      .querySelectorAll(
+        '#quiz-word .letter-box'
+      )
+      .forEach(box => {
+
+        box.disabled =
+          true;
+
+      });
+
+
+    this.revealAnswer(
+      correctAnswer
+    );
+
+
+    /* RETRY MODE */
+
+    if (this.retryMode) {
+
+      soundManager.timeout();
+
+
+      this.showFeedback(
+        false,
+        "Time's up! ⏰",
+        `Correct answer: ${correctAnswer}`
+      );
+
+
+      return;
+
+    }
+
+
+    /* NORMAL MODE */
+
+    if (
+      !this.wrongQuestionIndices.includes(
+        this.currentQuestionIndex
+      )
+    ) {
+
+      this.wrongQuestionIndices.push(
+        this.currentQuestionIndex
+      );
+
+    }
+
+
+    soundManager.timeout();
+
+
+    this.showFeedback(
+      false,
+      "Time's up! ⏰",
+      `Correct answer: ${correctAnswer}`
+    );
+
+  },
+
+
+  /* =======================================================
+     FEEDBACK
+  ======================================================= */
+
+  showFeedback(
+    isCorrect,
+    title,
+    answerText
+  ) {
+
+    const overlay =
+      document.getElementById(
+        'feedback-overlay'
+      );
+
+
+    const card =
+      document.getElementById(
+        'feedback-card'
+      );
+
+
+    document.getElementById(
+      'feedback-icon'
+    ).textContent =
+      isCorrect
+        ? '🎉'
+        : '💡';
+
+
+    document.getElementById(
+      'feedback-title'
+    ).textContent =
+      title;
+
+
+    document.getElementById(
+      'feedback-answer'
+    ).textContent =
+      answerText;
+
+
+    card.classList.remove(
+      'correct-flash',
+      'wrong-flash'
+    );
+
+
+    void card.offsetWidth;
+
+
+    card.classList.add(
+      isCorrect
+        ? 'correct-flash'
+        : 'wrong-flash'
+    );
+
+
+    overlay.classList.remove(
+      'hidden'
+    );
+
+
+    overlay.classList.add(
+      'flex'
+    );
+
+
+    setTimeout(() => {
+
+      overlay.classList.add(
+        'hidden'
+      );
+
+      overlay.classList.remove(
+        'flex'
+      );
+
+
+      this.advanceQuizFlowProgressState();
+
+
+    }, 1600);
+
+  },
+
+
+  /* =======================================================
+     ADVANCE QUIZ
+  ======================================================= */
+
+  advanceQuizFlowProgressState() {
+
+    if (this.retryMode) {
+
+      this.retryPosition++;
+
+
+      if (
+        this.retryPosition <
+        this.retryQuestionIndices.length
+      ) {
+
+        this.loadQuestion();
+
+
+      } else {
+
+        this.finishRetryMode();
+
+      }
+
+
+      return;
+
+    }
+
+
+    this.currentQuestionIndex++;
+
+
+    if (
+      this.currentQuestionIndex < 10
+    ) {
+
+      this.loadQuestion();
+
+
+    } else {
+
+      this.terminateAndEvaluateQuizSession();
+
+    }
+
+  },
+
+
+  /* =======================================================
+     FINISH RETRY
+  ======================================================= */
+
+  finishRetryMode() {
+
+    this.retryMode =
+      false;
+
+
+    this.clearTimer();
+
+
+    const overlay =
+      document.getElementById(
+        'feedback-overlay'
+      );
+
+
+    const card =
+      document.getElementById(
+        'feedback-card'
+      );
+
+
+    document.getElementById(
+      'feedback-icon'
+    ).textContent =
+      '🎉';
+
+
+    document.getElementById(
+      'feedback-title'
+    ).textContent =
+      'Great practice!';
+
+
+    document.getElementById(
+      'feedback-answer'
+    ).textContent =
+      'Keep practising and keep learning! 💪';
+
+
+    overlay.classList.remove(
+      'hidden'
+    );
+
+
+    overlay.classList.add(
+      'flex'
+    );
+
+
+    setTimeout(() => {
+
+      overlay.classList.add(
+        'hidden'
+      );
+
+      overlay.classList.remove(
+        'flex'
+      );
+
+
+      router.go(
+        'result'
+      );
+
+    }, 1300);
+
+  },
+
+
+  /* =======================================================
+     STARS
+  ======================================================= */
+
+  calculateStars(
+    percentage
+  ) {
+
+    if (
+      percentage >= 90
+    ) {
+      return 3;
+    }
+
+
+    if (
+      percentage >= 70
+    ) {
+      return 2;
+    }
+
+
+    if (
+      percentage >= 50
+    ) {
+      return 1;
+    }
+
+
+    return 0;
+
+  },
+
+
+  /* =======================================================
+     FINISH QUIZ
+  ======================================================= */
+
+  terminateAndEvaluateQuizSession() {
+
+    this.clearTimer();
+
+
+    const finalPercentage =
+      Math.round(
+        (this.currentScore / 100) * 100
+      );
+
+
+    const starsEarned =
+      this.calculateStars(
+        finalPercentage
+      );
+
+
+    const data =
+      getStoredData();
+
+
+    if (!data.scores) {
+      data.scores = {};
+    }
+
+
+    const historicalRecord =
+      data.scores[
+        this.currentTopic
+      ] || {
+
+        bestScore: 0,
+        stars: 0,
+        completed: false
+
+      };
+
+
+    const shouldUpdate =
+      this.currentScore >
+        historicalRecord.bestScore ||
+
+      (
+        this.currentScore ===
+          historicalRecord.bestScore &&
+
+        starsEarned >
+          historicalRecord.stars
+      );
+
+
+    if (shouldUpdate) {
+
+      data.scores[
+        this.currentTopic
+      ] = {
+
+        bestScore:
+          this.currentScore,
+
+        stars:
+          starsEarned,
+
+        completed:
+          true
+
+      };
+
+
+    } else {
+
+      data.scores[
+        this.currentTopic
+      ] = {
+
+        bestScore:
+          historicalRecord.bestScore,
+
+        stars:
+          historicalRecord.stars,
+
+        completed:
+          true
+
+      };
+
+    }
+
+
+    data.playerName =
+      this.playerName;
+
+
+    data.completed =
+      true;
+
+
+    saveStoredData(
+      data
+    );
+
+
+    this.lastResult = {
+
+      score:
+        this.currentScore,
+
+      correct:
+        this.correctCount,
+
+      percentage:
+        finalPercentage,
+
+      stars:
+        starsEarned,
+
+      topic:
+        this.currentTopic
+
+    };
+
+
+    document.getElementById(
+      'result-topic'
+    ).textContent =
+      `${QUESTION_BANK[this.currentTopic].emoji} ${this.currentTopic}`;
+
+
+    document.getElementById(
+      'result-score'
+    ).textContent =
+      this.currentScore;
+
+
+    document.getElementById(
+      'result-correct'
+    ).textContent =
+      this.correctCount;
+
+
+    document.getElementById(
+      'result-percentage'
+    ).textContent =
+      `${finalPercentage}%`;
+
+
+    document.getElementById(
+      'result-stars'
+    ).textContent =
+
+      starsEarned > 0
+        ? '⭐'.repeat(
+            starsEarned
+          )
+        : 'No stars yet — keep practising! 💪';
+
+
+    const retryButton =
+      document.getElementById(
+        'btn-retry-wrong'
+      );
+
+
+    if (
+      this.wrongQuestionIndices.length > 0
+    ) {
+
+      retryButton.classList.remove(
+        'hidden'
+      );
+
+
+      retryButton.textContent =
+        `🔁 TRY WRONG QUESTIONS AGAIN (${this.wrongQuestionIndices.length})`;
+
+
+    } else {
+
+      retryButton.classList.add(
+        'hidden'
+      );
+
+    }
+
+
+    const certificateButton =
+      document.getElementById(
+        'btn-certificate'
+      );
+
+
+    if (
+      this.currentScore > 0
+    ) {
+
+      certificateButton.classList.remove(
+        'hidden'
+      );
+
+    } else {
+
+      certificateButton.classList.add(
+        'hidden'
+      );
+
+    }
+
+
+    this.renderAchievementsView();
+
+
+    router.go(
+      'result'
+    );
+
+  },
+
+
+  /* =======================================================
+     RETRY WRONG QUESTIONS
+  ======================================================= */
+
+  retryWrongQuestions() {
+
+    if (
+      !this.wrongQuestionIndices.length
+    ) {
+      return;
+    }
+
+
+    soundManager.ensureAudio();
+
+
+    this.retryMode =
+      true;
+
+
+    this.retryQuestionIndices =
+      [
+        ...this.wrongQuestionIndices
+      ];
+
+
+    this.retryPosition =
+      0;
+
+
+    this.isDebouncing =
+      false;
+
+
+    router.go(
+      'quiz'
+    );
+
+
+    this.loadQuestion();
+
+  },
+
+
+  /* =======================================================
+     PLAY CURRENT TOPIC AGAIN
+  ======================================================= */
+
+  retryCurrentTopic() {
+
+    this.startQuizTopic(
+      this.currentTopic
+    );
+
+  },
+
+
+  /* =======================================================
+     QUIT QUIZ
+  ======================================================= */
+
+  confirmQuitQuiz() {
+
+    const shouldQuit =
+      confirm(
+        'Leave this quiz? Your current progress will be lost.'
+      );
+
+
+    if (shouldQuit) {
+
+      this.clearTimer();
+
+      router.go(
+        'topics'
+      );
+
+    }
+
+  },
+
+
+  /* =======================================================
+     CERTIFICATE
+  ======================================================= */
+
+  openCertificateView() {
+
+    const result =
+      this.lastResult;
+
+
+    document.getElementById(
+      'certificate-name'
+    ).textContent =
+      this.playerName ||
+      'English Champion';
+
+
+    document.getElementById(
+      'certificate-score'
+    ).textContent =
+      `${result.score} / 100 POINTS`;
+
+
+    document.getElementById(
+      'certificate-topic'
+    ).textContent =
+      `${QUESTION_BANK[result.topic].emoji} ${result.topic}`;
+
+
+    router.go(
+      'certificate'
+    );
+
+  },
+
+
+  /* =======================================================
+     MY SCORE
+  ======================================================= */
+
+  renderAchievementsView() {
+
+    const grid =
+      document.getElementById(
+        'achievement-grid'
+      );
+
+
+    if (!grid) return;
+
+
+    const data =
+      getStoredData();
+
+
+    grid.innerHTML =
+      '';
+
+
+    Object.keys(TOPIC_INFO)
+      .forEach(topic => {
+
+        const info =
+          TOPIC_INFO[topic];
+
+
+        const record =
+          data.scores &&
+          data.scores[topic]
+
+            ? data.scores[topic]
+
+            : {
+
+                bestScore: 0,
+                stars: 0,
+                completed: false
+
+              };
+
+
+        const card =
+          document.createElement(
+            'div'
+          );
+
+
+        card.className =
+          `neo rounded-3xl p-5 ${info.color}`;
+
+
+        const stars =
+          record.stars > 0
+
+            ? '⭐'.repeat(
+                record.stars
+              )
+
+            : '☆ ☆ ☆';
+
+
+        card.innerHTML = `
+
+          <div class="flex items-center gap-3">
+
+            <div class="text-4xl">
+              ${info.emoji}
+            </div>
+
+            <div>
+
+              <div class="font-bold text-xl text-slate-800">
+                ${info.name}
+              </div>
+
+              <div class="text-xs font-semibold text-slate-500">
+                BEST SCORE
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="mt-5 flex items-end justify-between">
+
+            <div>
+
+              <span class="text-4xl font-bold">
+                ${record.bestScore}
+              </span>
+
+              <span class="text-slate-500 font-bold">
+                /100
+              </span>
+
+            </div>
+
+
+            <div class="text-xl">
+              ${stars}
+            </div>
+
+          </div>
+
+
+          <div class="mt-4">
+
+            <div class="w-full h-3 bg-white border-2 border-slate-700 rounded-full overflow-hidden">
+
+              <div
+                class="h-full bg-indigo-400"
+                style="width: ${record.bestScore}%">
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+
+
+        grid.appendChild(
+          card
+        );
+
+      });
+
+  }
+
+};
+
+
+/* =========================================================
+   SERVICE WORKER + INITIALISE
+========================================================= */
+
+window.addEventListener(
+  'DOMContentLoaded',
+  () => {
+
+    soundManager.init();
+
+    gameState.init();
+
+
+    if (
+      'serviceWorker' in navigator
+    ) {
+
+      navigator.serviceWorker
+        .register('./sw.js')
+
+        .then(registration => {
+
+          console.log(
+            'PWA Service Worker berjaya didaftarkan!',
+            registration.scope
+          );
+
+        })
+
+        .catch(error => {
+
+          console.error(
+            'Pendaftaran Service Worker gagal:',
+            error
+          );
+
+        });
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
