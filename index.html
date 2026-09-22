@@ -1,0 +1,478 @@
+<DOCTYPE! html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fef08a">
+<title>LET'S BE AN ENGLISH CHAMPION!</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{font-family:'Fredoka',sans-serif;background:#fffdf5;color:#172033}
+.neo{border:3px solid #172033;box-shadow:6px 6px 0 #172033}
+.neo-sm{border:2px solid #172033;box-shadow:4px 4px 0 #172033}
+.neo:active,.neo-sm:active{transform:translate(3px,3px);box-shadow:2px 2px 0 #172033}
+button{transition:transform .08s ease,box-shadow .08s ease,background-color .15s ease}
+.screen{display:none}.screen.active{display:block}
+.topic-card:hover{transform:translateY(-3px)}
+.letter-box{width:48px;height:58px;border:3px solid #172033;border-radius:12px;text-align:center;font-size:1.7rem;font-weight:700;background:#fff;outline:none}
+.letter-box:focus{border-color:#7c3aed;box-shadow:0 0 0 3px #ddd6fe}
+.letter-box.fixed{background:#fde68a}
+.timer-track{height:16px;border:2px solid #172033;border-radius:999px;overflow:hidden;background:#fff}
+.timer-fill{height:100%;width:100%;background:#4ade80;transition:width 1s linear,background-color .2s ease}
+.certificate{background:#fffdf5;border:8px double #172033;padding:40px 25px}
+@media(max-width:640px){.letter-box{width:39px;height:50px;font-size:1.4rem;border-width:2px}.neo{box-shadow:4px 4px 0 #172033}}
+</style>
+</head>
+<body>
+
+<header id="global-header" class="hidden sticky top-0 z-40 bg-yellow-200 border-b-2 border-slate-900">
+<div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+<button onclick="router.go('home')" class="font-bold text-lg md:text-xl">🏆 ENGLISH CHAMPION!</button>
+<div class="flex items-center gap-2">
+<span id="global-player-name" class="hidden sm:inline font-bold"></span>
+<button id="sound-toggle" onclick="soundManager.toggle()" class="neo-sm bg-white rounded-xl px-3 py-2 font-bold">🔊</button>
+<button onclick="router.go('home')" class="neo-sm bg-white rounded-xl px-3 py-2 font-bold">🏠</button>
+</div>
+</div>
+</header>
+
+<main>
+
+<section id="home-screen" class="screen active">
+<div class="min-h-screen flex items-center justify-center px-5 py-10">
+<div class="max-w-3xl w-full text-center">
+<div class="text-7xl mb-4">🏆</div>
+<h1 class="text-4xl md:text-6xl font-bold leading-tight">LET'S BE AN<br>ENGLISH CHAMPION!</h1>
+<p class="text-lg md:text-xl mt-5 font-medium">Complete the word. Think fast. Have fun!</p>
+<div class="mt-8 max-w-md mx-auto space-y-4">
+<button onclick="router.go('name')" class="neo w-full bg-yellow-300 hover:bg-yellow-200 rounded-2xl px-8 py-5 text-2xl font-bold">🚀 LET'S PLAY!</button>
+<button onclick="router.go('score')" class="neo w-full bg-white hover:bg-slate-50 rounded-2xl px-8 py-4 text-xl font-bold">🏆 MY SCORE</button>
+<button onclick="gameState.resetAllData()" class="neo-sm w-full bg-rose-100 hover:bg-rose-200 rounded-xl px-6 py-3 font-bold text-rose-700">🔄 RESET PROGRESS</button>
+</div>
+<div class="mt-10 grid grid-cols-3 gap-3 max-w-xl mx-auto text-sm md:text-base">
+<div class="neo-sm bg-pink-100 rounded-2xl p-4"><div class="text-3xl">✏️</div><b>11 TOPICS</b></div>
+<div class="neo-sm bg-blue-100 rounded-2xl p-4"><div class="text-3xl">⏱️</div><b>60 SECONDS</b></div>
+<div class="neo-sm bg-green-100 rounded-2xl p-4"><div class="text-3xl">⭐</div><b>+10 POINTS</b></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="name-screen" class="screen">
+<div class="min-h-screen flex items-center justify-center px-5 py-10">
+<div class="max-w-lg w-full text-center">
+<div class="text-6xl mb-5">👋</div>
+<h2 class="text-4xl font-bold">WHAT'S YOUR NAME?</h2>
+<p class="mt-3 text-lg">Let's get ready to become an English Champion!</p>
+<input id="player-name-input" maxlength="20" autocomplete="off" class="neo w-full mt-8 rounded-2xl px-5 py-4 text-2xl text-center font-bold bg-white outline-none" placeholder="Your name">
+<button onclick="gameState.savePlayerName()" class="neo w-full mt-5 bg-green-300 hover:bg-green-200 rounded-2xl px-8 py-4 text-xl font-bold">CONTINUE →</button>
+<button onclick="router.go('home')" class="mt-5 font-bold underline">← BACK</button>
+</div>
+</div>
+</section>
+
+<section id="topics-screen" class="screen">
+<div class="max-w-6xl mx-auto px-4 py-8">
+<div class="text-center mb-7">
+<h2 class="text-4xl md:text-5xl font-bold">CHOOSE A TOPIC</h2>
+<p id="topics-welcome" class="mt-2 text-lg"></p>
+</div>
+<div id="topic-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+<div class="text-center mt-8"><button onclick="router.go('home')" class="font-bold underline">← BACK HOME</button></div>
+</div>
+</section>
+
+<section id="quiz-screen" class="screen">
+<div class="max-w-4xl mx-auto px-4 py-6">
+<div class="flex items-center justify-between gap-3 mb-4">
+<div><div id="quiz-topic" class="font-bold text-lg"></div><div id="quiz-progress" class="text-sm font-medium"></div></div>
+<div class="neo-sm bg-white rounded-xl px-4 py-2 font-bold">⭐ <span id="quiz-score">0</span></div>
+</div>
+<div class="neo-sm bg-white rounded-2xl p-4 mb-6">
+<div class="flex items-center justify-between gap-3 mb-2"><span class="font-bold">⏱️ TIME</span><span id="timer-text" class="font-bold">60s</span></div>
+<div class="timer-track"><div id="timer-fill" class="timer-fill"></div></div>
+</div>
+<div class="neo bg-yellow-100 rounded-3xl p-5 md:p-8 text-center">
+<div id="question-visual" class="text-8xl mb-4"></div>
+<h3 id="question-description" class="text-2xl md:text-3xl font-bold"></h3>
+<div id="letter-boxes" class="flex justify-center flex-wrap gap-2 mt-7"></div>
+<div class="mt-6 bg-white/70 rounded-2xl p-4 inline-block"><div class="font-bold text-violet-700">💡 HINT</div><div id="hint-text" class="text-2xl font-bold text-violet-700 mt-1"></div></div>
+<button id="check-answer-btn" onclick="gameState.checkLetterAnswer()" class="neo w-full max-w-md mx-auto block mt-7 bg-green-300 hover:bg-green-200 rounded-2xl px-8 py-4 text-xl font-bold opacity-50" disabled>CHECK ANSWER ✓</button>
+</div>
+</div>
+</section>
+
+<section id="feedback-screen" class="screen">
+<div class="min-h-screen flex items-center justify-center px-5 py-10">
+<div id="feedback-card" class="neo rounded-3xl bg-white max-w-xl w-full p-8 text-center">
+<div id="feedback-icon" class="text-7xl"></div>
+<h2 id="feedback-title" class="text-4xl font-bold mt-4"></h2>
+<p id="feedback-answer" class="text-xl mt-4 font-bold"></p>
+<button onclick="gameState.nextQuestion()" class="neo w-full mt-7 bg-yellow-300 rounded-2xl px-8 py-4 text-xl font-bold">NEXT →</button>
+</div>
+</div>
+</section>
+
+<section id="result-screen" class="screen">
+<div class="min-h-screen flex items-center justify-center px-5 py-10">
+<div class="max-w-2xl w-full text-center">
+<div id="result-stars" class="text-5xl mb-3"></div>
+<h2 class="text-5xl font-bold">GREAT JOB!</h2>
+<p id="result-message" class="text-xl mt-3"></p>
+<div class="neo bg-white rounded-3xl p-7 mt-7">
+<div class="grid grid-cols-3 gap-4">
+<div><div class="text-3xl font-bold" id="result-score">0</div><div>POINTS</div></div>
+<div><div class="text-3xl font-bold" id="result-correct">0</div><div>CORRECT</div></div>
+<div><div class="text-3xl font-bold" id="result-percentage">0%</div><div>SCORE</div></div>
+</div>
+</div>
+<div class="mt-7 grid gap-3">
+<button id="retry-wrong-btn" onclick="gameState.startRetry()" class="neo bg-pink-200 rounded-2xl px-8 py-4 text-xl font-bold">🔁 RETRY WRONG QUESTIONS</button>
+<button onclick="gameState.playAgain()" class="neo bg-yellow-300 rounded-2xl px-8 py-4 text-xl font-bold">▶️ PLAY AGAIN</button>
+<button onclick="router.go('topics')" class="neo bg-blue-200 rounded-2xl px-8 py-4 text-xl font-bold">📚 CHOOSE TOPIC</button>
+<button onclick="gameState.showCertificate()" class="neo bg-green-200 rounded-2xl px-8 py-4 text-xl font-bold">🎓 VIEW CERTIFICATE</button>
+</div>
+</div>
+</div>
+</section>
+
+<section id="score-screen" class="screen">
+<div class="max-w-4xl mx-auto px-5 py-10">
+<div class="text-center"><div class="text-6xl">🏆</div><h2 class="text-4xl font-bold mt-3">MY SCORE</h2></div>
+<div id="score-content" class="mt-7"></div>
+<div class="text-center mt-7"><button onclick="router.go('home')" class="neo bg-yellow-300 rounded-2xl px-8 py-4 font-bold">← HOME</button></div>
+</div>
+</section>
+
+<section id="certificate-screen" class="screen">
+<div class="max-w-4xl mx-auto px-5 py-10">
+<div class="certificate text-center rounded-3xl">
+<div class="text-6xl">🏆</div>
+<p class="text-lg font-bold mt-5">THIS CERTIFICATE IS PROUDLY PRESENTED TO</p>
+<h2 id="certificate-name" class="text-4xl md:text-6xl font-bold mt-4"></h2>
+<p class="text-xl mt-6">for completing the English Champion challenge</p>
+<div class="my-8"><div id="certificate-stars" class="text-5xl"></div><div id="certificate-score" class="text-3xl font-bold mt-3"></div><div id="certificate-topic" class="text-xl mt-2"></div></div>
+<div class="font-bold text-2xl">TZ EDU KIDS</div>
+<p class="mt-2">LET'S BE AN ENGLISH CHAMPION!</p>
+</div>
+<div class="text-center mt-7">
+<button onclick="window.print()" class="neo bg-green-200 rounded-2xl px-8 py-4 font-bold">🖨️ PRINT CERTIFICATE</button>
+<button onclick="router.go('result')" class="ml-2 font-bold underline">← BACK</button>
+</div>
+</div>
+</section>
+</main>
+
+<script>
+const storageKey='tz_edu_kids_english_champion_data_v2';
+
+const QUESTION_BANK={
+PEOPLE:[
+['PARENTS','👨‍👩‍👧','The people who take care of you are your _____.'],
+['UNCLE','👨','Your mother’s or father’s brother is your _____.'],
+['AUNT','👩','Your mother’s or father’s sister is your _____.'],
+['COUSIN','🧒','Your aunt or uncle’s child is your _____.'],
+['NEIGHBOUR','🏠','A person who lives near you is your _____.'],
+['FARMER','👨‍🌾','A person who grows crops or keeps animals is a _____.'],
+['PHOTOGRAPHER','📷','A person who takes photos is a _____.'],
+['FIREFIGHTER','👩‍🚒','A person who puts out fires is a _____.'],
+['LIFEGUARD','🏊','A person who watches swimmers and keeps them safe is a _____.'],
+['DENTIST','🦷','A person who looks after your teeth is a _____.']],
+SCHOOL:[
+['PUPIL','🎒','A child who learns at school is a _____.'],
+['HOMEWORK','📚','Work that a teacher asks you to do at home is _____.'],
+['CANTEEN','🍱','A place at school where you can buy food is the _____.'],
+['TEACHER','👩‍🏫','A person who teaches you at school is your _____.'],
+['NOTEBOOK','📓','You write notes in a _____.'],
+['SUBJECT','📖','English, Maths and Science are school _____.'],
+['TIMETABLE','🗓️','A plan showing your school lessons is a _____.'],
+['RULER','📏','You use a _____ to measure a line.'],
+['RUBBER','🧽','You use a _____ to erase pencil marks.'],
+['SHARPENER','✏️','You use a _____ to make a pencil point sharp.']],
+HOME:[
+['HOUSE','🏠','A building where people live is a _____.'],
+['BEDROOM','🛏️','You sleep in the _____.'],
+['BATHROOM','🛁','You take a shower in the _____.'],
+['KITCHEN','🍳','You cook food in the _____.'],
+['LIVINGROOM','🛋️','You may sit and watch TV in the _____.'],
+['UPSTAIR','🪜','If you go to a higher floor, you go _____.'],
+['FLOOR','🧹','You walk on the _____.'],
+['FRIDGE','🧊','You keep food cold in the _____.'],
+['HALL','🚪','The area just inside the entrance can be called the _____.'],
+['CUSHION','🛋️','A soft pad you put on a chair or sofa is a _____.']],
+FOOD:[
+['BREAKFAST','🍳','The first meal of the day is _____.'],
+['LUNCH','🥪','The meal you usually eat around midday is _____.'],
+['DINNER','🍽️','The evening meal is _____.'],
+['BREAD','🍞','You can make a sandwich with _____.'],
+['THIRSTY','🥤','If you need a drink, you are _____.'],
+['LETTUCE','🥬','A green leafy vegetable often used in salads is _____.'],
+['BISCUITS','🍪','Small baked snacks can be called _____.'],
+['DESSERT','🍰','A sweet food eaten after a meal is _____.'],
+['FLOUR','🌾','You use _____ to make bread and cakes.'],
+['OMELETTE','🍳','An egg dish cooked in a pan is an _____.']],
+CLOTHES:[
+['SOCKS','🧦','You wear these on your feet inside shoes.'],
+['HAT','🧢','You wear this on your head.'],
+['SHOES','👟','You wear these on your feet.'],
+['SKIRT','👗','A piece of clothing usually worn from the waist down is a _____.'],
+['SWEATER','🧶','A warm knitted top is a _____.'],
+['SHIRT','👕','You can wear this with trousers or a skirt.'],
+['DRESS','👗','A one-piece item of clothing is a _____.'],
+['CAP','🧢','A type of soft hat with a peak is a _____.'],
+['TROUSERS','👖','You wear these on your legs.'],
+['JACKET','🧥','You wear this over your clothes when it is cool.']],
+ANIMALS:[
+['WILD','🐅','Animals that live in nature rather than with people are _____.'],
+['TIGER','🐅','This big striped cat is a _____.'],
+['ELEPHANT','🐘','This large animal has a trunk.'],
+['HORSE','🐎','You can ride this animal.'],
+['MOUSE','🐭','A small animal related to rats is a _____.'],
+['GOAT','🐐','This farm animal has horns and says “bleat”.'],
+['DOLPHIN','🐬','This intelligent sea animal is a _____.'],
+['SHARK','🦈','A large fish with sharp teeth is a _____.'],
+['WHALE','🐋','The largest animal on Earth is a _____.'],
+['WOLF','🐺','A wild animal related to dogs is a _____.']],
+NATURE:[
+['CLOUDY','☁️','When the sky is full of clouds, it is _____.'],
+['RIVER','🏞️','A long natural stream of water is a _____.'],
+['MOUNTAIN','⛰️','A very high area of land is a _____.'],
+['BEACH','🏖️','You can find sand beside the sea at a _____.'],
+['FOREST','🌳','A large area covered with many trees is a _____.'],
+['ISLAND','🏝️','Land surrounded by water is an _____.'],
+['PLANET','🌍','Earth is a _____.'],
+['AUTUMN','🍂','The season when many leaves fall is _____.'],
+['WINTER','❄️','The coldest season is _____.'],
+['SPRING','🌸','The season when many flowers begin to grow is _____.']],
+PLACES:[
+['PARK','🌳','A green public place where people can play is a _____.'],
+['LIBRARY','📚','A place where you can borrow books is a _____.'],
+['CINEMA','🎬','A place where you watch films is a _____.'],
+['SHOP','🛍️','A place where you buy things is a _____.'],
+['MUSEUM','🏛️','A place where you can see historical or interesting objects is a _____.'],
+['SWIMMING POOL','🏊','A place where people swim is a _____.'],
+['RESTAURANT','🍽️','A place where you can order a meal is a _____.'],
+['MOSQUE','🕌','A place where Muslims pray is a _____.'],
+['POST OFFICE','📮','A place where you send letters and parcels is a _____.'],
+['CIRCUS','🎪','A place with performers, shows and sometimes acrobats is a _____.']],
+TRANSPORT:[
+['BUS','🚌','A large vehicle that carries many passengers is a _____.'],
+['TRAIN','🚆','A vehicle that travels on rails is a _____.'],
+['BOAT','⛵','A vehicle that travels on water is a _____.'],
+['LORRY','🚚','A large road vehicle used to carry goods is a _____.'],
+['BICYCLE','🚲','A two-wheeled vehicle powered by pedals is a _____.'],
+['MOTORCYCLE','🏍️','A two-wheeled vehicle with an engine is a _____.'],
+['AEROPLANE','✈️','A vehicle that flies is an _____.'],
+['SCOOTER','🛴','A small two-wheeled vehicle you can ride standing up is a _____.'],
+['SKATEBOARD','🛹','A board with wheels that you ride standing on is a _____.'],
+['HELICOPTER','🚁','An aircraft with rotating blades on top is a _____.']],
+VERBS:[
+['READ','📖','You do this when you look at and understand a book.'],
+['WASH','🧼','You do this with soap and water to get clean.'],
+['SWIM','🏊','You do this in a pool or the sea.'],
+['SLEEP','😴','You do this at night to rest.'],
+['WRITE','✍️','You do this with a pencil or pen.'],
+['LISTEN','👂','You do this when you pay attention to a sound.'],
+['SPEAK','🗣️','You do this when you use your voice to talk.'],
+['CLEAN','🧹','You do this when you make something not dirty.'],
+['MAKE','🔨','You do this when you create or produce something.'],
+['STUDY','📚','You do this when you learn and practise a subject.']],
+ADJECTIVES:[
+['DIRTY','🧼','Not clean is _____.'],
+['SCARY','😱','Something that makes you afraid can be _____.'],
+['ANGRY','😠','If you are very upset, you may feel _____.'],
+['TIRED','😴','After a long day, you may feel _____.'],
+['HUNGRY','🍔','If you want to eat, you are _____.'],
+['YOUNG','👶','The opposite of old is _____.'],
+['BORING','🥱','Something that is not interesting can be _____.'],
+['NOISY','📢','A place with lots of loud sounds is _____.'],
+['DELICIOUS','😋','Food that tastes very good is _____.'],
+['FUNNY','😂','Something that makes you laugh is _____.']
+]};
+
+const TOPIC_INFO={
+PEOPLE:{name:'PEOPLE',emoji:'👨‍👩‍👧',color:'bg-pink-100'},
+SCHOOL:{name:'SCHOOL',emoji:'🏫',color:'bg-blue-100'},
+HOME:{name:'HOME',emoji:'🏠',color:'bg-green-100'},
+FOOD:{name:'FOOD',emoji:'🍎',color:'bg-orange-100'},
+CLOTHES:{name:'CLOTHES',emoji:'👕',color:'bg-purple-100'},
+ANIMALS:{name:'ANIMALS',emoji:'🐯',color:'bg-yellow-100'},
+NATURE:{name:'NATURE',emoji:'🌳',color:'bg-emerald-100'},
+PLACES:{name:'PLACES',emoji:'📍',color:'bg-cyan-100'},
+TRANSPORT:{name:'TRANSPORT',emoji:'🚗',color:'bg-red-100'},
+VERBS:{name:'VERBS',emoji:'🏃',color:'bg-indigo-100'},
+ADJECTIVES:{name:'ADJECTIVES',emoji:'✨',color:'bg-fuchsia-100'}};
+
+const soundManager={
+enabled:true,
+init(){const s=localStorage.getItem('tz_english_champion_sound');if(s!==null)this.enabled=s==='true';this.updateButton()},
+toggle(){this.enabled=!this.enabled;localStorage.setItem('tz_english_champion_sound',this.enabled);this.updateButton();if(this.enabled)this.beep(600,.08)},
+updateButton(){const b=document.getElementById('sound-toggle');if(b)b.textContent=this.enabled?'🔊':'🔇'},
+beep(freq=500,duration=.1){if(!this.enabled)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=new C(),o=c.createOscillator(),g=c.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+duration);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+duration)}catch(e){}},
+correct(){this.beep(800,.15)},wrong(){this.beep(220,.18)}};
+
+const router={
+current:'home',
+go(screenName){
+if(screenName!=='quiz')gameState.clearTimer();
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+const t=document.getElementById(screenName+'-screen');if(t)t.classList.add('active');
+this.current=screenName;
+document.getElementById('global-header')?.classList.toggle('hidden',screenName==='home'||screenName==='name');
+gameState.syncGlobalHeaderState();
+if(screenName==='topics')gameState.renderTopics();
+if(screenName==='score')gameState.renderAchievementsView();
+window.scrollTo(0,0)}};
+
+const gameState={
+playerName:'',currentTopic:'',currentQuestionIndex:0,currentScore:0,correctCount:0,
+wrongQuestionIndices:[],retryMode:false,retryQuestionIndices:[],retryPosition:0,
+lastResult:{score:0,correct:0,percentage:0,stars:0,topic:''},
+timerInterval:null,timeLeft:60,
+
+init(){
+this.loadData();soundManager.init();this.syncGlobalHeaderState();this.renderAchievementsView();
+document.getElementById('player-name-input')?.addEventListener('keydown',e=>{if(e.key==='Enter')this.savePlayerName()});
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+},
+
+loadData(){try{const d=JSON.parse(localStorage.getItem(storageKey)||'{}');this.playerName=d.playerName||'';this.lastResult=d.lastResult||this.lastResult}catch(e){}},
+saveData(){localStorage.setItem(storageKey,JSON.stringify({playerName:this.playerName,lastResult:this.lastResult}))},
+syncGlobalHeaderState(){const n=document.getElementById('global-player-name');if(n){n.textContent=this.playerName?'👋 '+this.playerName:'';n.classList.toggle('hidden',!this.playerName)}},
+
+savePlayerName(){
+const i=document.getElementById('player-name-input'),n=(i?.value||'').trim();
+if(!n){alert('Please enter your name.');i?.focus();return}
+this.playerName=n;this.saveData();this.syncGlobalHeaderState();router.go('topics')},
+
+resetAllData(){
+if(!confirm('Reset all saved progress, scores and player name?'))return;
+localStorage.removeItem(storageKey);
+this.playerName='';this.currentTopic='';this.currentQuestionIndex=0;this.currentScore=0;this.correctCount=0;
+this.wrongQuestionIndices=[];this.retryMode=false;this.retryQuestionIndices=[];this.retryPosition=0;
+this.lastResult={score:0,correct:0,percentage:0,stars:0,topic:''};this.clearTimer();
+const i=document.getElementById('player-name-input');if(i)i.value='';
+this.renderAchievementsView();this.syncGlobalHeaderState();router.go('home')},
+
+renderTopics(){
+const g=document.getElementById('topic-grid');if(!g)return;
+document.getElementById('topics-welcome').textContent=this.playerName?`Ready, ${this.playerName}? Choose your topic!`:'Choose your topic and start playing!';
+g.innerHTML='';
+Object.entries(TOPIC_INFO).forEach(([key,info])=>{
+const c=document.createElement('button');c.type='button';
+c.className=`topic-card neo rounded-2xl p-4 text-left ${info.color}`;
+c.onclick=()=>this.startTopic(key);
+c.innerHTML=`<div class="flex items-center gap-3"><div class="text-4xl shrink-0">${info.emoji}</div><div class="min-w-0"><div class="text-xl font-bold leading-tight">${info.name}</div><div class="text-xs font-medium mt-1">10 QUESTIONS • 100 POINTS</div></div></div><div class="mt-3 text-right text-sm font-bold">LET'S PLAY →</div>`;
+g.appendChild(c)})},
+
+startTopic(topic){
+this.currentTopic=topic;this.currentQuestionIndex=0;this.currentScore=0;this.correctCount=0;this.wrongQuestionIndices=[];
+this.retryMode=false;this.retryQuestionIndices=[];this.retryPosition=0;router.go('quiz');this.loadQuestion()},
+
+getActiveQuestionIndex(){return this.retryMode?this.retryQuestionIndices[this.retryPosition]:this.currentQuestionIndex},
+getCurrentQuestion(){return QUESTION_BANK[this.currentTopic][this.getActiveQuestionIndex()]},
+
+loadQuestion(){
+const q=this.getCurrentQuestion();if(!q)return;
+const [answer,emoji,description]=q;
+document.getElementById('quiz-topic').textContent=`${TOPIC_INFO[this.currentTopic].emoji} ${TOPIC_INFO[this.currentTopic].name}`;
+const total=this.retryMode?this.retryQuestionIndices.length:QUESTION_BANK[this.currentTopic].length;
+const pos=this.retryMode?this.retryPosition+1:this.currentQuestionIndex+1;
+document.getElementById('quiz-progress').textContent=`${pos} / ${total}`;
+document.getElementById('quiz-score').textContent=this.currentScore;
+document.getElementById('question-visual').textContent=emoji;
+document.getElementById('question-description').textContent=description;
+document.getElementById('hint-text').textContent=answer[0];
+
+const boxes=document.getElementById('letter-boxes');boxes.innerHTML='';
+[...answer].forEach((letter,index)=>{
+if(letter===' '){const s=document.createElement('div');s.style.width='16px';boxes.appendChild(s);return}
+const input=document.createElement('input');input.className='letter-box'+(index===0?' fixed':'');input.maxLength=1;input.autocomplete='off';input.dataset.index=index;
+if(index===0){input.value=letter;input.disabled=true;input.setAttribute('aria-label','First letter hint')}
+else{
+input.addEventListener('input',e=>{
+e.target.value=e.target.value.replace(/[^a-zA-Z]/g,'').toUpperCase();
+if(e.target.value){const a=[...boxes.querySelectorAll('input:not(:disabled)')],n=a.indexOf(e.target);if(n>=0&&n+1<a.length)a[n+1].focus()}
+this.checkIfComplete()});
+input.addEventListener('keydown',e=>{
+if(e.key==='Backspace'&&!e.target.value){const a=[...boxes.querySelectorAll('input:not(:disabled)')],n=a.indexOf(e.target);if(n>0){a[n-1].focus();a[n-1].value=''}}
+if(e.key==='Enter')this.checkLetterAnswer()})}
+boxes.appendChild(input)});
+const b=document.getElementById('check-answer-btn');b.disabled=true;b.classList.add('opacity-50');this.startTimer();
+setTimeout(()=>boxes.querySelector('input:not(:disabled)')?.focus(),50)},
+
+checkIfComplete(){
+const a=[...document.querySelectorAll('#letter-boxes input:not(:disabled)')],complete=a.every(i=>i.value.trim().length===1);
+const b=document.getElementById('check-answer-btn');b.disabled=!complete;b.classList.toggle('opacity-50',!complete)},
+
+checkLetterAnswer(){
+const q=this.getCurrentQuestion();if(!q)return;const answer=q[0];
+const inputs=[...document.querySelectorAll('#letter-boxes input')];let typed='',ci=0;
+inputs.forEach(input=>{if(answer[ci]===' '){typed+=' ';ci++}typed+=(input.value||'').toUpperCase();ci++});
+const correct=typed.replace(/\s/g,'')===answer.replace(/\s/g,'');
+if(correct){if(!this.retryMode){this.currentScore+=10;this.correctCount++}this.showFeedback(true,answer);soundManager.correct()}
+else{const idx=this.getActiveQuestionIndex();if(!this.retryMode&&!this.wrongQuestionIndices.includes(idx))this.wrongQuestionIndices.push(idx);this.showFeedback(false,answer);soundManager.wrong()}
+this.clearTimer();document.getElementById('check-answer-btn').disabled=true},
+
+showFeedback(correct,answer,timeout=false){
+document.getElementById('feedback-icon').textContent=correct?'🎉':timeout?'⏰':'💪';
+document.getElementById('feedback-title').textContent=correct?'CORRECT!':timeout?"TIME'S UP!":'NOT QUITE!';
+document.getElementById('feedback-answer').textContent=correct?'Great job! +10 points':`The answer is: ${answer}`;
+document.getElementById('feedback-card').className=`neo rounded-3xl max-w-xl w-full p-8 text-center ${correct?'bg-green-100':'bg-pink-100'}`;
+router.go('feedback')},
+
+nextQuestion(){
+if(this.retryMode){this.retryPosition++;if(this.retryPosition>=this.retryQuestionIndices.length)this.finishRetry();else{router.go('quiz');this.loadQuestion()}return}
+this.currentQuestionIndex++;
+if(this.currentQuestionIndex>=QUESTION_BANK[this.currentTopic].length)this.finishTopic();else{router.go('quiz');this.loadQuestion()}},
+
+finishTopic(){
+const percentage=Math.round((this.correctCount/10)*100),stars=this.calculateStars(percentage);
+this.lastResult={score:this.currentScore,correct:this.correctCount,percentage,stars,topic:this.currentTopic};
+this.saveData();this.renderResult();router.go('result')},
+
+calculateStars(p){return p>=90?3:p>=70?2:p>=50?1:0},
+
+renderResult(){
+const r=this.lastResult;
+document.getElementById('result-stars').textContent='⭐'.repeat(r.stars)+'☆'.repeat(3-r.stars);
+document.getElementById('result-score').textContent=r.score;
+document.getElementById('result-correct').textContent=`${r.correct}/10`;
+document.getElementById('result-percentage').textContent=`${r.percentage}%`;
+document.getElementById('result-message').textContent=r.percentage>=90?'Amazing work!':r.percentage>=70?'Well done! Keep practising!':r.percentage>=50?'Good effort! Try again and improve!':'Keep practising. You can do it!';
+document.getElementById('retry-wrong-btn').style.display=this.wrongQuestionIndices.length?'block':'none'},
+
+startRetry(){if(!this.wrongQuestionIndices.length)return;this.retryMode=true;this.retryQuestionIndices=[...this.wrongQuestionIndices];this.retryPosition=0;router.go('quiz');this.loadQuestion()},
+finishRetry(){this.retryMode=false;this.retryQuestionIndices=[];this.retryPosition=0;router.go('result')},
+playAgain(){this.startTopic(this.currentTopic)},
+
+showCertificate(){
+const r=this.lastResult;
+document.getElementById('certificate-name').textContent=this.playerName||'English Champion';
+document.getElementById('certificate-stars').textContent='⭐'.repeat(r.stars)+'☆'.repeat(3-r.stars);
+document.getElementById('certificate-score').textContent=`${r.score} POINTS • ${r.percentage}%`;
+document.getElementById('certificate-topic').textContent=TOPIC_INFO[r.topic]?.name||r.topic;
+router.go('certificate')},
+
+renderAchievementsView(){
+const e=document.getElementById('score-content');if(!e)return;const r=this.lastResult;
+if(!r.topic){e.innerHTML=`<div class="neo bg-white rounded-3xl p-8 text-center"><div class="text-6xl">🌟</div><h3 class="text-2xl font-bold mt-4">No score yet!</h3><p class="mt-2">Play a topic to start your English Champion journey.</p><button onclick="router.go('name')" class="neo mt-6 bg-yellow-300 rounded-2xl px-7 py-3 font-bold">🚀 LET'S PLAY!</button></div>`;return}
+e.innerHTML=`<div class="neo bg-white rounded-3xl p-7"><div class="text-center"><div class="text-5xl">${'⭐'.repeat(r.stars)}${'☆'.repeat(3-r.stars)}</div><h3 class="text-3xl font-bold mt-3">${this.playerName||'English Champion'}</h3><p class="mt-2 font-bold">${TOPIC_INFO[r.topic]?.name||r.topic}</p></div><div class="grid grid-cols-3 gap-3 mt-7 text-center"><div class="bg-yellow-100 rounded-2xl p-4"><div class="text-3xl font-bold">${r.score}</div><div>POINTS</div></div><div class="bg-green-100 rounded-2xl p-4"><div class="text-3xl font-bold">${r.correct}/10</div><div>CORRECT</div></div><div class="bg-blue-100 rounded-2xl p-4"><div class="text-3xl font-bold">${r.percentage}%</div><div>SCORE</div></div></div></div>`},
+
+startTimer(){this.clearTimer();this.timeLeft=60;this.updateTimerUI();this.timerInterval=setInterval(()=>{this.timeLeft--;this.updateTimerUI();if(this.timeLeft<=0)this.handleTimeout()},1000)},
+updateTimerUI(){document.getElementById('timer-text').textContent=`${this.timeLeft}s`;const f=document.getElementById('timer-fill');f.style.width=`${this.timeLeft/60*100}%`;f.style.backgroundColor=this.timeLeft<=10?'#ef4444':this.timeLeft<=20?'#f59e0b':'#4ade80'},
+handleTimeout(){
+if(this.timeLeft>0)return;this.clearTimer();const q=this.getCurrentQuestion();if(!q)return;
+if(!this.retryMode){const idx=this.getActiveQuestionIndex();if(!this.wrongQuestionIndices.includes(idx))this.wrongQuestionIndices.push(idx)}
+soundManager.wrong();this.showFeedback(false,q[0],true)},
+clearTimer(){if(this.timerInterval){clearInterval(this.timerInterval);this.timerInterval=null}}
+};
+
+gameState.init();
+</script>
+</body>
+</html>
