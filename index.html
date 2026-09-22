@@ -1,0 +1,2599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffcf33">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>WORD COMPLETION — TZ EDU KIDS</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#fff7df;
+  color:#172033;
+}
+
+body{
+  min-height:100vh;
+}
+
+button,
+input{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:20px 16px 30px;
+}
+
+.screen.active{
+  display:flex;
+  flex-direction:column;
+}
+
+.container{
+  width:100%;
+  max-width:900px;
+  margin:0 auto;
+}
+
+/* =========================
+   HOME
+========================= */
+
+#homeScreen{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.brand{
+  font-size:clamp(1.4rem,5vw,2rem);
+  font-weight:900;
+  letter-spacing:1px;
+  margin-bottom:4px;
+}
+
+.trophy{
+  font-size:clamp(2.8rem,12vw,4.5rem);
+  line-height:1;
+  margin:4px 0 10px;
+}
+
+.main-title{
+  font-size:clamp(2.5rem,10vw,5rem);
+  line-height:.95;
+  font-weight:1000;
+  letter-spacing:-2px;
+  margin:0 0 34px;
+  text-transform:uppercase;
+}
+
+.home-buttons{
+  width:100%;
+  max-width:430px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:auto;
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn{
+  width:100%;
+  border:4px solid #172033;
+  border-radius:18px;
+  padding:17px 20px;
+  font-size:1.15rem;
+  font-weight:900;
+  box-shadow:6px 6px 0 #172033;
+  transition:.12s ease;
+}
+
+.primary-btn{
+  background:#ffcf33;
+}
+
+.secondary-btn{
+  background:#ffffff;
+}
+
+.danger-btn{
+  background:#ff8b8b;
+}
+
+.primary-btn:active,
+.secondary-btn:active,
+.danger-btn:active{
+  transform:translate(4px,4px);
+  box-shadow:2px 2px 0 #172033;
+}
+
+/* =========================
+   TOPIC SCREEN
+========================= */
+
+.screen-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.back-btn,
+.sound-btn{
+  border:3px solid #172033;
+  background:#fff;
+  border-radius:12px;
+  min-width:48px;
+  height:44px;
+  font-size:1.25rem;
+  font-weight:900;
+  box-shadow:3px 3px 0 #172033;
+}
+
+.screen-title{
+  margin:0;
+  font-size:clamp(1.6rem,6vw,2.5rem);
+  font-weight:1000;
+  text-align:center;
+  flex:1;
+}
+
+.topic-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  width:100%;
+  max-width:760px;
+  margin:0 auto;
+}
+
+.topic-card{
+  border:4px solid #172033;
+  border-radius:18px;
+  background:#fff;
+  min-height:112px;
+  padding:15px 10px;
+  box-shadow:5px 5px 0 #172033;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  transition:.12s ease;
+}
+
+.topic-card:active{
+  transform:translate(4px,4px);
+  box-shadow:1px 1px 0 #172033;
+}
+
+.topic-icon{
+  font-size:2rem;
+  line-height:1;
+  margin-bottom:8px;
+}
+
+.topic-name{
+  font-size:1rem;
+  font-weight:1000;
+  text-transform:uppercase;
+  line-height:1.1;
+}
+
+.topic-card.score-card{
+  background:#ffcf33;
+}
+
+.score-card .topic-icon{
+  font-size:2.1rem;
+}
+
+/* =========================
+   QUIZ
+========================= */
+
+#quizScreen{
+  align-items:center;
+}
+
+.quiz-top{
+  width:100%;
+  max-width:760px;
+  margin:0 auto;
+}
+
+.quiz-bar{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.quiz-topic{
+  font-size:1rem;
+  font-weight:1000;
+  text-transform:uppercase;
+}
+
+.quiz-progress{
+  text-align:center;
+  font-size:.95rem;
+  font-weight:900;
+}
+
+.quiz-score{
+  text-align:right;
+  font-size:1rem;
+  font-weight:1000;
+}
+
+.timer-wrap{
+  width:100%;
+  height:18px;
+  border:3px solid #172033;
+  border-radius:20px;
+  background:#fff;
+  overflow:hidden;
+  margin-bottom:25px;
+}
+
+.timer-bar{
+  height:100%;
+  width:100%;
+  background:#6bd66b;
+  transition:width:1s linear;
+}
+
+.timer-bar.warning{
+  background:#ffb52e;
+}
+
+.timer-bar.danger{
+  background:#ff6666;
+}
+
+.question-card{
+  width:100%;
+  border:4px solid #172033;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:6px 6px 0 #172033;
+  padding:22px 16px 28px;
+}
+
+.question-emoji{
+  font-size:3.2rem;
+  text-align:center;
+  line-height:1;
+  margin-bottom:15px;
+}
+
+.question-description{
+  text-align:center;
+  font-size:clamp(1.1rem,4.5vw,1.5rem);
+  line-height:1.4;
+  font-weight:800;
+  max-width:680px;
+  margin:0 auto;
+}
+
+/* HINT */
+
+.hint-box{
+  width:100%;
+  max-width:300px;
+  margin:22px auto 0;
+  border:4px solid #172033;
+  border-radius:16px;
+  background:#ffcf33;
+  padding:10px 14px;
+  text-align:center;
+}
+
+.hint-label{
+  font-size:.78rem;
+  font-weight:1000;
+  text-transform:uppercase;
+  margin-bottom:2px;
+}
+
+.hint-letter{
+  font-size:1.65rem;
+  line-height:1.1;
+  font-weight:1000;
+}
+
+/*
+  ANSWER AREA
+  All letters stay on one row.
+  On narrow screens the row can scroll horizontally.
+*/
+
+.answer-area{
+  width:100%;
+  max-width:100%;
+  margin:30px auto 0;
+  overflow-x:auto;
+  overflow-y:visible;
+  padding:6px 4px 10px;
+  scrollbar-width:none;
+}
+
+.answer-area::-webkit-scrollbar{
+  display:none;
+}
+
+.answer-word{
+  width:max-content;
+  min-width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+
+.answer-row{
+  width:max-content;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  flex-wrap:nowrap;
+  gap:var(--slot-gap,5px);
+  overflow:visible;
+  margin:0 auto;
+}
+
+.letter-box{
+  width:var(--slot-size,32px);
+  min-width:var(--slot-size,32px);
+  max-width:var(--slot-size,32px);
+  height:44px;
+  flex:0 0 var(--slot-size,32px);
+
+  border:none;
+  border-bottom:4px solid #172033;
+  border-radius:0;
+
+  background:transparent;
+  text-align:center;
+  outline:none;
+
+  padding:0;
+  line-height:1;
+
+  font-size:var(--slot-font,1.05rem);
+  font-weight:1000;
+  color:#172033;
+}
+
+.letter-box:focus{
+  border-bottom-color:#ff9f1c;
+}
+
+.check-btn{
+  display:block;
+  width:100%;
+  max-width:340px;
+  margin:25px auto 0;
+  border:4px solid #172033;
+  border-radius:16px;
+  padding:14px 20px;
+  background:#6bd66b;
+  color:#172033;
+  font-size:1.05rem;
+  font-weight:1000;
+  box-shadow:5px 5px 0 #172033;
+}
+
+.check-btn:active{
+  transform:translate(4px,4px);
+  box-shadow:1px 1px 0 #172033;
+}
+
+.feedback{
+  min-height:34px;
+  text-align:center;
+  margin-top:15px;
+  font-size:1rem;
+  font-weight:1000;
+}
+
+.feedback.correct{
+  color:#168b35;
+}
+
+.feedback.wrong{
+  color:#d52d2d;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+#resultScreen{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.result-card{
+  width:100%;
+  max-width:560px;
+  border:4px solid #172033;
+  border-radius:24px;
+  background:#fff;
+  box-shadow:7px 7px 0 #172033;
+  padding:28px 20px;
+}
+
+.result-trophy{
+  font-size:4rem;
+}
+
+.result-title{
+  font-size:2rem;
+  font-weight:1000;
+  margin:8px 0;
+}
+
+.result-score{
+  font-size:3rem;
+  font-weight:1000;
+  margin:12px 0;
+}
+
+.result-stars{
+  font-size:2rem;
+  margin:10px 0 22px;
+}
+
+.result-actions{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* =========================
+   MY SCORE
+========================= */
+
+#scoreScreen{
+  align-items:center;
+}
+
+.score-panel{
+  width:100%;
+  max-width:760px;
+  border:4px solid #172033;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:6px 6px 0 #172033;
+  padding:20px;
+}
+
+.score-total{
+  text-align:center;
+  font-size:2.4rem;
+  font-weight:1000;
+  margin-bottom:20px;
+}
+
+.score-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.score-item{
+  border:3px solid #172033;
+  border-radius:14px;
+  padding:12px 10px;
+  background:#fff7df;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-weight:900;
+}
+
+.score-item span:last-child{
+  font-weight:1000;
+}
+
+/* =========================
+   CERTIFICATE
+========================= */
+
+#certificateScreen{
+  align-items:center;
+  justify-content:center;
+}
+
+.certificate{
+  width:100%;
+  max-width:760px;
+  background:#fffdf5;
+  border:8px solid #172033;
+  border-radius:20px;
+  box-shadow:8px 8px 0 #172033;
+  padding:30px 18px;
+  text-align:center;
+  position:relative;
+}
+
+.certificate::before{
+  content:"";
+  position:absolute;
+  inset:10px;
+  border:3px dashed #172033;
+  border-radius:12px;
+  pointer-events:none;
+}
+
+.certificate-content{
+  position:relative;
+  z-index:1;
+}
+
+.certificate-brand{
+  font-size:1.2rem;
+  font-weight:1000;
+  letter-spacing:1px;
+  margin-bottom:15px;
+}
+
+.certificate-trophy{
+  font-size:3.5rem;
+  margin-bottom:5px;
+}
+
+.certificate-heading{
+  font-size:clamp(1.8rem,7vw,3rem);
+  font-weight:1000;
+  margin:4px 0 12px;
+  text-transform:uppercase;
+}
+
+/* WORD COMPLETION stays side-by-side */
+.certificate-heading .word-completion{
+  display:inline-flex;
+  gap:10px;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+}
+
+.certificate-subtitle{
+  font-size:1rem;
+  font-weight:800;
+  margin-bottom:15px;
+}
+
+.certificate-name{
+  font-size:clamp(1.8rem,7vw,3rem);
+  font-weight:1000;
+  margin:15px 0;
+  border-bottom:3px solid #172033;
+  display:inline-block;
+  padding:0 18px 5px;
+}
+
+.certificate-message{
+  font-size:1rem;
+  line-height:1.5;
+  font-weight:800;
+  max-width:560px;
+  margin:0 auto 15px;
+}
+
+.certificate-score{
+  font-size:1.8rem;
+  font-weight:1000;
+  margin:10px 0;
+}
+
+.certificate-date{
+  font-size:.85rem;
+  font-weight:700;
+  margin-top:14px;
+}
+
+.certificate-actions{
+  width:100%;
+  max-width:500px;
+  margin:25px auto 0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(23,32,51,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:9999;
+}
+
+.modal-backdrop.show{
+  display:flex;
+}
+
+.modal{
+  width:100%;
+  max-width:390px;
+  border:4px solid #172033;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:7px 7px 0 #172033;
+  padding:22px 18px;
+  text-align:center;
+}
+
+.modal h3{
+  margin:0 0 10px;
+  font-size:1.35rem;
+  font-weight:1000;
+}
+
+.modal p{
+  margin:0 0 20px;
+  line-height:1.45;
+  font-weight:700;
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+}
+
+.modal-actions button{
+  flex:1;
+  border:3px solid #172033;
+  border-radius:13px;
+  padding:12px 8px;
+  font-weight:1000;
+  background:#fff;
+}
+
+.modal-actions .confirm{
+  background:#ff8b8b;
+}
+
+/* =========================
+   NAME MODAL
+========================= */
+
+.name-input{
+  width:100%;
+  border:3px solid #172033;
+  border-radius:12px;
+  padding:13px;
+  font-size:1rem;
+  font-weight:800;
+  margin-bottom:14px;
+  outline:none;
+}
+
+.name-input:focus{
+  border-color:#ff9f1c;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:520px){
+
+  .screen{
+    padding:16px 12px 25px;
+  }
+
+  .main-title{
+    font-size:clamp(2.1rem,10vw,3.3rem);
+    margin-bottom:28px;
+  }
+
+  .topic-grid{
+    gap:11px;
+  }
+
+  .topic-card{
+    min-height:100px;
+    padding:12px 7px;
+    border-width:3px;
+    border-radius:15px;
+    box-shadow:4px 4px 0 #172033;
+  }
+
+  .topic-icon{
+    font-size:1.7rem;
+  }
+
+  .topic-name{
+    font-size:.82rem;
+  }
+
+  .question-card{
+    border-width:3px;
+    box-shadow:5px 5px 0 #172033;
+    padding:20px 12px 24px;
+  }
+
+  .question-description{
+    font-size:1.05rem;
+  }
+
+  .hint-box{
+    max-width:250px;
+  }
+
+  .score-list{
+    grid-template-columns:1fr;
+  }
+
+  .certificate{
+    border-width:6px;
+    box-shadow:6px 6px 0 #172033;
+    padding:25px 12px;
+  }
+
+  .certificate::before{
+    inset:7px;
+  }
+
+  .certificate-heading .word-completion{
+    gap:7px;
+  }
+}
+
+@media(max-width:360px){
+  .topic-name{
+    font-size:.76rem;
+  }
+
+  .topic-card{
+    min-height:94px;
+  }
+
+  .quiz-bar{
+    grid-template-columns:1fr auto;
+  }
+
+  .quiz-progress{
+    grid-column:1 / -1;
+    grid-row:2;
+  }
+
+  .quiz-score{
+    text-align:right;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     HOME
+========================= -->
+
+<section id="homeScreen" class="screen active">
+  <div class="container">
+
+    <div class="brand">TZ EDU KIDS</div>
+
+    <div class="trophy">🏆</div>
+
+    <h1 class="main-title">WORD<br>COMPLETION</h1>
+
+    <div class="home-buttons">
+      <button class="primary-btn" id="playBtn">LET'S PLAY</button>
+      <button class="danger-btn" id="resetBtn">RESET</button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     TOPICS
+========================= -->
+
+<section id="topicScreen" class="screen">
+  <div class="container">
+
+    <div class="screen-header">
+      <button class="back-btn" id="topicBackBtn">←</button>
+
+      <h2 class="screen-title">CHOOSE A TOPIC</h2>
+
+      <button class="sound-btn" id="topicSoundBtn">🔊</button>
+    </div>
+
+    <div class="topic-grid" id="topicGrid"></div>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     QUIZ
+========================= -->
+
+<section id="quizScreen" class="screen">
+  <div class="quiz-top">
+
+    <div class="quiz-bar">
+      <div class="quiz-topic" id="quizTopic">PEOPLE</div>
+      <div class="quiz-progress" id="quizProgress">1 / 10</div>
+      <div class="quiz-score" id="quizScore">0 pts</div>
+    </div>
+
+    <div class="timer-wrap">
+      <div class="timer-bar" id="timerBar"></div>
+    </div>
+
+    <div class="question-card">
+
+      <div class="question-emoji" id="questionEmoji">👨‍👩‍👧</div>
+
+      <div class="question-description" id="questionDescription">
+        The people who take care of you.
+      </div>
+
+      <!-- FIRST LETTER HINT ONLY HERE -->
+      <div class="hint-box">
+        <div class="hint-label">💡 Hint</div>
+        <div class="hint-letter" id="hintLetter">P</div>
+      </div>
+
+      <!-- ANSWER BOXES ARE EMPTY -->
+      <div class="answer-area" id="answerArea"></div>
+
+      <button class="check-btn" id="checkBtn">CHECK ANSWER</button>
+
+      <div class="feedback" id="feedback"></div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =========================
+     RESULT
+========================= -->
+
+<section id="resultScreen" class="screen">
+  <div class="result-card">
+
+    <div class="result-trophy">🏆</div>
+
+    <div class="result-title" id="resultTitle">
+      WELL DONE!
+    </div>
+
+    <div class="result-score" id="resultScore">
+      100
+    </div>
+
+    <div class="result-stars" id="resultStars">
+      ⭐⭐⭐
+    </div>
+
+    <div class="result-actions">
+      <button class="primary-btn" id="retryBtn">PLAY AGAIN</button>
+      <button class="secondary-btn" id="certificateBtn">VIEW CERTIFICATE</button>
+      <button class="secondary-btn" id="topicsBtn">CHOOSE TOPIC</button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     SCORE
+========================= -->
+
+<section id="scoreScreen" class="screen">
+  <div class="container">
+
+    <div class="screen-header">
+      <button class="back-btn" id="scoreBackBtn">←</button>
+
+      <h2 class="screen-title">MY SCORE</h2>
+
+      <div style="width:48px;"></div>
+    </div>
+
+    <div class="score-panel">
+
+      <div class="score-total" id="totalScore">
+        0 POINTS
+      </div>
+
+      <div class="score-list" id="scoreList"></div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     CERTIFICATE
+========================= -->
+
+<section id="certificateScreen" class="screen">
+
+  <div class="certificate">
+
+    <div class="certificate-content">
+
+      <div class="certificate-brand">
+        TZ EDU KIDS
+      </div>
+
+      <div class="certificate-trophy">
+        🏆
+      </div>
+
+      <!-- WORD COMPLETION BESIDE EACH OTHER -->
+      <div class="certificate-heading">
+        <span class="word-completion">
+          <span>WORD</span>
+          <span>COMPLETION</span>
+        </span>
+      </div>
+
+      <div class="certificate-subtitle">
+        CERTIFICATE OF ACHIEVEMENT
+      </div>
+
+      <div class="certificate-message">
+        This certificate is proudly presented to
+      </div>
+
+      <div class="certificate-name" id="certificateName">
+        CHAMPION
+      </div>
+
+      <div class="certificate-message">
+        for completing a Word Completion challenge
+        and practising English vocabulary.
+      </div>
+
+      <div class="certificate-score" id="certificateScore">
+        SCORE: 100 / 100
+      </div>
+
+      <div class="certificate-date" id="certificateDate">
+        DATE
+      </div>
+
+      <div class="certificate-actions">
+        <button class="primary-btn" id="certificateBackBtn">
+          BACK
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     RESET MODAL
+========================= -->
+
+<div class="modal-backdrop" id="resetModal">
+
+  <div class="modal">
+
+    <h3>RESET PROGRESS?</h3>
+
+    <p>
+      This will clear your saved scores and progress.
+      Are you sure?
+    </p>
+
+    <div class="modal-actions">
+      <button id="cancelResetBtn">
+        CANCEL
+      </button>
+
+      <button class="confirm" id="confirmResetBtn">
+        RESET
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     NAME MODAL
+========================= -->
+
+<div class="modal-backdrop" id="nameModal">
+
+  <div class="modal">
+
+    <h3>ENTER YOUR NAME</h3>
+
+    <input
+      type="text"
+      id="nameInput"
+      class="name-input"
+      maxlength="30"
+      placeholder="Your name"
+      autocomplete="off"
+    >
+
+    <div class="modal-actions">
+
+      <button id="cancelNameBtn">
+        CANCEL
+      </button>
+
+      <button class="confirm" id="startNameBtn">
+        START
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   QUESTION BANK
+   DESCRIPTION ONLY
+========================================================= */
+
+const QUESTION_BANK = {
+
+  PEOPLE:[
+    ['PARENTS','👨‍👩‍👧','The people who take care of you.'],
+    ['UNCLE','👨','Your mother’s or father’s brother.'],
+    ['AUNT','👩','Your mother’s or father’s sister.'],
+    ['COUSIN','🧒','Your aunt or uncle’s child.'],
+    ['NEIGHBOUR','🏠','A person who lives near you.'],
+    ['FARMER','👨‍🌾','A person who grows crops or keeps animals.'],
+    ['PHOTOGRAPHER','📷','A person who takes photos.'],
+    ['FIREFIGHTER','👩‍🚒','A person who puts out fires.'],
+    ['LIFEGUARD','🏊','A person who watches swimmers and keeps them safe.'],
+    ['DENTIST','🦷','A person who looks after your teeth.']
+  ],
+
+  SCHOOL:[
+    ['PUPIL','🎒','A child who learns at school.'],
+    ['HOMEWORK','📚','Work that a teacher asks you to do at home.'],
+    ['CANTEEN','🍱','A place at school where you can buy food.'],
+    ['TEACHER','👩‍🏫','A person who teaches you at school.'],
+    ['NOTEBOOK','📓','A book used for writing notes.'],
+    ['SUBJECT','📖','English, Maths and Science are examples of these.'],
+    ['TIMETABLE','🗓️','A plan showing your school lessons.'],
+    ['RULER','📏','A tool used to measure a line.'],
+    ['RUBBER','🧽','A tool used to erase pencil marks.'],
+    ['SHARPENER','✏️','A tool used to make a pencil point sharp.']
+  ],
+
+  HOME:[
+    ['HOUSE','🏠','A building where people live.'],
+    ['BEDROOM','🛏️','A room where you sleep.'],
+    ['BATHROOM','🛁','A room where you take a shower or bath.'],
+    ['KITCHEN','🍳','A room where you cook food.'],
+    ['LIVING ROOM','🛋️','A room where you may sit and watch TV.'],
+    ['UPSTAIRS','🪜','A word that describes going to a higher floor.'],
+    ['FLOOR','🧹','The surface that you walk on inside a building.'],
+    ['FRIDGE','🧊','An appliance used to keep food cold.'],
+    ['HALL','🚪','An area just inside the entrance of a house.'],
+    ['CUSHION','🛋️','A soft pad placed on a chair or sofa.']
+  ],
+
+  FOOD:[
+    ['BREAKFAST','🍳','The first meal of the day.'],
+    ['LUNCH','🥪','The meal usually eaten around midday.'],
+    ['DINNER','🍽️','The evening meal.'],
+    ['BREAD','🍞','A food often used to make sandwiches.'],
+    ['THIRSTY','🥤','A feeling when you need a drink.'],
+    ['LETTUCE','🥬','A green leafy vegetable often used in salads.'],
+    ['BISCUITS','🍪','Small baked snacks.'],
+    ['DESSERT','🍰','A sweet food eaten after a meal.'],
+    ['FLOUR','🌾','An ingredient used to make bread and cakes.'],
+    ['OMELETTE','🍳','An egg dish cooked in a pan.']
+  ],
+
+  CLOTHES:[
+    ['SOCKS','🧦','Clothing worn on your feet inside shoes.'],
+    ['HAT','🧢','Something worn on your head.'],
+    ['SHOES','👟','Footwear worn on your feet.'],
+    ['SKIRT','👗','Clothing usually worn from the waist down.'],
+    ['SWEATER','🧶','A warm knitted top.'],
+    ['SHIRT','👕','Clothing that can be worn with trousers or a skirt.'],
+    ['DRESS','👗','A one-piece item of clothing.'],
+    ['CAP','🧢','A type of soft hat with a peak.'],
+    ['TROUSERS','👖','Clothing worn on your legs.'],
+    ['JACKET','🧥','Clothing worn over other clothes when it is cool.']
+  ],
+
+  ANIMALS:[
+    ['WILD','🐅','A word describing animals that live in nature rather than with people.'],
+    ['TIGER','🐅','A big striped cat.'],
+    ['ELEPHANT','🐘','A large animal with a trunk.'],
+    ['HORSE','🐎','An animal that people can ride.'],
+    ['MOUSE','🐭','A small animal related to rats.'],
+    ['GOAT','🐐','A farm animal with horns.'],
+    ['DOLPHIN','🐬','An intelligent sea animal.'],
+    ['SHARK','🦈','A large fish with sharp teeth.'],
+    ['WHALE','🐋','The largest animal on Earth.'],
+    ['WOLF','🐺','A wild animal related to dogs.']
+  ],
+
+  NATURE:[
+    ['CLOUDY','☁️','A word describing a sky full of clouds.'],
+    ['RIVER','🏞️','A long natural stream of water.'],
+    ['MOUNTAIN','⛰️','A very high area of land.'],
+    ['BEACH','🏖️','A place with sand beside the sea.'],
+    ['FOREST','🌳','A large area covered with many trees.'],
+    ['ISLAND','🏝️','Land surrounded by water.'],
+    ['PLANET','🌍','Earth is an example of this.'],
+    ['AUTUMN','🍂','The season when many leaves fall.'],
+    ['WINTER','❄️','The coldest season of the year.'],
+    ['SPRING','🌸','The season when many flowers begin to grow.']
+  ],
+
+  PLACES:[
+    ['PARK','🌳','A green public place where people can play.'],
+    ['LIBRARY','📚','A place where you can borrow books.'],
+    ['CINEMA','🎬','A place where you watch films.'],
+    ['SHOP','🛍️','A place where you buy things.'],
+    ['MUSEUM','🏛️','A place where you can see historical or interesting objects.'],
+    ['SWIMMING POOL','🏊','A place where people swim.'],
+    ['RESTAURANT','🍽️','A place where you can order a meal.'],
+    ['MOSQUE','🕌','A place where Muslims pray.'],
+    ['POST OFFICE','📮','A place where you send letters and parcels.'],
+    ['CIRCUS','🎪','A place with performers, shows and acrobats.']
+  ],
+
+  TRANSPORT:[
+    ['BUS','🚌','A large vehicle that carries many passengers.'],
+    ['TRAIN','🚆','A vehicle that travels on rails.'],
+    ['BOAT','⛵','A vehicle that travels on water.'],
+    ['LORRY','🚚','A large road vehicle used to carry goods.'],
+    ['BICYCLE','🚲','A two-wheeled vehicle powered by pedals.'],
+    ['MOTORCYCLE','🏍️','A two-wheeled vehicle with an engine.'],
+    ['AEROPLANE','✈️','A vehicle that flies.'],
+    ['SCOOTER','🛴','A small two-wheeled vehicle you can ride standing up.'],
+    ['SKATEBOARD','🛹','A board with wheels that you ride standing on.'],
+    ['HELICOPTER','🚁','An aircraft with rotating blades on top.']
+  ],
+
+  VERBS:[
+    ['READ','📖','An action you do when you look at and understand a book.'],
+    ['WASH','🧼','An action you do with soap and water to get clean.'],
+    ['SWIM','🏊','An action you do in a pool or the sea.'],
+    ['SLEEP','😴','An action you do at night to rest.'],
+    ['WRITE','✍️','An action you do with a pencil or pen.'],
+    ['LISTEN','👂','An action you do when you pay attention to a sound.'],
+    ['SPEAK','🗣️','An action you do when you use your voice to talk.'],
+    ['CLEAN','🧹','An action you do when you make something not dirty.'],
+    ['MAKE','🔨','An action you do when you create or produce something.'],
+    ['STUDY','📚','An action you do when you learn and practise a subject.']
+  ],
+
+  ADJECTIVES:[
+    ['DIRTY','🧼','A word describing something that is not clean.'],
+    ['SCARY','😱','A word describing something that makes you afraid.'],
+    ['ANGRY','😠','A word describing how you may feel when very upset.'],
+    ['TIRED','😴','A word describing how you may feel after a long day.'],
+    ['HUNGRY','🍔','A word describing how you feel when you want to eat.'],
+    ['YOUNG','👶','A word that means the opposite of old.'],
+    ['BORING','🥱','A word describing something that is not interesting.'],
+    ['NOISY','📢','A word describing a place with lots of loud sounds.'],
+    ['DELICIOUS','😋','A word describing food that tastes very good.'],
+    ['FUNNY','😂','A word describing something that makes you laugh.']
+  ]
+};
+
+
+/* =========================================================
+   TOPIC INFO
+========================================================= */
+
+const TOPIC_INFO = {
+  PEOPLE:'👨‍👩‍👧',
+  SCHOOL:'🎒',
+  HOME:'🏠',
+  FOOD:'🍎',
+  CLOTHES:'👕',
+  ANIMALS:'🐾',
+  NATURE:'🌿',
+  PLACES:'📍',
+  TRANSPORT:'🚗',
+  VERBS:'✏️',
+  ADJECTIVES:'😊'
+};
+
+const TOPICS = Object.keys(QUESTION_BANK);
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let state = {
+  playerName:'',
+  currentTopic:'',
+  currentQuestions:[],
+  questionIndex:0,
+  currentAnswer:'',
+  currentEmoji:'',
+  currentDescription:'',
+  score:0,
+  timeLeft:60,
+  timer:null,
+  topicScores:{}
+};
+
+let lastCompletedTopic='';
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+function saveState(){
+  localStorage.setItem('wordCompletionState',JSON.stringify({
+    playerName:state.playerName,
+    topicScores:state.topicScores
+  }));
+}
+
+function loadState(){
+
+  try{
+
+    const saved=JSON.parse(
+      localStorage.getItem('wordCompletionState')
+    );
+
+    if(saved){
+
+      state.playerName=saved.playerName || '';
+
+      state.topicScores=saved.topicScores || {};
+
+    }
+
+  }catch(e){
+
+    state.playerName='';
+    state.topicScores={};
+
+  }
+}
+
+
+/* =========================================================
+   SCREEN ROUTER
+========================================================= */
+
+function showScreen(id){
+
+  document.querySelectorAll('.screen').forEach(screen=>{
+    screen.classList.remove('active');
+  });
+
+  document.getElementById(id).classList.add('active');
+
+  window.scrollTo(0,0);
+}
+
+
+/* =========================================================
+   TOPICS
+========================================================= */
+
+function renderTopics(){
+
+  const grid=document.getElementById('topicGrid');
+
+  grid.innerHTML='';
+
+  TOPICS.forEach(topic=>{
+
+    const card=document.createElement('button');
+
+    card.className='topic-card';
+
+    card.innerHTML=`
+      <div class="topic-icon">${TOPIC_INFO[topic]}</div>
+      <div class="topic-name">${topic}</div>
+    `;
+
+    card.addEventListener('click',()=>{
+
+      startTopic(topic);
+
+    });
+
+    grid.appendChild(card);
+
+  });
+
+
+  /* MY SCORE = 12TH CARD */
+
+  const scoreCard=document.createElement('button');
+
+  scoreCard.className='topic-card score-card';
+
+  scoreCard.innerHTML=`
+    <div class="topic-icon">🏆</div>
+    <div class="topic-name">MY SCORE</div>
+  `;
+
+  scoreCard.addEventListener('click',showScore);
+
+  grid.appendChild(scoreCard);
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function startGame(){
+
+  openNameModal();
+
+}
+
+
+/* =========================================================
+   NAME MODAL
+========================================================= */
+
+function openNameModal(){
+
+  document.getElementById('nameInput').value=
+    state.playerName || '';
+
+  document.getElementById('nameModal')
+    .classList.add('show');
+
+  setTimeout(()=>{
+    document.getElementById('nameInput').focus();
+  },100);
+
+}
+
+function closeNameModal(){
+
+  document.getElementById('nameModal')
+    .classList.remove('show');
+
+}
+
+function confirmName(){
+
+  const name=document.getElementById('nameInput')
+    .value.trim();
+
+  state.playerName=name || 'CHAMPION';
+
+  saveState();
+
+  closeNameModal();
+
+  renderTopics();
+
+  showScreen('topicScreen');
+
+}
+
+
+/* =========================================================
+   START TOPIC
+========================================================= */
+
+function startTopic(topic){
+
+  state.currentTopic=topic;
+
+  state.currentQuestions=
+    [...QUESTION_BANK[topic]];
+
+  shuffleArray(state.currentQuestions);
+
+  state.questionIndex=0;
+  state.score=0;
+
+  lastCompletedTopic=topic;
+
+  showScreen('quizScreen');
+
+  loadQuestion();
+
+}
+
+
+/* =========================================================
+   SHUFFLE
+========================================================= */
+
+function shuffleArray(array){
+
+  for(let i=array.length-1;i>0;i--){
+
+    const j=Math.floor(Math.random()*(i+1));
+
+    [array[i],array[j]]=
+      [array[j],array[i]];
+
+  }
+
+  return array;
+}
+
+
+/* =========================================================
+   LOAD QUESTION
+========================================================= */
+
+function loadQuestion(){
+
+  stopTimer();
+
+  const question=
+    state.currentQuestions[state.questionIndex];
+
+  if(!question){
+
+    finishTopic();
+
+    return;
+
+  }
+
+  const [
+    answer,
+    emoji,
+    description
+  ]=question;
+
+  state.currentAnswer=answer;
+  state.currentEmoji=emoji;
+  state.currentDescription=description;
+
+  document.getElementById('quizTopic')
+    .textContent=state.currentTopic;
+
+  document.getElementById('quizProgress')
+    .textContent=
+      `${state.questionIndex+1} / 10`;
+
+  document.getElementById('quizScore')
+    .textContent=
+      `${state.score} pts`;
+
+  document.getElementById('questionEmoji')
+    .textContent=emoji;
+
+  document.getElementById('questionDescription')
+    .textContent=description;
+
+
+  /*
+    HINT ONLY.
+    The answer area remains completely empty.
+  */
+
+  document.getElementById('hintLetter')
+    .textContent=answer.replace(/\s/g,'')[0].toUpperCase();
+
+
+  document.getElementById('feedback')
+    .textContent='';
+
+  document.getElementById('feedback')
+    .className='feedback';
+
+
+  buildAnswerBoxes(answer);
+
+  startTimer();
+
+  setTimeout(()=>{
+
+    const first=
+      document.querySelector(
+        '#answerArea .letter-box'
+      );
+
+    if(first) first.focus();
+
+  },100);
+
+}
+
+
+/* =========================================================
+   BUILD ANSWER BOXES
+   - first letter is NOT inserted
+   - all boxes are empty
+   - one row per word
+   - long words remain one row
+   - horizontal scroll on narrow screen
+========================================================= */
+
+function buildAnswerBoxes(answer){
+
+  const area=
+    document.getElementById('answerArea');
+
+  area.innerHTML='';
+
+  const wordWrapper=
+    document.createElement('div');
+
+  wordWrapper.className='answer-word';
+
+  const words=answer.split(' ');
+
+  words.forEach(word=>{
+
+    const row=
+      document.createElement('div');
+
+    row.className='answer-row';
+
+    const len=word.length;
+
+    /*
+      Calculate slot size so long words
+      such as PHOTOGRAPHER, FIREFIGHTER
+      and HELICOPTER remain in ONE row.
+    */
+
+    const available=
+      Math.max(
+        area.clientWidth || 300,
+        260
+      );
+
+    let gap=5;
+
+    if(len>=10){
+      gap=3;
+    }else if(len>=8){
+      gap=4;
+    }
+
+    let slotSize=
+      Math.floor(
+        (
+          available -
+          gap*(len-1)
+        ) / len
+      );
+
+    /*
+      Keep boxes comfortable.
+      If the screen is too narrow,
+      answer-area can scroll horizontally.
+    */
+
+    slotSize=Math.max(
+      24,
+      Math.min(38,slotSize)
+    );
+
+    const fontSize=
+      Math.max(
+        .82,
+        Math.min(
+          1.12,
+          slotSize/30
+        )
+      );
+
+    row.style.setProperty(
+      '--slot-size',
+      `${slotSize}px`
+    );
+
+    row.style.setProperty(
+      '--slot-gap',
+      `${gap}px`
+    );
+
+    row.style.setProperty(
+      '--slot-font',
+      `${fontSize}rem`
+    );
+
+
+    [...word].forEach((correctLetter,index)=>{
+
+      const input=
+        document.createElement('input');
+
+      input.type='text';
+
+      input.maxLength=1;
+
+      input.autocomplete='off';
+
+      input.autocapitalize='characters';
+
+      input.spellcheck=false;
+
+      input.className='letter-box';
+
+      input.dataset.answerChar=
+        correctLetter.toUpperCase();
+
+      input.dataset.globalIndex=
+        document.querySelectorAll(
+          '#answerArea .letter-box'
+        ).length;
+
+      /*
+        IMPORTANT:
+        Do NOT put the first letter here.
+        It is shown ONLY in the Hint box.
+      */
+
+      input.value='';
+
+
+      input.addEventListener(
+        'input',
+        function(){
+
+          this.value=
+            this.value
+              .toUpperCase()
+              .replace(/[^A-Z]/g,'')
+              .slice(0,1);
+
+          if(this.value){
+
+            const allInputs=
+              [
+                ...document.querySelectorAll(
+                  '#answerArea .letter-box'
+                )
+              ];
+
+            const current=
+              allInputs.indexOf(this);
+
+            if(allInputs[current+1]){
+
+              allInputs[current+1].focus();
+
+            }
+
+          }
+
+        }
+      );
+
+
+      input.addEventListener(
+        'keydown',
+        function(e){
+
+          if(e.key==='Backspace' &&
+             !this.value){
+
+            const allInputs=
+              [
+                ...document.querySelectorAll(
+                  '#answerArea .letter-box'
+                )
+              ];
+
+            const current=
+              allInputs.indexOf(this);
+
+            if(
+              current>0 &&
+              allInputs[current-1]
+            ){
+
+              allInputs[current-1].focus();
+
+            }
+
+          }
+
+          if(e.key==='Enter'){
+
+            checkAnswer();
+
+          }
+
+        }
+      );
+
+
+      row.appendChild(input);
+
+    });
+
+
+    wordWrapper.appendChild(row);
+
+  });
+
+
+  area.appendChild(wordWrapper);
+
+}
+
+
+/* =========================================================
+   CHECK ANSWER
+========================================================= */
+
+function checkAnswer(){
+
+  stopTimer();
+
+  const inputs=
+    [
+      ...document.querySelectorAll(
+        '#answerArea .letter-box'
+      )
+    ];
+
+  const entered=
+    inputs
+      .map(input=>
+        input.value.toUpperCase()
+      )
+      .join('');
+
+  const correct=
+    state.currentAnswer
+      .replace(/\s/g,'')
+      .toUpperCase();
+
+  const feedback=
+    document.getElementById('feedback');
+
+  if(entered===correct){
+
+    state.score+=10;
+
+    feedback.textContent='✓ CORRECT! +10 POINTS';
+
+    feedback.className=
+      'feedback correct';
+
+    document.getElementById('quizScore')
+      .textContent=
+        `${state.score} pts`;
+
+    playCorrectSound();
+
+  }else{
+
+    feedback.textContent='✗ NOT QUITE. 0 POINTS';
+
+    feedback.className=
+      'feedback wrong';
+
+    playWrongSound();
+
+  }
+
+  setTimeout(()=>{
+
+    state.questionIndex++;
+
+    loadQuestion();
+
+  },850);
+
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer(){
+
+  state.timeLeft=60;
+
+  updateTimerUI();
+
+  state.timer=
+    setInterval(()=>{
+
+      state.timeLeft--;
+
+      updateTimerUI();
+
+      if(state.timeLeft<=0){
+
+        stopTimer();
+
+        handleTimeout();
+
+      }
+
+    },1000);
+
+}
+
+function stopTimer(){
+
+  if(state.timer){
+
+    clearInterval(state.timer);
+
+    state.timer=null;
+
+  }
+
+}
+
+function updateTimerUI(){
+
+  const bar=
+    document.getElementById('timerBar');
+
+  const percent=
+    Math.max(
+      0,
+      (state.timeLeft/60)*100
+    );
+
+  bar.style.width=
+    `${percent}%`;
+
+  bar.classList.remove(
+    'warning',
+    'danger'
+  );
+
+  if(state.timeLeft<=20){
+
+    bar.classList.add('danger');
+
+  }else if(state.timeLeft<=35){
+
+    bar.classList.add('warning');
+
+  }
+
+}
+
+function handleTimeout(){
+
+  const feedback=
+    document.getElementById('feedback');
+
+  feedback.textContent=
+    '⏰ TIME OUT! 0 POINTS';
+
+  feedback.className=
+    'feedback wrong';
+
+  playWrongSound();
+
+  setTimeout(()=>{
+
+    state.questionIndex++;
+
+    loadQuestion();
+
+  },900);
+
+}
+
+
+/* =========================================================
+   FINISH TOPIC
+========================================================= */
+
+function finishTopic(){
+
+  stopTimer();
+
+  const topic=state.currentTopic;
+
+  state.topicScores[topic]=state.score;
+
+  saveState();
+
+  lastCompletedTopic=topic;
+
+  showResult();
+
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function showResult(){
+
+  document.getElementById('resultScore')
+    .textContent=state.score;
+
+  let stars='';
+
+  if(state.score>=90){
+    stars='⭐⭐⭐';
+  }else if(state.score>=60){
+    stars='⭐⭐';
+  }else if(state.score>=30){
+    stars='⭐';
+  }else{
+    stars='✨';
+  }
+
+  document.getElementById('resultStars')
+    .textContent=stars;
+
+  if(state.score===100){
+
+    document.getElementById('resultTitle')
+      .textContent='PERFECT SCORE!';
+
+  }else if(state.score>=70){
+
+    document.getElementById('resultTitle')
+      .textContent='WELL DONE!';
+
+  }else{
+
+    document.getElementById('resultTitle')
+      .textContent='KEEP PRACTISING!';
+
+  }
+
+  showScreen('resultScreen');
+
+}
+
+
+/* =========================================================
+   RETRY
+========================================================= */
+
+function retryTopic(){
+
+  startTopic(lastCompletedTopic);
+
+}
+
+
+/* =========================================================
+   SCORE SCREEN
+========================================================= */
+
+function showScore(){
+
+  const list=
+    document.getElementById('scoreList');
+
+  list.innerHTML='';
+
+  let total=0;
+
+  TOPICS.forEach(topic=>{
+
+    const score=
+      Number(
+        state.topicScores[topic] || 0
+      );
+
+    total+=score;
+
+    const item=
+      document.createElement('div');
+
+    item.className='score-item';
+
+    item.innerHTML=`
+      <span>${topic}</span>
+      <span>${score} / 100</span>
+    `;
+
+    list.appendChild(item);
+
+  });
+
+  document.getElementById('totalScore')
+    .textContent=
+      `${total} POINTS`;
+
+  showScreen('scoreScreen');
+
+}
+
+
+/* =========================================================
+   CERTIFICATE
+========================================================= */
+
+function showCertificate(){
+
+  document.getElementById('certificateName')
+    .textContent=
+      state.playerName || 'CHAMPION';
+
+  document.getElementById('certificateScore')
+    .textContent=
+      `SCORE: ${state.score} / 100`;
+
+  const now=new Date();
+
+  document.getElementById('certificateDate')
+    .textContent=
+      now.toLocaleDateString(
+        'en-GB',
+        {
+          day:'numeric',
+          month:'long',
+          year:'numeric'
+        }
+      );
+
+  showScreen('certificateScreen');
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function openResetModal(){
+
+  document.getElementById('resetModal')
+    .classList.add('show');
+
+}
+
+function closeResetModal(){
+
+  document.getElementById('resetModal')
+    .classList.remove('show');
+
+}
+
+function resetProgress(){
+
+  stopTimer();
+
+  localStorage.removeItem(
+    'wordCompletionState'
+  );
+
+  state={
+    playerName:'',
+    currentTopic:'',
+    currentQuestions:[],
+    questionIndex:0,
+    currentAnswer:'',
+    currentEmoji:'',
+    currentDescription:'',
+    score:0,
+    timeLeft:60,
+    timer:null,
+    topicScores:{}
+  };
+
+  closeResetModal();
+
+  showScreen('homeScreen');
+
+}
+
+
+/* =========================================================
+   SOUND / MUSIC
+========================================================= */
+
+let audioContext=null;
+let masterGain=null;
+let musicGain=null;
+let effectGain=null;
+let musicTimer=null;
+let soundEnabled=true;
+
+function initAudio(){
+
+  if(audioContext) return;
+
+  const AudioCtx=
+    window.AudioContext ||
+    window.webkitAudioContext;
+
+  if(!AudioCtx) return;
+
+  audioContext=new AudioCtx();
+
+  masterGain=
+    audioContext.createGain();
+
+  musicGain=
+    audioContext.createGain();
+
+  effectGain=
+    audioContext.createGain();
+
+  musicGain.gain.value=.035;
+
+  effectGain.gain.value=.12;
+
+  masterGain.gain.value=
+    soundEnabled ? 1 : 0;
+
+  musicGain.connect(masterGain);
+
+  effectGain.connect(masterGain);
+
+  masterGain.connect(
+    audioContext.destination
+  );
+
+  startMusic();
+
+}
+
+function resumeAudio(){
+
+  initAudio();
+
+  if(
+    audioContext &&
+    audioContext.state==='suspended'
+  ){
+
+    audioContext.resume();
+
+  }
+
+}
+
+function playTone(
+  frequency,
+  duration,
+  type='sine',
+  destination=effectGain
+){
+
+  if(
+    !audioContext ||
+    !soundEnabled
+  ) return;
+
+  const osc=
+    audioContext.createOscillator();
+
+  const gain=
+    audioContext.createGain();
+
+  osc.type=type;
+
+  osc.frequency.value=frequency;
+
+  gain.gain.setValueAtTime(
+    .0001,
+    audioContext.currentTime
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    .2,
+    audioContext.currentTime+.02
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    .0001,
+    audioContext.currentTime+duration
+  );
+
+  osc.connect(gain);
+
+  gain.connect(destination);
+
+  osc.start();
+
+  osc.stop(
+    audioContext.currentTime+duration+.03
+  );
+
+}
+
+function playCorrectSound(){
+
+  resumeAudio();
+
+  playTone(660,.12,'sine');
+
+  setTimeout(()=>{
+    playTone(880,.16,'sine');
+  },100);
+
+}
+
+function playWrongSound(){
+
+  resumeAudio();
+
+  playTone(220,.18,'sawtooth');
+
+}
+
+function startMusic(){
+
+  if(!audioContext || musicTimer) return;
+
+  const notes=[
+    261.63,
+    329.63,
+    392,
+    329.63,
+    293.66,
+    349.23,
+    440,
+    349.23
+  ];
+
+  let index=0;
+
+  musicTimer=
+    setInterval(()=>{
+
+      if(!soundEnabled) return;
+
+      const osc=
+        audioContext.createOscillator();
+
+      const gain=
+        audioContext.createGain();
+
+      osc.type='triangle';
+
+      osc.frequency.value=
+        notes[index % notes.length];
+
+      gain.gain.setValueAtTime(
+        .0001,
+        audioContext.currentTime
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .035,
+        audioContext.currentTime+.04
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .0001,
+        audioContext.currentTime+.38
+      );
+
+      osc.connect(gain);
+
+      gain.connect(musicGain);
+
+      osc.start();
+
+      osc.stop(
+        audioContext.currentTime+.4
+      );
+
+      index++;
+
+    },500);
+
+}
+
+function stopMusic(){
+
+  if(musicTimer){
+
+    clearInterval(musicTimer);
+
+    musicTimer=null;
+
+  }
+
+}
+
+function toggleSound(){
+
+  soundEnabled=!soundEnabled;
+
+  if(!audioContext){
+
+    if(soundEnabled){
+
+      resumeAudio();
+
+    }
+
+  }else{
+
+    masterGain.gain.value=
+      soundEnabled ? 1 : 0;
+
+  }
+
+  updateSoundButtons();
+
+}
+
+function updateSoundButtons(){
+
+  const icon=
+    soundEnabled ? '🔊' : '🔇';
+
+  document.getElementById('topicSoundBtn')
+    .textContent=icon;
+
+}
+
+
+/* =========================================================
+   HOME MUSIC RULE
+   Music starts after user interaction.
+   Stop when returning Home.
+========================================================= */
+
+function goHome(){
+
+  stopTimer();
+
+  stopMusic();
+
+  if(audioContext){
+
+    masterGain.gain.value=0;
+
+  }
+
+  showScreen('homeScreen');
+
+}
+
+
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
+
+document.getElementById('playBtn')
+  .addEventListener('click',()=>{
+
+    resumeAudio();
+
+    startGame();
+
+  });
+
+
+document.getElementById('resetBtn')
+  .addEventListener('click',()=>{
+
+    resumeAudio();
+
+    openResetModal();
+
+  });
+
+
+document.getElementById('cancelResetBtn')
+  .addEventListener(
+    'click',
+    closeResetModal
+  );
+
+
+document.getElementById('confirmResetBtn')
+  .addEventListener(
+    'click',
+    resetProgress
+  );
+
+
+document.getElementById('cancelNameBtn')
+  .addEventListener(
+    'click',
+    closeNameModal
+  );
+
+
+document.getElementById('startNameBtn')
+  .addEventListener(
+    'click',
+    confirmName
+  );
+
+
+document.getElementById('nameInput')
+  .addEventListener(
+    'keydown',
+    e=>{
+
+      if(e.key==='Enter'){
+
+        confirmName();
+
+      }
+
+    }
+  );
+
+
+document.getElementById('topicBackBtn')
+  .addEventListener(
+    'click',
+    goHome
+  );
+
+
+document.getElementById('topicSoundBtn')
+  .addEventListener(
+    'click',
+    ()=>{
+
+      resumeAudio();
+
+      toggleSound();
+
+    }
+  );
+
+
+document.getElementById('checkBtn')
+  .addEventListener(
+    'click',
+    checkAnswer
+  );
+
+
+document.getElementById('retryBtn')
+  .addEventListener(
+    'click',
+    retryTopic
+  );
+
+
+document.getElementById('topicsBtn')
+  .addEventListener(
+    'click',
+    ()=>{
+
+      renderTopics();
+
+      showScreen('topicScreen');
+
+    }
+  );
+
+
+document.getElementById('certificateBtn')
+  .addEventListener(
+    'click',
+    showCertificate
+  );
+
+
+document.getElementById('scoreBackBtn')
+  .addEventListener(
+    'click',
+    ()=>{
+
+      renderTopics();
+
+      showScreen('topicScreen');
+
+    }
+  );
+
+
+document.getElementById('certificateBackBtn')
+  .addEventListener(
+    'click',
+    ()=>{
+
+      showScreen('resultScreen');
+
+    }
+  );
+
+
+/* =========================================================
+   INITIALISE
+========================================================= */
+
+loadState();
+
+renderTopics();
+
+updateSoundButtons();
+
+
+/* =========================================================
+   START AUDIO ON FIRST USER INTERACTION
+========================================================= */
+
+document.addEventListener(
+  'pointerdown',
+  ()=>{
+    if(soundEnabled){
+      resumeAudio();
+    }
+  },
+  {once:true}
+);
+
+
+/* =========================================================
+   PWA SERVICE WORKER
+========================================================= */
+
+if('serviceWorker' in navigator){
+
+  window.addEventListener(
+    'load',
+    ()=>{
+      navigator.serviceWorker
+        .register('./sw.js')
+        .catch(()=>{});
+    }
+  );
+
+}
+
+</script>
+
+</body>
+</html>
