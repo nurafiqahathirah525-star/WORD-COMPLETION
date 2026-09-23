@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fff8e7">
+<title>WORD COMPLETION - TZ EDU KIDS</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#fff8e7;color:#172033}
+button,input{font:inherit}
+button{cursor:pointer}
+.screen{display:none;min-height:100vh;padding:28px 14px}
+.screen.active{display:flex}
+.container{width:100%;max-width:850px;margin:auto}
+.brand{text-align:center;font-size:1.15rem;font-weight:1000;letter-spacing:2px;margin-bottom:16px}
+.trophy{text-align:center;font-size:4.5rem;margin-bottom:10px}
+.main-title{text-align:center;font-size:clamp(2.7rem,11vw,5rem);line-height:.95;margin:0 0 35px;font-weight:1000}
+.home-buttons{max-width:420px;margin:auto;display:grid;gap:16px}
+.primary-btn,.danger-btn,.back-btn,.sound-btn,.modal button,.action-btn{
+ border:4px solid #172033;border-radius:16px;box-shadow:5px 5px 0 #172033;font-weight:1000
+}
+.primary-btn{background:#ffd34e;padding:18px;font-size:1.25rem}
+.danger-btn{background:#fff;padding:14px;font-size:1rem}
+.primary-btn:active,.danger-btn:active,.back-btn:active,.sound-btn:active,.modal button:active,.action-btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 #172033}
+.screen-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.screen-title{flex:1;text-align:center;font-size:clamp(1.6rem,6vw,2.5rem);margin:0;font-weight:1000}
+.back-btn,.sound-btn{background:#fff;min-width:48px;height:46px}
+.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:760px;margin:auto}
+.topic-card{border:4px solid #172033;border-radius:18px;min-height:112px;padding:15px 8px;box-shadow:5px 5px 0 #172033;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:1000}
+.topic-card:active{transform:translate(4px,4px);box-shadow:1px 1px 0 #172033}
+.topic-icon{font-size:2rem;line-height:1;margin-bottom:8px}
+.topic-name{font-size:1rem;text-transform:uppercase}
+.topic-0{background:#ffd6e7}.topic-1{background:#cfe8ff}.topic-2{background:#d8f5c8}.topic-3{background:#ffe0b2}
+.topic-4{background:#e4d4ff}.topic-5{background:#c9f7f1}.topic-6{background:#fff3a8}.topic-7{background:#ffd0c2}
+.topic-8{background:#d6ddff}.topic-9{background:#cdeccf}.topic-10{background:#f6d4ff}.topic-11{background:#ffd8b8}
+.topic-12{background:#d9d0ff}.score-card{background:#ffcf33}
+.quiz-top{width:100%;max-width:760px;margin:auto}
+.quiz-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:14px}
+.quiz-topic,.quiz-score,.quiz-progress{font-weight:1000}.quiz-score{text-align:right}
+.timer-wrap{height:18px;border:3px solid #172033;border-radius:20px;background:#fff;overflow:hidden;margin-bottom:24px}
+.timer-bar{height:100%;width:100%;background:#6bd66b;transition:width 1s linear}
+.timer-bar.warning{background:#ffb52e}.timer-bar.danger{background:#ff6666}
+.question-card{border:4px solid #172033;border-radius:22px;background:#fff;box-shadow:6px 6px 0 #172033;padding:24px 15px 28px}
+.question-emoji{text-align:center;font-size:3.5rem;margin-bottom:15px}
+.question-description{text-align:center;font-size:clamp(1.05rem,4.5vw,1.45rem);line-height:1.4;font-weight:800;max-width:700px;margin:auto}
+.hint-box{width:100%;max-width:300px;margin:22px auto 0;border:4px solid #172033;border-radius:16px;background:#ffcf33;padding:10px 14px;text-align:center}
+.hint-label{font-size:.78rem;font-weight:1000;text-transform:uppercase}.hint-letter{font-size:1.65rem;font-weight:1000}
+.answer-area{width:100%;overflow-x:auto;scrollbar-width:none;margin:28px auto 0;padding:8px 4px}
+.answer-area::-webkit-scrollbar{display:none}
+.answer-word{width:max-content;min-width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+.answer-row{width:max-content;display:flex;gap:var(--gap,5px);justify-content:center;flex-wrap:nowrap}
+.letter-box{width:var(--size,32px);min-width:var(--size,32px);height:44px;border:0;border-bottom:4px solid #172033;background:transparent;text-align:center;outline:none;font-size:var(--font,1rem);font-weight:1000;text-transform:uppercase}
+.letter-box:focus{border-bottom-color:#ff9f1c}
+.check-btn{display:block;width:100%;max-width:340px;margin:24px auto 0;border:4px solid #172033;border-radius:16px;padding:14px;background:#6bd66b;box-shadow:5px 5px 0 #172033;font-weight:1000}
+.feedback{min-height:45px;text-align:center;margin-top:15px;font-weight:1000;line-height:1.35}.feedback.correct{color:#168b35}.feedback.wrong{color:#d52d2d}.feedback.answer-reveal{color:#172033}
+.result-wrap,.score-wrap,.certificate-wrap{width:100%;max-width:760px;margin:auto;text-align:center}
+.result-card,.score-panel{border:4px solid #172033;border-radius:24px;background:#fff;box-shadow:7px 7px 0 #172033;padding:28px 20px}
+.result-trophy{font-size:4rem}.result-title{font-size:2rem;font-weight:1000}.result-score{font-size:3.2rem;font-weight:1000;margin:12px}
+.result-stars{font-size:2rem;margin:12px}.result-actions{display:grid;gap:12px;margin-top:20px}
+.action-btn{padding:14px;background:#fff}.action-btn.yellow{background:#ffd34e}.action-btn.purple{background:#cfc8ff}
+.score-total{font-size:2.2rem;font-weight:1000;margin-bottom:20px}
+.score-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.score-item{border:3px solid #172033;border-radius:14px;padding:12px;font-weight:1000;background:#fff}
+.score-item strong{display:block;font-size:1.5rem;margin-top:5px}
+.certificate{border:6px solid #172033;border-radius:25px;background:#fffdf5;box-shadow:8px 8px 0 #172033;padding:35px 20px;position:relative;overflow:hidden}
+.certificate h1{font-size:clamp(2rem,8vw,4rem);margin:8px 0;font-weight:1000}
+.certificate-name{font-size:clamp(2rem,8vw,3.5rem);font-weight:1000;color:#635bdb;margin:18px 0}
+.certificate-word{font-size:clamp(1.6rem,6vw,2.7rem);font-weight:1000;margin-top:8px}
+.modal-backdrop{position:fixed;inset:0;background:#172033aa;display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}
+.modal-backdrop.show{display:flex}.modal{width:100%;max-width:430px;background:#fff;border:4px solid #172033;border-radius:22px;box-shadow:7px 7px 0 #172033;padding:24px;text-align:center}
+.modal h3{font-size:1.5rem;margin-top:0}.modal p{line-height:1.5;color:#596579}
+.name-input{width:100%;border:3px solid #172033;border-radius:14px;padding:13px;text-align:center;font-weight:800;outline:none}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.modal button{padding:12px;background:#fff}.modal .confirm{background:#ffd34e}
+.confetti-piece{position:fixed;top:-40px;z-index:2000;pointer-events:none}
+@media(max-width:520px){
+ .screen{padding:20px 12px}.topic-grid{gap:11px}.topic-card{min-height:100px;padding:12px 7px;border-width:3px;box-shadow:4px 4px 0 #172033}
+ .topic-icon{font-size:1.7rem}.topic-name{font-size:.82rem}.question-card{padding:20px 12px 24px}.score-list{grid-template-columns:1fr}
+}
+@media(max-width:360px){.topic-name{font-size:.75rem}.topic-card{min-height:94px}.quiz-bar{grid-template-columns:1fr auto}.quiz-progress{grid-column:1/-1;grid-row:2;text-align:left}}
+@media print{
+ body *{visibility:hidden}.certificate-wrap,.certificate-wrap *{visibility:visible}.certificate-wrap{position:absolute;left:0;top:0;width:100%}.no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<section id="homeScreen" class="screen active">
+<div class="container">
+<div class="brand">TZ EDU KIDS</div>
+<div class="trophy">🏆</div>
+<h1 class="main-title">WORD<br>COMPLETION</h1>
+<div class="home-buttons">
+<button class="primary-btn" id="playBtn">LET'S PLAY</button>
+<button class="danger-btn" id="resetBtn">RESET</button>
+</div>
+</div>
+</section>
+
+<section id="topicScreen" class="screen">
+<div class="container">
+<div class="screen-header">
+<button class="back-btn" id="topicBackBtn">←</button>
+<h2 class="screen-title">CHOOSE A TOPIC</h2>
+<button class="sound-btn" id="topicSoundBtn">🔊</button>
+</div>
+<div class="topic-grid" id="topicGrid"></div>
+</div>
+</section>
+
+<section id="quizScreen" class="screen">
+<div class="quiz-top">
+<div class="quiz-bar">
+<div class="quiz-topic" id="quizTopic"></div>
+<div class="quiz-progress" id="quizProgress">1 / 10</div>
+<div class="quiz-score" id="quizScore">0 pts</div>
+</div>
+<div class="timer-wrap"><div class="timer-bar" id="timerBar"></div></div>
+<div class="question-card">
+<div class="question-emoji" id="questionEmoji"></div>
+<div class="question-description" id="questionDescription"></div>
+<div class="hint-box"><div class="hint-label">💡 HINT</div><div class="hint-letter" id="hintLetter"></div></div>
+<div class="answer-area" id="answerArea"></div>
+<button class="check-btn" id="checkBtn">CHECK ANSWER</button>
+<div class="feedback" id="feedback"></div>
+</div>
+</div>
+</section>
+
+<section id="resultScreen" class="screen">
+<div class="result-wrap">
+<div class="result-trophy">🎉</div>
+<h2 class="result-title">GREAT JOB!</h2>
+<p id="resultMessage"></p>
+<div class="result-card">
+<div id="resultTopic" style="font-weight:1000;font-size:1.3rem"></div>
+<div class="result-score" id="resultScore">0 / 100</div>
+<div class="result-stars" id="resultStars">⭐ ⭐ ⭐</div>
+<div id="resultCorrect" style="font-weight:800"></div>
+</div>
+<div class="result-actions">
+<button class="action-btn yellow" id="retryBtn">🔄 PLAY AGAIN</button>
+<button class="action-btn" id="anotherBtn">📚 CHOOSE ANOTHER TOPIC</button>
+<button class="action-btn purple" id="certificateBtn">📜 VIEW CERTIFICATE</button>
+</div>
+</div>
+</section>
+
+<section id="scoreScreen" class="screen">
+<div class="score-wrap">
+<div class="trophy">🏆</div>
+<h2 class="screen-title">MY SCORE</h2>
+<p id="scorePlayer"></p>
+<div class="score-panel">
+<div class="score-total" id="scoreTotal">0 POINTS</div>
+<div class="score-list" id="scoreList"></div>
+</div>
+<div style="margin-top:20px">
+<button class="action-btn yellow" id="scorePlayBtn">🚀 PLAY NOW</button>
+</div>
+</div>
+</section>
+
+<section id="certificateScreen" class="screen">
+<div class="certificate-wrap">
+<div class="certificate">
+<div style="font-size:4rem">🏆</div>
+<div style="font-weight:1000;letter-spacing:2px;color:#635bdb">TZ EDU KIDS PRESENTS</div>
+<h1>ENGLISH CHAMPION</h1>
+<p>This certificate is proudly presented to</p>
+<div class="certificate-name" id="certificateName"></div>
+<p>for completing</p>
+<div class="certificate-word">WORD COMPLETION</div>
+<div id="certificateScore" style="font-size:1.5rem;font-weight:1000;margin-top:18px"></div>
+<div id="certificateTopic" style="margin-top:6px"></div>
+<div style="font-size:2rem;margin-top:20px">⭐ ⭐ ⭐</div>
+<p style="color:#7a8494">Keep learning. Keep practising. 💪</p>
+</div>
+<div class="no-print" style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap">
+<button class="action-btn yellow" id="printCertificateBtn">🖨️ PRINT CERTIFICATE</button>
+<button class="action-btn" id="certificateBackBtn">← BACK</button>
+</div>
+</div>
+</section>
+
+<div class="modal-backdrop" id="resetModal">
+<div class="modal">
+<h3>RESET PROGRESS?</h3>
+<p>This will clear your saved scores and progress. Are you sure?</p>
+<div class="modal-actions">
+<button id="cancelResetBtn">CANCEL</button><button class="confirm" id="confirmResetBtn">RESET</button>
+</div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="nameModal">
+<div class="modal">
+<h3>ENTER YOUR NAME</h3>
+<input id="nameInput" class="name-input" maxlength="30" placeholder="Your name" autocomplete="off">
+<div class="modal-actions">
+<button id="cancelNameBtn">CANCEL</button><button class="confirm" id="startNameBtn">START</button>
+</div>
+</div>
+</div>
+
+<script>
+const QUESTION_BANK={
+PEOPLE:[
+['PARENTS','👨‍👩‍👧','The people who take care of you.'],
+['UNCLE','👨','Your mother’s or father’s brother.'],
+['AUNT','👩','Your mother’s or father’s sister.'],
+['COUSIN','🧒','Your aunt or uncle’s child.'],
+['NEIGHBOUR','🏠','A person who lives near you.'],
+['FARMER','👨‍🌾','A person who grows crops or keeps animals.'],
+['PHOTOGRAPHER','📷','A person who takes photos.'],
+['FIREFIGHTER','👩‍🚒','A person who puts out fires.'],
+['LIFEGUARD','🏊','A person who watches swimmers and keeps them safe.'],
+['DENTIST','🦷','A person who looks after your teeth.']
+],
+SCHOOL:[
+['PUPIL','🎒','A child who learns at school.'],
+['HOMEWORK','📚','Work that a teacher asks you to do at home.'],
+['CANTEEN','🍱','A place at school where you can buy food.'],
+['DESK','🪑','A table at school where you sit and do your work.'],
+['NOTEBOOK','📓','A book used for writing notes.'],
+['SUBJECT','📖','English, Maths and Science are examples of these.'],
+['TIMETABLE','🗓️','A plan showing your school lessons.'],
+['ART','🎨','A school subject where you draw, paint and create things.'],
+['RUBBER','🧽','A tool used to erase pencil marks.'],
+['SCIENCE','🔬','A school subject about the world, nature and how things work.']
+],
+HOME:[
+['HOUSE','🏠','A building where people live.'],
+['BEDROOM','🛏️','A room where you sleep.'],
+['BATHROOM','🛁','A room where you take a shower or bath.'],
+['KITCHEN','🍳','A room where you cook food.'],
+['LIVING ROOM','🛋️','A room where you may sit and watch TV.'],
+['UPSTAIRS','🪜','A word that describes going to a higher floor.'],
+['FLOOR','🧹','The surface that you walk on inside a building.'],
+['FRIDGE','🧊','An appliance used to keep food cold.'],
+['HALL','🚪','An area just inside the entrance of a house.'],
+['CUSHION','🛋️','A soft pad placed on a chair or sofa.']
+],
+FOOD:[
+['BREAKFAST','🍳','The first meal of the day.'],['LUNCH','🥪','The meal usually eaten around midday.'],['DINNER','🍽️','The evening meal.'],
+['BREAD','🍞','A food often used to make sandwiches.'],['THIRSTY','🥤','A feeling when you need a drink.'],['LETTUCE','🥬','A green leafy vegetable often used in salads.'],
+['BISCUITS','🍪','Small baked snacks.'],['DESSERT','🍰','A sweet food eaten after a meal.'],['FLOUR','🌾','An ingredient used to make bread and cakes.'],['OMELETTE','🍳','An egg dish cooked in a pan.']
+],
+CLOTHES:[
+['SOCKS','🧦','Clothing worn on your feet inside shoes.'],['HAT','👒','Something worn on your head.'],['SHOES','👟','Footwear worn on your feet.'],
+['SKIRT','👗','Clothing usually worn from the waist down.'],['SWEATER','🧶','A warm knitted top.'],['SHIRT','👕','Clothing that can be worn with trousers or a skirt.'],
+['DRESS','💃','A one-piece item of clothing.'],['CAP','🧢','A type of soft hat with a peak.'],['TROUSERS','👖','Clothing worn on your legs.'],['JACKET','🧥','Clothing worn over other clothes when it is cool.']
+],
+ANIMALS:[
+['MOSQUITO','🦟','A small flying insect that can bite people.'],
+['SQUIRREL','🐿️','A small animal with a bushy tail that climbs trees.'],
+['ELEPHANT','🐘','A large animal with a trunk.'],
+['HORSE','🐎','An animal that people can ride.'],
+['MOUSE','🐭','A small animal related to rats.'],
+['GOAT','🐐','A farm animal with horns.'],
+['DOLPHIN','🐬','An intelligent sea animal.'],
+['LIZARD','🦎','A small reptile with four legs and a long tail.'],
+['WHALE','🐋','The largest animal on Earth.'],
+['WOLF','🐺','A wild animal related to dogs.']
+],
+NATURE:[
+['CLOUDY','☁️','A word describing a sky full of clouds.'],['RIVER','🏞️','A long natural stream of water.'],['MOUNTAIN','⛰️','A very high area of land.'],
+['BEACH','🏖️','A place with sand beside the sea.'],['FOREST','🌳','A large area covered with many trees.'],['ISLAND','🏝️','Land surrounded by water.'],
+['PLANET','🌍','Earth is an example of this.'],['AUTUMN','🍂','The season when many leaves fall.'],['WINTER','❄️','The coldest season of the year.'],['SPRING','🌸','The season when many flowers begin to grow.']
+],
+PLACES:[
+['PARK','🌳','A green public place where people can play.'],['LIBRARY','📚','A place where you can borrow books.'],['CINEMA','🎬','A place where you watch films.'],
+['SHOP','🛍️','A place where you buy things.'],['MUSEUM','🏛️','A place where you can see historical or interesting objects.'],['SWIMMING POOL','🏊','A place where people swim.'],
+['RESTAURANT','🍽️','A place where you can order a meal.'],['MOSQUE','🕌','A place where Muslims pray.'],['POST OFFICE','📮','A place where you send letters and parcels.'],['CIRCUS','🎪','A place with performers, shows and acrobats.']
+],
+TRANSPORT:[
+['BUS','🚌','A large vehicle that carries many passengers.'],['TRAIN','🚆','A vehicle that travels on rails.'],['BOAT','⛵','A vehicle that travels on water.'],
+['LORRY','🚚','A large road vehicle used to carry goods.'],['BICYCLE','🚲','A two-wheeled vehicle powered by pedals.'],['MOTORCYCLE','🏍️','A two-wheeled vehicle with an engine.'],
+['AEROPLANE','✈️','A vehicle that flies.'],['SCOOTER','🛴','A small two-wheeled vehicle you can ride standing up.'],['SKATEBOARD','🛹','A board with wheels that you ride standing on.'],['HELICOPTER','🚁','An aircraft with rotating blades on top.']
+],
+VERBS:[
+['READ','📖','An action you do when you look at and understand a book.'],['WASH','🧼','An action you do with soap and water to get clean.'],['SWIM','🏊','An action you do in a pool or the sea.'],
+['SLEEP','😴','An action you do at night to rest.'],['WRITE','✍️','An action you do with a pencil or pen.'],['LISTEN','👂','An action you do when you pay attention to a sound.'],
+['SPEAK','🗣️','An action you do when you use your voice to talk.'],['CLEAN','🧹','An action you do when you make something not dirty.'],['MAKE','🔨','An action you do when you create or produce something.'],['STUDY','📚','An action you do when you learn and practise a subject.']
+],
+ADJECTIVES:[
+['DIRTY','🧼','A word describing something that is not clean.'],['SCARY','😱','A word describing something that makes you afraid.'],['ANGRY','😠','A word describing how you may feel when very upset.'],
+['TIRED','😴','A word describing how you may feel after a long day.'],['HUNGRY','🍔','A word describing how you feel when you want to eat.'],['YOUNG','👶','A word that means the opposite of old.'],
+['BORING','🥱','A word describing something that is not interesting.'],['NOISY','📢','A word describing a place with lots of loud sounds.'],['DELICIOUS','😋','A word describing food that tastes very good.'],['FUNNY','😂','A word describing something that makes you laugh.']
+],
+SPORT:[
+['KARATE','🥋','A sport and martial art that uses punches, kicks and blocks.'],
+['TENNIS','🎾','A sport played by hitting a ball over a net.'],
+['ICE SKATING','⛸️','A sport where you glide across ice wearing skates.'],
+['CYCLING','🚴‍♀️','A sport or activity where you ride a bicycle.'],
+['DIVE','🏊‍♀️','To jump or move into water head first.'],
+['GO KART','🏎️','A small racing vehicle driven around a track.'],
+['GYMNASTIC','🤸‍♀️','A word describing activities that use strength, balance and flexibility.'],
+['CRICKET','🏏','A team sport played with a bat and ball.'],
+['WINDSURFING','🏄','A water sport using a board and a sail.'],
+['SAILING','⛵','A water sport where a boat moves using wind in its sails.']
+],
+HEALTH:[
+['HEADACHE','🤕','A pain in your head.'],
+['STOMACHACHE','🤢','A pain in your stomach or belly.'],
+['EARACHE','👂','A pain in your ear.'],
+['TOOTHACHE','🦷','A pain in a tooth.'],
+['SORE THROAT','😣','A painful or irritated throat.'],
+['COUGH','😷','An action where you force air out of your throat.'],
+['FEVER','🌡️','A higher-than-normal body temperature when you are ill.'],
+['SUNBURN','☀️','Red, sore skin caused by too much sun.'],
+['HURT','🩹','A word describing pain or injury.'],
+['MEDICINE','💊','Something used to help treat an illness or health problem.']
+]
+};
+
+const TOPIC_INFO={
+PEOPLE:'👨‍👩‍👧',SCHOOL:'🎒',HOME:'🏠',FOOD:'🍎',CLOTHES:'👕',ANIMALS:'🐾',
+NATURE:'🌿',PLACES:'📍',TRANSPORT:'🚗',VERBS:'✏️',ADJECTIVES:'😊',SPORT:'🏅',HEALTH:'❤️'
+};
+const TOPICS=Object.keys(QUESTION_BANK);
+
+let state={playerName:'',currentTopic:'',currentQuestions:[],questionIndex:0,currentAnswer:'',score:0,timeLeft:60,timer:null,topicScores:{}};
+let lastCompletedTopic='',answerLocked=false,celebrationTimer=null;
+
+function saveState(){localStorage.setItem('wordCompletionState',JSON.stringify({playerName:state.playerName,topicScores:state.topicScores}))}
+function loadState(){try{const s=JSON.parse(localStorage.getItem('wordCompletionState'));if(s){state.playerName=s.playerName||'';state.topicScores=s.topicScores||{}}}catch(e){}}
+function showScreen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+
+function renderTopics(){
+const grid=document.getElementById('topicGrid');grid.innerHTML='';
+TOPICS.forEach((topic,index)=>{
+const b=document.createElement('button');b.className=`topic-card topic-${index}`;
+b.innerHTML=`<div class="topic-icon">${TOPIC_INFO[topic]}</div><div class="topic-name">${topic}</div>`;
+b.onclick=()=>startTopic(topic);grid.appendChild(b);
+});
+const s=document.createElement('button');s.className='topic-card score-card';
+s.innerHTML='<div class="topic-icon">🏆</div><div class="topic-name">MY SCORE</div>';s.onclick=showScore;grid.appendChild(s);
+}
+
+function openNameModal(){document.getElementById('nameInput').value=state.playerName||'';document.getElementById('nameModal').classList.add('show');setTimeout(()=>document.getElementById('nameInput').focus(),100)}
+function closeNameModal(){document.getElementById('nameModal').classList.remove('show')}
+function confirmName(){state.playerName=document.getElementById('nameInput').value.trim()||'CHAMPION';saveState();closeNameModal();renderTopics();showScreen('topicScreen')}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+
+function startTopic(topic){
+resumeAudio();stopCelebration();
+state.currentTopic=topic;state.currentQuestions=shuffle(QUESTION_BANK[topic]).slice(0,10);state.questionIndex=0;state.score=0;answerLocked=false;
+showScreen('quizScreen');loadQuestion();
+}
+function loadQuestion(){
+stopTimer();answerLocked=false;
+const q=state.currentQuestions[state.questionIndex];
+state.currentAnswer=q[0];
+document.getElementById('quizTopic').textContent=state.currentTopic;
+document.getElementById('quizProgress').textContent=`${state.questionIndex+1} / 10`;
+document.getElementById('quizScore').textContent=`${state.score} pts`;
+document.getElementById('questionEmoji').textContent=q[1];
+document.getElementById('questionDescription').textContent=q[2];
+document.getElementById('hintLetter').textContent=q[0].replace(/\s/g,'')[0];
+document.getElementById('feedback').textContent='';
+document.getElementById('feedback').className='feedback';
+buildAnswerBoxes(q[0]);startTimer();
+setTimeout(()=>{const first=document.querySelector('#answerArea .letter-box');if(first)first.focus()},80);
+}
+function buildAnswerBoxes(answer){
+const area=document.getElementById('answerArea');area.innerHTML='';
+const wrapper=document.createElement('div');wrapper.className='answer-word';area.appendChild(wrapper);
+answer.split(' ').forEach(word=>{
+const row=document.createElement('div');row.className='answer-row';
+const len=word.length;const available=Math.max(area.clientWidth||300,260);
+const gap=len>=10?3:len>=8?4:5;
+let size=Math.floor((available-gap*(len-1))/len);size=Math.max(24,Math.min(38,size));
+row.style.setProperty('--size',size+'px');row.style.setProperty('--gap',gap+'px');row.style.setProperty('--font',Math.max(.82,Math.min(1.12,size/30))+'rem');
+[...word].forEach(ch=>{
+const input=document.createElement('input');input.className='letter-box';input.type='text';input.maxLength=1;input.autocomplete='off';input.spellcheck=false;input.inputMode='text';input.dataset.answerChar=ch.toUpperCase();input.value='';
+input.addEventListener('input',function(){this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,1);if(this.value){const all=[...document.querySelectorAll('#answerArea .letter-box')],i=all.indexOf(this);if(all[i+1])all[i+1].focus()}});
+input.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!input.value){const all=[...document.querySelectorAll('#answerArea .letter-box')],i=all.indexOf(input);if(all[i-1]){all[i-1].focus();all[i-1].select()}}if(e.key==='Enter')checkAnswer()});
+row.appendChild(input);
+});
+wrapper.appendChild(row);
+});
+}
+function getEnteredAnswer(){return [...document.querySelectorAll('#answerArea .letter-box')].map(x=>x.value).join('').toUpperCase()}
+function startTimer(){state.timeLeft=60;updateTimerUI();state.timer=setInterval(()=>{state.timeLeft--;updateTimerUI();if(state.timeLeft<=0){stopTimer();handleTimeout()}},1000)}
+function stopTimer(){if(state.timer){clearInterval(state.timer);state.timer=null}}
+function updateTimerUI(){const p=Math.max(0,state.timeLeft/60*100);const bar=document.getElementById('timerBar');bar.style.width=p+'%';bar.classList.toggle('warning',state.timeLeft<=35&&state.timeLeft>20);bar.classList.toggle('danger',state.timeLeft<=20)}
+
+function checkAnswer(){
+if(answerLocked)return;answerLocked=true;stopTimer();
+const entered=getEnteredAnswer(),correct=state.currentAnswer.replace(/\s/g,'').toUpperCase(),fb=document.getElementById('feedback');
+if(entered===correct){state.score+=10;document.getElementById('quizScore').textContent=`${state.score} pts`;fb.textContent='✓ CORRECT! +10 POINTS';fb.className='feedback correct';playCorrectSound();setTimeout(nextQuestion,800)}
+else{fb.innerHTML=`✗ NOT QUITE.<br><strong>CORRECT ANSWER: ${state.currentAnswer}</strong>`;fb.className='feedback wrong answer-reveal';playWrongSound();setTimeout(nextQuestion,1800)}
+}
+function handleTimeout(){
+if(answerLocked)return;answerLocked=true;
+const fb=document.getElementById('feedback');fb.innerHTML=`⏰ TIME OUT!<br><strong>CORRECT ANSWER: ${state.currentAnswer}</strong>`;fb.className='feedback wrong answer-reveal';playWrongSound();setTimeout(nextQuestion,1800)
+}
+function nextQuestion(){state.questionIndex++;if(state.questionIndex>=10){finishTopic();return}loadQuestion()}
+
+function finishTopic(){
+stopTimer();answerLocked=false;const topic=state.currentTopic;state.topicScores[topic]=state.score;saveState();lastCompletedTopic=topic;
+playTopicCompleteMusic();
+clearTimeout(celebrationTimer);celebrationTimer=setTimeout(showResult,1800);
+}
+function stopCelebration(){clearTimeout(celebrationTimer);celebrationTimer=null;document.querySelectorAll('.confetti-piece').forEach(x=>x.remove())}
+
+function launchConfetti(){
+const icons=['🎉','✨','⭐','🎊','💫'];
+for(let i=0;i<90;i++){
+const el=document.createElement('div');el.className='confetti-piece';el.textContent=icons[Math.floor(Math.random()*icons.length)];
+el.style.left=Math.random()*100+'vw';el.style.fontSize=(18+Math.random()*18)+'px';
+document.body.appendChild(el);
+const duration=1800+Math.random()*1600,dx=(Math.random()-.5)*180;
+el.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:`translate(${dx}px,110vh) rotate(${360+Math.random()*720}deg)`,opacity:0}],{duration,easing:'cubic-bezier(.2,.8,.3,1)'}).onfinish=()=>el.remove();
+}
+}
+
+function showResult(){
+stopCelebration();showScreen('resultScreen');launchConfetti();
+document.getElementById('resultTopic').textContent=lastCompletedTopic;
+document.getElementById('resultScore').textContent=`${state.score} / 100`;
+document.getElementById('resultCorrect').textContent=`${state.score/10} / 10 CORRECT`;
+document.getElementById('resultMessage').textContent=`${state.playerName}, you completed the topic!`;
+document.getElementById('resultStars').textContent=state.score>=80?'⭐ ⭐ ⭐':state.score>=50?'⭐ ⭐':'⭐';
+}
+function retryCurrentTopic(){startTopic(state.currentTopic)}
+function showScore(){
+stopTimer();renderScore();showScreen('scoreScreen')
+}
+function renderScore(){
+document.getElementById('scorePlayer').textContent=state.playerName?`Player: ${state.playerName}`:'';
+const list=document.getElementById('scoreList');list.innerHTML='';let total=0;
+TOPICS.forEach(t=>{const score=state.topicScores[t]??0;total+=score;const d=document.createElement('div');d.className='score-item';d.innerHTML=`${TOPIC_INFO[t]} ${t}<strong>${score} / 100</strong>`;list.appendChild(d)});
+document.getElementById('scoreTotal').textContent=`${total} POINTS`;
+}
+function openCertificate(){document.getElementById('certificateName').textContent=state.playerName||'CHAMPION';document.getElementById('certificateScore').textContent=`SCORE: ${state.score} / 100`;document.getElementById('certificateTopic').textContent=lastCompletedTopic;showScreen('certificateScreen')}
+function resetProgress(){stopTimer();stopMusic();localStorage.removeItem('wordCompletionState');state={playerName:'',currentTopic:'',currentQuestions:[],questionIndex:0,currentAnswer:'',score:0,timeLeft:60,timer:null,topicScores:{}};document.getElementById('resetModal').classList.remove('show');showScreen('homeScreen')}
+
+let audioContext=null,masterGain=null,musicGain=null,effectGain=null,musicTimer=null,soundEnabled=true,musicStep=0;
+function initAudio(){
+if(audioContext)return;const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;
+audioContext=new AudioCtx();masterGain=audioContext.createGain();musicGain=audioContext.createGain();effectGain=audioContext.createGain();
+musicGain.gain.value=.16;effectGain.gain.value=.20;masterGain.gain.value=soundEnabled?1:0;
+musicGain.connect(masterGain);effectGain.connect(masterGain);masterGain.connect(audioContext.destination);startMusic();
+}
+function resumeAudio(){initAudio();if(audioContext&&audioContext.state==='suspended')audioContext.resume();if(audioContext&&!musicTimer&&soundEnabled)startMusic()}
+function playMusicNote(f,d){if(!audioContext||!soundEnabled)return;const o=audioContext.createOscillator(),g=audioContext.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.14,audioContext.currentTime+.04);g.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+d);o.connect(g);g.connect(musicGain);o.start();o.stop(audioContext.currentTime+d+.05)}
+function startMusic(){
+if(!audioContext||musicTimer)return;const melody=[261.63,329.63,392,329.63,293.66,349.23,440,349.23,261.63,329.63,392,523.25,440,392,329.63,293.66];musicStep=0;
+musicTimer=setInterval(()=>{if(soundEnabled&&audioContext)playMusicNote(melody[musicStep++%melody.length],.48)},520)
+}
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
+function playTone(f,d,type='sine'){if(!audioContext||!soundEnabled)return;const o=audioContext.createOscillator(),g=audioContext.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(.0001,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.3,audioContext.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+d);o.connect(g);g.connect(effectGain);o.start();o.stop(audioContext.currentTime+d+.03)}
+function playCorrectSound(){resumeAudio();playTone(659.25,.12);setTimeout(()=>playTone(783.99,.12),100);setTimeout(()=>playTone(987.77,.18),200)}
+function playWrongSound(){resumeAudio();playTone(220,.18,'sawtooth')}
+function playTopicCompleteMusic(){
+resumeAudio();if(!audioContext||!soundEnabled)return;stopMusic();
+[[523.25,0],[659.25,180],[783.99,360],[1046.5,540],[783.99,760],[1046.5,940]].forEach(([f,delay])=>setTimeout(()=>playTone(f,.28,'triangle'),delay));
+setTimeout(()=>{if(audioContext&&soundEnabled){startMusic()}},1600);
+}
+function toggleSound(){soundEnabled=!soundEnabled;if(!audioContext){if(soundEnabled)resumeAudio()}else masterGain.gain.value=soundEnabled?1:0;document.getElementById('topicSoundBtn').textContent=soundEnabled?'🔊':'🔇'}
+function goHome(){stopTimer();stopCelebration();stopMusic();if(audioContext)masterGain.gain.value=0;showScreen('homeScreen')}
+
+document.getElementById('playBtn').onclick=()=>{resumeAudio();if(state.playerName){renderTopics();showScreen('topicScreen')}else openNameModal()};
+document.getElementById('resetBtn').onclick=()=>{resumeAudio();document.getElementById('resetModal').classList.add('show')};
+document.getElementById('cancelResetBtn').onclick=()=>document.getElementById('resetModal').classList.remove('show');
+document.getElementById('confirmResetBtn').onclick=resetProgress;
+document.getElementById('cancelNameBtn').onclick=closeNameModal;
+document.getElementById('startNameBtn').onclick=confirmName;
+document.getElementById('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter')confirmName()});
+document.getElementById('topicBackBtn').onclick=goHome;
+document.getElementById('topicSoundBtn').onclick=()=>{resumeAudio();toggleSound()};
+document.getElementById('checkBtn').onclick=checkAnswer;
+document.getElementById('retryBtn').onclick=()=>startTopic(state.currentTopic);
+document.getElementById('anotherBtn').onclick=()=>{stopCelebration();renderTopics();showScreen('topicScreen')};
+document.getElementById('certificateBtn').onclick=openCertificate;
+document.getElementById('scorePlayBtn').onclick=()=>{renderTopics();showScreen('topicScreen')};
+document.getElementById('printCertificateBtn').onclick=()=>window.print();
+document.getElementById('certificateBackBtn').onclick=()=>showScreen('resultScreen');
+
+loadState();
+</script>
+</body>
+</html>
